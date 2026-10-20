@@ -1,11 +1,11 @@
 # 参考系统 → 主题转译矩阵
 
-> 状态：`design-contract` 任务 2.1 交付物（证据文档，不新增权威）。设计契约的权威顺序见 `decisions.md` D16（:261）：根 `DESIGN.md`（8 章 + YAML frontmatter）是唯一权威，`.impeccable/design.json` 是其机器可读 sidecar，`docs/design/tokens.css` 是浏览器实际消费的 `--wf-*` 令牌；本文件逐条记录「做什么、不做什么、为什么」，三者冲突时回改它们，而不是改本文件。
+> 状态：`design-contract` 任务 2.1 交付物（证据文档，不新增权威）。设计契约的权威顺序见 `decisions.md` D16（:261）：根 `DESIGN.md`（8 章 + YAML frontmatter）是唯一权威，`.impeccable/design.json` 是其机器可读 sidecar，`assets/css/tokens.css` 是浏览器实际消费的 `--wf-*` 令牌；本文件逐条记录「做什么、不做什么、为什么」，三者冲突时回改它们，而不是改本文件。
 
 **口径**
 
 - 上游指 `E:\File\self\github\website` 的 pin 快照（§7）。文中 `DESIGN.md:<行>`、`.impeccable/design.json:<行>` 都指该快照，仅作证据。
-- 主题值以 `docs/design/tokens.css` 为准，变量名逐字照抄。判定基于两个已复核的计数：上游 frontmatter 26 色 / 8 排版角色 / 3 圆角 / 12 间距 / 22 组件键，正文 8 章，sidecar 12 个 `ds-` 片段；本仓契约 13 色 / 8 角色 / 2 圆角 / 11 间距 / 20 组件键 / 9 个 `wf-` 片段。
+- 主题值以 `assets/css/tokens.css` 为准，变量名逐字照抄。判定基于两个已复核的计数：上游 frontmatter 26 色 / 8 排版角色 / 3 圆角 / 12 间距 / 22 组件键，正文 8 章，sidecar 12 个 `ds-` 片段；本仓契约 13 色 / 8 角色 / 2 圆角 / 11 间距 / 20 组件键 / 9 个 `wf-` 片段。
 - 结构可借鉴，字节与像素不可复制（D19 / `decisions.md`:215）：不复制上游 `styles.css`、`prose.css`、`script.js`、WebGL/GLSL shader、`paper.png`、字体、logo、星形 path 与文案。
 - 阅读顺序：§0 口径与总览 → §1 颜色 → §2 排版 → §3 组件键 → §4 `ds-` 片段与字体 A/B（4.1 待回填）→ §5 断点/布局/层级/动效 → §6 计数验算 → §7 pin 证据。
 
@@ -32,7 +32,7 @@
 
 ## 1. 颜色令牌：26 = 13 采纳 + 13 排除
 
-上游 frontmatter `colors` 26 键（`DESIGN.md`:5–30），正文规则是「One Palette, Two Lights」（`DESIGN.md`:225）：一个色板，昼夜两种光照，不出现第二个色板。主题保留 13 键（`tokens.css`:17–29），昼夜切换靠 `[data-theme]` 重绑变量（`tokens.css`:153–162），组件不感知光照。
+上游 frontmatter `colors` 26 键（`DESIGN.md`:5–30），正文规则是「One Palette, Two Lights」（`DESIGN.md`:225）：一个色板，昼夜两种光照，不出现第二个色板。主题保留 13 键（`tokens.css`:23–35），昼夜切换靠 `[data-theme]` 重绑变量（`tokens.css`:159–168），组件不感知光照。
 
 ### 1.1 采纳（13）
 
@@ -41,16 +41,16 @@
 | `ink` | `#353431` | 采纳 | `--wf-ink` | 日间正文/标题/控件文字的唯一近黑暖灰；值不改。夜间由 `--wf-ink: var(--wf-night-ink)` 重绑，组件不分支。 |
 | `muted-ink` | `rgba(25, 24, 22, 0.6)` | 采纳 | `--wf-muted-ink` | 日期、meta 键名、占位文字的第二次序；60% 在黑字上仍可读，又不会与 hairline 混同。 |
 | `hairline` | `rgba(39, 37, 34, 0.18)` | 采纳 | `--wf-hairline` | 全站唯一线宽（1px）颜色：分隔、代码块上下沿、表格线；18% 不构成边框容器。 |
-| `paper` | `#faf9f6` | 采纳 | `--wf-paper`；同时是 `--wf-veil-rgb` 的日间值（`250 249 246`，`tokens.css`:35） | 纸色只作「光」与面板底，不作 body 背景（`DESIGN.md`:223「Paper Is Not a Background」）；页面底仍是 scene/veil 层。 |
+| `paper` | `#faf9f6` | 采纳 | `--wf-paper`；同时是 `--wf-veil-rgb` 的日间值（`250 249 246`，`tokens.css`:41） | 纸色只作「光」与面板底，不作 body 背景（`DESIGN.md`:223「Paper Is Not a Background」）；页面底仍是 scene/veil 层。 |
 | `pure-white` | `#ffffff` | 采纳 | `--wf-pure-white` | 日间 chrome 悬停提亮一档；与 `night-bright` 同值但语义不同（日间提亮 vs 夜间文字/标题），保留两个键以免误用。 |
 | `night-ink` | `rgba(240, 240, 240, 0.8)` | 采纳 | `--wf-night-ink` | 夜间正文；80% 白在 `#2e2d2b` 上对比度足够，且比纯白柔和。只经 `--wf-ink` 重绑使用。 |
 | `night-bright` | `#ffffff` | 采纳 | `--wf-night-bright` | 夜间标题与链接悬停的纯白，与日间 `pure-white` 对称。 |
 | `night-muted` | `rgba(240, 240, 240, 0.6)` | 采纳 | `--wf-night-muted` | 夜间弱化文字，与日间 `muted-ink` 对称。 |
 | `night-hairline` | `rgba(244, 242, 238, 0.18)` | 采纳 | `--wf-night-hairline` | 夜间分隔线；带暖调而非纯白，避免夜间出现冷灰边框。 |
-| `night-paper` | `#2e2d2b` | 采纳 | `--wf-night-paper`；同时是 `--wf-veil-rgb` 的夜间值（`46 45 43`，`tokens.css`:159） | 夜间纸色；与日间同属暖调，夜间整体仍读作「纸」而不是「深色 UI」。 |
+| `night-paper` | `#2e2d2b` | 采纳 | `--wf-night-paper`；同时是 `--wf-veil-rgb` 的夜间值（`46 45 43`，`tokens.css`:165） | 夜间纸色；与日间同属暖调，夜间整体仍读作「纸」而不是「深色 UI」。 |
 | `moonlight` | `rgba(255, 255, 255, 0.95)` | 采纳 | `--wf-moonlight` | 场景上所有 chrome 文字/图标的默认色；95% 白留出 hover 到纯白的提亮空间。 |
 | `chrome-scrim` | `rgba(30, 30, 30, 0.95)` | 采纳 | `--wf-chrome-scrim` | 语言菜单浮层底；配 `blur(10px)` 与唯一的 Menu scrim 投影（sidecar shadows），不用于大面积面板。 |
-| `star-dark` | `#1c1b1a` | 采纳 | `--wf-star-dark`；`--wf-star` 在 `:root` 取它，夜间取 `--wf-moonlight`（`tokens.css`:32、158） | 日间光标与内联星形的最深色；主题不复制上游 SVG 字节，用原创 8 射线四角星 + 令牌换色（D8）。 |
+| `star-dark` | `#1c1b1a` | 采纳 | `--wf-star-dark`；`--wf-star` 在 `:root` 取它，夜间取 `--wf-moonlight`（`tokens.css`:38、164） | 日间光标与内联星形的最深色；主题不复制上游 SVG 字节，用原创 8 射线四角星 + 令牌换色（D8）。 |
 
 ### 1.2 排除（13）
 
@@ -72,7 +72,7 @@
 
 ## 2. 排版角色：8
 
-上游 8 角色（`DESIGN.md`:31–79，sidecar `typographyMeta` 8 项）保留角色名、字号、行高、字重、字距，只替换字体族（D1）：`display`/`title`/`reading` 用 Newsreader（OFL，可变字重 200–800，真斜体），`body`/`ui`/`form`/`label`/`code` 用 Commit Mono（OFL，400/700）。字体栈收在 `--wf-font-serif` / `--wf-font-mono`（`tokens.css`:63–65），站点可在 `params` 覆盖。
+上游 8 角色（`DESIGN.md`:31–79，sidecar `typographyMeta` 8 项）保留角色名、字号、行高、字重、字距，只替换字体族（D1）：`display`/`title`/`reading` 用 Newsreader（OFL，可变字重 200–800，真斜体），`body`/`ui`/`form`/`label`/`code` 用 Commit Mono（OFL，400/700）。字体栈收在 `--wf-font-serif` / `--wf-font-mono`（`tokens.css`:69–72），站点可在 `params` 覆盖。
 
 | 角色 | 上游值（族 / 尺寸 / 字重 / 行高 / 字距 / 斜体） | wf- 映射（主题值） | 判定 | 理由 |
 | --- | --- | --- | --- | --- |
@@ -179,7 +179,7 @@
 ### 5.2 层级与纸光/颗粒
 
 - **上游**：没有 body 背景色；页面是 WebGL 海面 + 纸光 veil + 颗粒纹理；veil 是 `72% × 115%` 的椭圆、`50% 48%` 定位、中心 `rgba(250,249,246,.985)` 到 96% 处透明；上游不公布 z-index。
-- **主题**：四层固定顺序 `--wf-z-scene: 0` → `--wf-z-veil: 1` → `--wf-z-grain: 2` → `--wf-z-frame: 3`（D3）。veil 的 size/position/stop/alpha 全部令牌化（`tokens.css`:34–48）；夜间 `--wf-veil-rgb: 46 45 43` 与 `--wf-night-paper` 同值（`#2e2d2b`）。grain 用原创 `grain-light.png` / `grain-dark.png`（各 ≤16KB），`120px`、日间 opacity .06 / 夜间 .08。scene 用 Canvas 2D 线场替代 WebGL（D2，声明偏差：视觉目标一致，实现与性能预算不同）。
+- **主题**：四层固定顺序 `--wf-z-scene: 0` → `--wf-z-veil: 1` → `--wf-z-grain: 2` → `--wf-z-frame: 3`（D3）。veil 的 size/position/stop/alpha 全部令牌化（`tokens.css`:40–54）；夜间 `--wf-veil-rgb: 46 45 43` 与 `--wf-night-paper` 同值（`#2e2d2b`）。grain 用原创 `grain-light.png` / `grain-dark.png`（各 ≤16KB），`120px`、日间 opacity .06 / 夜间 .08。scene 用 Canvas 2D 线场替代 WebGL（D2，声明偏差：视觉目标一致，实现与性能预算不同）。
 - **阴影**：上游 4 条，主题保留 3 条词汇 + 替换 1 条。Menu scrim（`0 8px 32px rgba(0,0,0,.4)`）→ 语言菜单唯一投影；Sky-legibility（`0 2px 8px rgba(0,0,0,.5)`）→ 404 星形在亮纸上的可读性；Keycap ring（双层 10%）→ 词汇保留（片段排除，见 §4.2）；Pixel-thickening（`0.5px 0 currentColor`）→ 排除，Commit Mono 有真 700（§2）。
 - **面板纹理**：上游用 paper tile 纹理；主题用全页 grain 层 + `--wf-paper` 面板底色，不制作第二套纹理资产（`Grain: static original PNG ≤16KB`，D3）。
 
@@ -201,7 +201,7 @@
 | Text sweep | 720ms ease | `--wf-motion-subscribe: 720ms` | 采纳 | 订阅行的确认扫光。 |
 | 404 fade | 1000ms ease + 2000ms delay | 无 | 排除 | 主题 404 不做 2s 延迟出现；延迟会惩罚导航失败的用户。 |
 
-汇总：上游 13 条动效收敛为 8 个时长令牌（`--wf-motion-{page-enter,page-exit,theme,entrance,menu-open,menu-close,subscribe,hover}`）+ 1 个缓动 `--wf-ease`；上游的 ease / ease-out / ease-in / linear / 专用贝塞尔收敛为单一 `--wf-ease`。`prefers-reduced-motion: reduce` 下 8 个时长全部归零（`tokens.css`:202–213），与上游行为一致。
+汇总：上游 13 条动效收敛为 8 个时长令牌（`--wf-motion-{page-enter,page-exit,theme,entrance,menu-open,menu-close,subscribe,hover}`）+ 1 个缓动 `--wf-ease`；上游的 ease / ease-out / ease-in / linear / 专用贝塞尔收敛为单一 `--wf-ease`。`prefers-reduced-motion: reduce` 下 8 个时长全部归零（`tokens.css`:208–219），与上游行为一致。
 
 ### 5.4 开放问题（交 P2）
 
@@ -217,7 +217,7 @@
 - sidecar：12 ds- 片段 = 9 采纳 + 3 排除。§4.2 表格恰好 12 行；9 个采纳片段即根 sidecar 的 9 个 `wf-` 片段，与 `upstream-pin.md`:31 的「9 个 `wf-` 片段」一致。
 - 行数复核：§1.1 13 行 + §1.2 13 行 + §2 8 行 + §3 22 行 + §4.2 12 行 = 68 行判定；每行都有「采纳/替换/排除」之一、理由、`wf-` 映射或「无」。
 - 其他差异：圆角 3 = 2 采纳 + 1 排除（`none: 0` 不设令牌）；间距 12 = 11 采纳 + 1 合并（`hair: 1px` 并入 `--wf-hairline`）；正文 8 章 = 8 章。
-- 与契约的一致性：13 色 / 8 角色 / 2 圆角 / 11 间距 / 20 组件键进入根 `DESIGN.md` frontmatter（任务 4）；9 个 `wf-` 片段 + 3 条阴影 + 8 条动效 + 3 个断点进入 `.impeccable/design.json`；本文件出现的每个 `--wf-*` 变量（族简写展开后）都能在 `docs/design/tokens.css` 找到定义。
+- 与契约的一致性：13 色 / 8 角色 / 2 圆角 / 11 间距 / 20 组件键进入根 `DESIGN.md` frontmatter（任务 4）；9 个 `wf-` 片段 + 3 条阴影 + 8 条动效 + 3 个断点进入 `.impeccable/design.json`；本文件出现的每个 `--wf-*` 变量（族简写展开后）都能在 `assets/css/tokens.css` 找到定义。
 
 ## 7. 上游 pin 与证据
 

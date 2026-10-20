@@ -1,9 +1,8 @@
 /*
  * waitforit-theme 设计令牌（P1 唯一来源）
  *
- * 迁移约定：P2 把本文件原样移入 `assets/css/tokens.css` 并删除 docs 副本（见 docs/decisions.md D16 与
- * docs/handoff/）。届时两处需要同步改路径：
- *   - 颗粒图 `url()` 相对路径：docs/design/ → `../../assets/images/`，assets/css/ → `../images/`（AST-08）。
+ * P2 起本文件是浏览器实际加载的令牌源（`docs/design/` 副本已删除，见 docs/decisions.md D16）。约定：
+ *   - 颗粒图 `url()` 按**构建产物**目录写相对路径：产物在 `/css/main.<hash>.css`，故写 `../images/`（AST-08）。
  *   - 字体由模板显式 `resources.Get` → `fingerprint` → `.RelPermalink` 发布并 `<link rel="preload">`（AST-14/AST-02），
  *     字体 `@font-face` 不写在本文件里（spike 与 P2 模板各自声明），避免资源管线重写问题。
  *
@@ -11,6 +10,13 @@
  *   --wf-bp-mobile: 520px   --wf-bp-tablet: 800px   --wf-bp-desktop: 1100px
  *   框架 ≤800 → 40px，≤520 → 28px；内容列 ≤800 → 680px，801–1100 → min(680px, calc(100vw - 360px))；触控目标 ≥44px。
  */
+
+/* 纸光通道注册为可插值数字列表：主题切换时 `@property` 让 900ms 交叉淡化在纸光上成立（D6）。 */
+@property --wf-veil-rgb {
+  syntax: "<number>+";
+  inherits: true;
+  initial-value: 250 249 246;
+}
 
 :root {
   /* ---------- 颜色：13 个采纳令牌（参考 DESIGN.md frontmatter 原值） ---------- */
@@ -48,7 +54,7 @@
   --wf-veil-alpha-end: 0;
 
   /* ---------- 颗粒：静态平铺 PNG 参数（图由 spike/P2 主题 CSS 指向） ---------- */
-  --wf-grain-image: url("../../assets/images/grain-light.png");
+  --wf-grain-image: url("../images/grain-light.png");
   --wf-grain-size: 120px;
   --wf-grain-opacity: 0.06;
   --wf-grain-blend: normal;
@@ -157,7 +163,7 @@
   --wf-paper: var(--wf-night-paper);
   --wf-star: var(--wf-moonlight);
   --wf-veil-rgb: 46 45 43;
-  --wf-grain-image: url("../../assets/images/grain-dark.png");
+  --wf-grain-image: url("../images/grain-dark.png");
   --wf-grain-opacity: 0.08;
 }
 
@@ -171,7 +177,7 @@
     --wf-paper: var(--wf-night-paper);
     --wf-star: var(--wf-moonlight);
     --wf-veil-rgb: 46 45 43;
-    --wf-grain-image: url("../../assets/images/grain-dark.png");
+    --wf-grain-image: url("../images/grain-dark.png");
     --wf-grain-opacity: 0.08;
   }
 }

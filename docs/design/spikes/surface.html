@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>4.2 表面层 · Canvas 线场 + 径向纸光 + 颗粒</title>
-<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../../../assets/css/tokens.css">
 <style>
 /* ==========================================================================
    表面层 spike（tasks.md 4.2）——纯静态 HTML + 内联 CSS/JS，无构建、无运行时网络。
    分层（D3）：canvas.scene(0) → .veil(1) → .grain(2) → .frame(3)。
-   所有颜色/纸光/颗粒/动效值都来自 ../tokens.css；无任何颜色字面量。
+   所有颜色/纸光/颗粒/动效值都来自 assets/css/tokens.css；无任何颜色字面量。
    ========================================================================== */
 
 /* 注册 --wf-veil-rgb 为编号列表，才能按通道插值（JS 用令牌实读值注册初值） */
@@ -263,10 +263,10 @@ h1{
     return getComputedStyle(root).getPropertyValue(name).trim();
   }
 
-  /* tokens.css 的 --wf-grain-image 是相对 docs/design/ 的 url()；页面内 var() 使用会把相对路径
-     按页面地址解析（会打到 /docs/assets/），所以这里读令牌原文，以 tokens.css 自身位置为基准
-     手工解析成绝对 URL——唯一来源仍是 tokens.css。 */
-  var tokensCssUrl = new URL('../tokens.css', document.baseURI);
+  /* tokens.css 的 --wf-grain-image 是相对 assets/css/ 的 url()（../images/…）；页面内 var() 使用会把
+     相对路径按页面地址解析（会打到 /docs/design/images/），所以这里读令牌原文，以 tokens.css 自身
+     位置为基准手工解析成绝对 URL——唯一来源仍是 tokens.css。 */
+  var tokensCssUrl = new URL('../../../assets/css/tokens.css', document.baseURI);
 
   function resolveTokenUrl(value) {
     var match = /url\(\s*["']?([^"')]+)["']?\s*\)/.exec(value);

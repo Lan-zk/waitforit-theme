@@ -77,7 +77,9 @@ base 只有在被解析模板**同时满足**两个条件时才套用：⟦D⟧ 
 ```go-html-template
 {{/* layouts/baseof.html */}}
 <!doctype html>
-<html lang="{{ site.Language.LanguageCode }}">
+{{- $lang := site.Language.Params.locale | default site.Language.Lang }}
+{{- $dir := site.Language.Params.dir | default `ltr` }}
+<html lang="{{ $lang }}" dir="{{ $dir }}">
   {{ partial "head.html" . }}
   <body>
     {{ partial "header.html" . }}
@@ -86,6 +88,8 @@ base 只有在被解析模板**同时满足**两个条件时才套用：⟦D⟧ 
   </body>
 </html>
 ```
+
+语言字段不要直接写 `.Language.LanguageCode` 或 `.Language.Locale`：0.146.0 没有 `.Locale`/`.Direction`/`.Label`（用即 exit 1），0.168.0 又弃用 `.LanguageCode`/`.LanguageDirection`/`.LanguageName`（WARN）；跨两端用 `[languages.<lang>.params]` 的 `locale`/`dir`/`label` + 回退 `.Language.Lang`（CNT-19/CNT-20、E13）。
 
 ```go-html-template
 {{/* layouts/page.html：只允许 define 与注释 */}}

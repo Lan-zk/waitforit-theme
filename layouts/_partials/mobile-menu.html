@@ -1,0 +1,18 @@
+{{- /* 导航面板：桌面是右对齐的链接列，≤800px 变成全屏纸面板（D1 / DESIGN.md 组件）。
+   不写 hidden 属性——无 JS 时面板保持可见，导航链接照样可用（D7）。 */}}
+<div class="wf-menu-panel" id="wf-menu-panel" data-wf-menu-panel>
+  <button class="wf-menu-close" type="button" data-wf-menu-close aria-label="{{ T "waitforit.nav.close" }}">
+    <span class="wf-menu-close__glyph" aria-hidden="true">×</span>
+  </button>
+  <ul class="wf-menu-list">
+    {{- if .Site.Menus.main }}
+      {{- range .Site.Menus.main }}
+    <li class="wf-menu-item"><a class="wf-menu-link" href="{{ with .Page }}{{ .RelPermalink }}{{ else }}{{ .URL }}{{ end }}">{{ .Name }}</a></li>
+      {{- end }}
+    {{- else }}
+      {{- range $item := slice (dict "key" "posts" "path" "posts/") (dict "key" "purpose" "path" "purpose/") (dict "key" "values" "path" "values/") (dict "key" "join" "path" "join/") }}
+    <li class="wf-menu-item"><a class="wf-menu-link" href="{{ relLangURL $item.path }}">{{ T (printf "waitforit.nav.%s" $item.key) }}</a></li>
+      {{- end }}
+    {{- end }}
+  </ul>
+</div>

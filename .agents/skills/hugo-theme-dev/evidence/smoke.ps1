@@ -1,5 +1,8 @@
-# Hugo 主题开发知识库的实测脚本（Hugo v0.168.0）
-# 目的：把 evidence/2026-10-20-hugo-v0.168.0-smoke.md 里的 E1–E12 变成可重跑断言。
+# Hugo 主题开发知识库的实测脚本（Hugo v0.168.0；E13 段也可在 v0.146.0 单独复跑）
+# 目的：把 evidence/2026-10-20-hugo-v0.168.0-smoke.md 的 E1–E12 与
+#       evidence/2026-10-20-language-fields.md 的 E13 变成可重跑断言。
+# 注：E8 的 unused 告警断言只在基线 0.168.0 成立；0.146.0 上旧路径可用但不报 unused，
+#     整脚本跑 0.146 会仅因此失败（E13 段本身通过），见 evidence 里的两版对照。
 # 用法：
 #   pwsh -File .agents/skills/hugo-theme-dev/evidence/smoke.ps1
 #   pwsh -File .agents/skills/hugo-theme-dev/evidence/smoke.ps1 -Hugo C:\path\to\hugo.exe -Root D:\tmp\smoke
@@ -324,6 +327,21 @@ Assert-Exit $r 0 'E12 构建成功'
 Assert-Contains $r.Output 'page.html.bak is unused' 'E12 残留文件被报 unused'
 $r = Invoke-Build @('--panicOnWarning')
 Assert-Exit $r 2 'E12 --panicOnWarning 失败'
+
+# ---- E13 语言字段的版本中立写法 ----
+Write-Host "`n[E13] 语言字段版本中立写法（params.locale/label）"
+New-Fixture
+$siteCfg = Get-Text (Join-Path $script:site 'hugo.toml')
+Set-Text (Join-Path $script:site 'hugo.toml') ($siteCfg + "`n[languages.en.params]`nlocale = 'en'`nlabel = 'English'`n")
+Write-Tpl 'home.html' @'
+{{ define "main" }}
+<p id="lang">lang={{ site.Language.Params.locale | default site.Language.Lang }}|label={{ site.Language.Params.label | default site.Language.Lang }}</p>
+{{ end }}
+'@
+$r = Invoke-Build
+Assert-Exit $r 0 'E13 版本中立语言字段写法构建成功'
+Assert-Contains (Get-Text $homeHtml) 'lang=en|label=English' 'E13 params.locale/label 生效'
+Record 'E13 无弃用告警' (-not $r.Output.Contains('deprecated')) '输出含 deprecated'
 
 # ---- 汇总 ----
 $failed = @($script:results | Where-Object { -not $_.Ok })

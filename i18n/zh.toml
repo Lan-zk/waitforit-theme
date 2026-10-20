@@ -1,0 +1,44 @@
+# waitforit-theme 中文文案（CFG-23/CFG-24）
+# 键集合必须与 i18n/en.toml 完全一致；站点同名键覆盖主题值。
+
+[waitforit]
+  hero = "一封悬于手绘海面之上的信。"
+  skip = "跳到正文"
+
+  [waitforit.nav]
+    menu = "菜单"
+    close = "关闭"
+    posts = "信件"
+    purpose = "目的"
+    values = "价值"
+    join = "加入"
+
+  [waitforit.theme]
+    auto = "自动"
+    day = "日光"
+    night = "夜色"
+    label = "主题"
+
+  [waitforit.lang]
+    label = "语言"
+
+  [waitforit.posts]
+    empty = "还没有信件抵达。"
+    read = "阅读"
+
+  [waitforit.home]
+    posts = "近期信件"
+
+  [waitforit.letter]
+    date = "日期"
+    from = "发件人"
+    to = "收件人"
+    subject = "主题"
+
+  [waitforit.footer]
+    note = "以铅字排出的通信。"
+
+  [waitforit.404]
+    title = "404"
+    body = "这不是我们寄出的信。"
+    home = "回到开头"

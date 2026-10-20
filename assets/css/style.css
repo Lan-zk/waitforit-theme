@@ -1,0 +1,893 @@
+/* waitforit-theme 主题样式（P2 骨架）
+ *
+ * 取值全部来自 assets/css/tokens.css 的 `--wf-*` 令牌；本文件只负责结构与组合（DESIGN.md Do's/Don'ts）。
+ * 分节：1 基础 2 表面四层 3 固定框架 4 导航 5 语言与主题控件 6 内容版式 7 组件 8 响应式 9 降级。
+ */
+
+/* ---------- 1. 基础 ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--wf-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-body-line);
+  letter-spacing: var(--wf-type-tracking);
+  cursor: url("../cursors/cursor-dark.svg") 16 16, auto;
+}
+
+[data-theme="night"] body {
+  cursor: url("../cursors/cursor-light.svg") 16 16, auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="day"]):not([data-theme="night"]) body {
+    cursor: url("../cursors/cursor-light.svg") 16 16, auto;
+  }
+}
+
+a {
+  color: inherit;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* 键盘焦点语言：1px 环 + 3px 偏移，currentColor 在纸色与夜色上都可见（DESIGN.md Shapes）。 */
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: var(--wf-focus-width) solid currentColor;
+  outline-offset: var(--wf-focus-offset);
+}
+
+.wf-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wf-skip {
+  position: fixed;
+  inset-block-start: var(--wf-space-sm);
+  inset-inline-start: var(--wf-space-sm);
+  z-index: calc(var(--wf-z-frame) + 1);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--wf-tap-target);
+  padding-inline: var(--wf-space-md);
+  background: var(--wf-paper);
+  color: var(--wf-ink);
+  font-family: var(--wf-type-ui-family);
+  font-size: var(--wf-type-ui-size);
+  line-height: var(--wf-type-ui-line);
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(calc(-1 * (var(--wf-tap-target) + var(--wf-space-lg))));
+  transition: transform var(--wf-motion-hover) var(--wf-ease);
+}
+
+.wf-skip:focus-visible {
+  transform: none;
+}
+
+/* ---------- 2. 表面四层：场景 canvas(0) → 纸光 veil(1) → 颗粒 grain(2) → 框架(3) ---------- */
+.wf-surface {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wf-scene {
+  position: fixed;
+  inset: 0;
+  z-index: var(--wf-z-scene);
+  background: var(--wf-paper);
+  transition: background-color var(--wf-motion-theme) var(--wf-ease);
+}
+
+.wf-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity var(--wf-motion-theme) var(--wf-ease);
+}
+
+.wf-canvas--day {
+  opacity: 1;
+}
+
+[data-theme="night"] .wf-canvas--day {
+  opacity: 0;
+}
+
+[data-theme="night"] .wf-canvas--night {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="day"]):not([data-theme="night"]) .wf-canvas--day {
+    opacity: 0;
+  }
+
+  :root:not([data-theme="day"]):not([data-theme="night"]) .wf-canvas--night {
+    opacity: 1;
+  }
+}
+
+/* 纸光：径向椭圆，六档停点；--wf-veil-rgb 由 @property 注册，切主题时 900ms 插值（D6）。 */
+.wf-veil {
+  position: fixed;
+  inset: 0;
+  z-index: var(--wf-z-veil);
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse var(--wf-veil-size) at var(--wf-veil-position),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-center)) var(--wf-veil-stop-center),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-center)) var(--wf-veil-stop-solid),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-mid)) var(--wf-veil-stop-mid),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-far)) var(--wf-veil-stop-far),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-near)) var(--wf-veil-stop-near),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-end)) var(--wf-veil-stop-end)
+  );
+  transition: --wf-veil-rgb var(--wf-motion-theme) var(--wf-ease);
+}
+
+/* 颗粒：day/night 两层，各自解析自身 data-theme 的令牌；切换只动 opacity（D5）。 */
+.wf-grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--wf-z-grain);
+  pointer-events: none;
+  background-image: var(--wf-grain-image);
+  background-size: var(--wf-grain-size);
+  background-blend-mode: var(--wf-grain-blend);
+  opacity: 0;
+  transition: opacity var(--wf-motion-theme) var(--wf-ease);
+}
+
+.wf-grain--day {
+  opacity: var(--wf-grain-opacity);
+}
+
+[data-theme="night"] .wf-grain--day {
+  opacity: 0;
+}
+
+[data-theme="night"] .wf-grain--night {
+  opacity: var(--wf-grain-opacity);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="day"]):not([data-theme="night"]) .wf-grain--day {
+    opacity: 0;
+  }
+
+  :root:not([data-theme="day"]):not([data-theme="night"]) .wf-grain--night {
+    opacity: var(--wf-grain-opacity);
+  }
+}
+
+/* 首帧关闭过渡（is-boot 由 head 内联脚本加/删，D6）。 */
+html.is-boot .wf-scene,
+html.is-boot .wf-canvas,
+html.is-boot .wf-grain {
+  transition: none;
+}
+
+/* ---------- 3. 固定框架：顶栏 = 星标 + MENU，底栏 = 品牌 + 语言/主题 ---------- */
+.wf-header,
+.wf-footer {
+  position: fixed;
+  inset-inline: 0;
+  z-index: var(--wf-z-frame);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wf-space-lg);
+  padding-inline: var(--wf-frame-block);
+  color: var(--wf-ink);
+  font-family: var(--wf-type-ui-family);
+  font-size: var(--wf-type-ui-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-ui-line);
+  letter-spacing: var(--wf-type-tracking);
+  text-transform: uppercase;
+}
+
+.wf-header {
+  inset-block-start: 0;
+  align-items: flex-start;
+  padding-block-start: var(--wf-frame-block);
+}
+
+.wf-footer {
+  inset-block-end: 0;
+  align-items: flex-end;
+  padding-block-end: var(--wf-frame-block);
+}
+
+.wf-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  color: var(--wf-star);
+  transition: color var(--wf-motion-hover) var(--wf-ease);
+}
+
+.wf-logo__mark {
+  width: var(--wf-logo-corner);
+  height: var(--wf-logo-corner);
+}
+
+[data-theme="night"] .wf-logo:hover,
+[data-theme="night"] .wf-logo:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+.wf-footer__mark {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wf-space-xs);
+}
+
+.wf-footer__brand,
+.wf-footer__note {
+  margin: 0;
+}
+
+.wf-footer__note {
+  color: var(--wf-muted-ink);
+  text-transform: none;
+}
+
+.wf-footer__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--wf-space-md);
+}
+
+/* ---------- 4. 导航：MENU 触发 + 面板（桌面右列 / ≤800 全屏纸面板） ---------- */
+.wf-menu {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.wf-menu-trigger {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+html.js .wf-menu-trigger {
+  display: inline-flex;
+}
+
+.wf-menu-trigger:hover,
+.wf-menu-trigger:focus-visible {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+[data-theme="night"] .wf-menu-trigger:hover,
+[data-theme="night"] .wf-menu-trigger:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+.wf-menu-panel {
+  position: fixed;
+  inset-block-start: calc(var(--wf-frame-block) + var(--wf-tap-target));
+  inset-inline-end: var(--wf-frame-block);
+  z-index: var(--wf-z-frame);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--wf-space-sm);
+}
+
+html.js .wf-menu-panel {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--wf-motion-menu-close) var(--wf-ease),
+    visibility 0s linear var(--wf-motion-menu-close);
+}
+
+html.js .wf-menu-panel[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--wf-motion-menu-open) var(--wf-ease),
+    visibility 0s linear 0s;
+}
+
+.wf-menu-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--wf-space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wf-menu-item {
+  margin: 0;
+  padding: 0;
+}
+
+.wf-menu-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  color: inherit;
+  text-decoration: none;
+}
+
+.wf-menu-link:hover,
+.wf-menu-link:focus-visible {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+[data-theme="night"] .wf-menu-link:hover,
+[data-theme="night"] .wf-menu-link:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+.wf-menu-close {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+/* ---------- 5. 语言切换与主题切换（都在底栏，D6/D8） ---------- */
+.wf-lang-list {
+  display: flex;
+  align-items: center;
+  gap: var(--wf-space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wf-lang-item {
+  margin: 0;
+  padding: 0;
+}
+
+.wf-lang-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  padding-inline: var(--wf-space-sm);
+  color: var(--wf-muted-ink);
+  text-decoration: none;
+}
+
+.wf-lang-link[aria-current="true"] {
+  color: var(--wf-ink);
+}
+
+.wf-lang-link:hover,
+.wf-lang-link:focus-visible {
+  color: var(--wf-ink);
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+.wf-theme-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  margin: 0;
+  padding: var(--wf-theme-toggle-padding);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+html.js .wf-theme-toggle {
+  display: inline-flex;
+}
+
+.wf-theme-toggle:hover,
+.wf-theme-toggle:focus-visible {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+[data-theme="night"] .wf-theme-toggle:hover,
+[data-theme="night"] .wf-theme-toggle:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+/* ---------- 6. 内容版式：固定框架内的阅读列 ---------- */
+.wf-main {
+  /* 内容层压在 surface 之上、固定框架之下：与 grain 同层（DOM 靠后所以盖住颗粒），
+     但低于 z-frame，滚动时正文不会盖住顶栏/底栏，也不会挡住 MENU 的命中区。 */
+  position: relative;
+  z-index: var(--wf-z-grain);
+  min-height: 100vh;
+  padding-block: var(--wf-page-top) var(--wf-page-bottom);
+  padding-inline: var(--wf-frame-block);
+}
+
+.wf-column {
+  width: var(--wf-measure);
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.wf-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: calc(var(--wf-horizon) - var(--wf-page-top));
+  padding-block-end: var(--wf-space-horizon-gap);
+  text-align: center;
+}
+
+.wf-hero__sentence {
+  max-width: var(--wf-measure);
+  margin: 0;
+  font-family: var(--wf-type-display-family);
+  font-size: var(--wf-type-display-size);
+  font-style: italic;
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-display-line);
+  letter-spacing: var(--wf-type-tracking);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.wf-home-posts {
+  width: var(--wf-measure);
+  max-width: 100%;
+  margin-inline: auto;
+  margin-block-start: var(--wf-space-block);
+}
+
+.wf-section-label {
+  margin: 0 0 var(--wf-space-md);
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-type-label-family);
+  font-size: var(--wf-type-label-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-label-line);
+  letter-spacing: var(--wf-type-tracking);
+  text-transform: uppercase;
+}
+
+.wf-home-posts__more {
+  margin: var(--wf-space-section) 0 0;
+}
+
+/* 首页正文段落与上方信件列表之间留一个块间距（home.html 里两者是兄弟）。 */
+.wf-home-posts + .wf-column {
+  margin-block-start: var(--wf-space-block);
+}
+
+.wf-index__list {
+  display: block;
+}
+
+.wf-index__intro {
+  margin-block-start: var(--wf-space-block);
+}
+
+.wf-empty {
+  margin: 0;
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  line-height: var(--wf-type-body-line);
+}
+
+/* ---------- 7. 组件：信纸元信息、列表行、正文、动作链接、404 ---------- */
+.wf-letter-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 1ch;
+  row-gap: var(--wf-space-xs);
+  margin: 0;
+  padding: 0 0 var(--wf-space-section);
+  border-bottom: 1px solid var(--wf-hairline);
+  color: var(--wf-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-body-line);
+}
+
+.wf-letter-meta__key {
+  color: var(--wf-muted-ink);
+}
+
+.wf-letter-meta__value {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .wf-letter-meta {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  .wf-letter-meta__key {
+    margin-block-start: var(--wf-space-sm);
+  }
+}
+
+.wf-post-row {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.6em;
+  row-gap: var(--wf-space-xs);
+  align-items: baseline;
+  padding-block: var(--wf-space-sm);
+  color: var(--wf-ink);
+  text-decoration: none;
+}
+
+.wf-post-row__date {
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  line-height: var(--wf-type-body-line);
+}
+
+.wf-post-row__title {
+  font-family: var(--wf-type-title-family);
+  font-size: var(--wf-type-title-size);
+  font-style: italic;
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-title-line);
+  overflow-wrap: break-word;
+}
+
+.wf-post-row__star {
+  display: inline-flex;
+  width: var(--wf-nav-star);
+  height: var(--wf-nav-star);
+  margin-inline-start: var(--wf-space-sm);
+  opacity: 0;
+  transition: opacity var(--wf-motion-hover) var(--wf-ease);
+}
+
+.wf-post-row:hover .wf-post-row__star,
+.wf-post-row:focus-visible .wf-post-row__star {
+  opacity: 1;
+}
+
+[data-theme="night"] .wf-post-row:hover .wf-post-row__title,
+[data-theme="night"] .wf-post-row:focus-visible .wf-post-row__title {
+  color: var(--wf-night-bright);
+}
+
+@media (max-width: 520px) {
+  .wf-post-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wf-post-row__star {
+    display: none;
+  }
+}
+
+.wf-prose {
+  color: var(--wf-ink);
+  font-family: var(--wf-type-reading-family);
+  font-size: var(--wf-type-reading-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-reading-line);
+  letter-spacing: var(--wf-type-tracking);
+}
+
+.wf-prose p {
+  margin: 0 0 1.5em;
+}
+
+.wf-prose p:last-child {
+  margin-block-end: 0;
+}
+
+.wf-prose h1,
+.wf-prose h2,
+.wf-prose h3,
+.wf-prose h4 {
+  margin: 2em 0 0.75em;
+  font-family: var(--wf-type-title-family);
+  font-size: var(--wf-type-title-size);
+  font-style: italic;
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-title-line);
+}
+
+.wf-prose h1 {
+  font-size: var(--wf-type-display-size);
+}
+
+.wf-prose a {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+  transition: color var(--wf-motion-hover) var(--wf-ease);
+}
+
+.wf-prose a:hover,
+.wf-prose a:focus-visible {
+  color: var(--wf-ink);
+  text-decoration-style: solid;
+}
+
+[data-theme="night"] .wf-prose a:hover,
+[data-theme="night"] .wf-prose a:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+.wf-prose ul,
+.wf-prose ol {
+  margin: 0 0 1.5em;
+  padding-inline-start: 1.25em;
+}
+
+.wf-prose li {
+  margin-block-end: 0.35em;
+}
+
+.wf-prose li::marker {
+  color: var(--wf-muted-ink);
+}
+
+.wf-prose blockquote {
+  margin: 1.5em 0;
+  padding-inline-start: var(--wf-space-lg);
+  border-inline-start: 1px solid var(--wf-hairline);
+  color: var(--wf-muted-ink);
+  font-style: italic;
+}
+
+.wf-prose hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--wf-hairline);
+}
+
+.wf-prose code {
+  font-family: var(--wf-type-code-family);
+  font-size: var(--wf-type-code-size);
+  line-height: var(--wf-type-code-line);
+}
+
+.wf-prose pre {
+  margin: 1.5em 0;
+  padding-block: 1.5em;
+  overflow-x: auto;
+  border-top: 1px solid var(--wf-hairline);
+  border-bottom: 1px solid var(--wf-hairline);
+  font-family: var(--wf-type-code-family);
+  font-size: var(--wf-type-code-size);
+  line-height: var(--wf-type-code-line);
+}
+
+.wf-prose pre code {
+  font-size: inherit;
+}
+
+.wf-prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+.wf-prose strong {
+  font-weight: 700;
+}
+
+.wf-action-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--wf-space-xs);
+  color: var(--wf-ink);
+  font-family: var(--wf-type-label-family);
+  font-size: var(--wf-type-label-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-label-line);
+  letter-spacing: var(--wf-type-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.wf-action-link__star {
+  display: inline-flex;
+  width: var(--wf-nav-star);
+  height: var(--wf-nav-star);
+  opacity: 0;
+  transition: opacity var(--wf-motion-hover) var(--wf-ease);
+}
+
+.wf-action-link:hover .wf-action-link__star,
+.wf-action-link:focus-visible .wf-action-link__star {
+  opacity: 1;
+}
+
+[data-theme="night"] .wf-action-link:hover,
+[data-theme="night"] .wf-action-link:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+.wf-404 {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--wf-space-section);
+  min-height: calc(100vh - var(--wf-page-top) - var(--wf-page-bottom));
+  text-align: center;
+}
+
+.wf-404__mark {
+  width: var(--wf-logo-center);
+  height: var(--wf-logo-center);
+  color: var(--wf-star);
+}
+
+.wf-404__title {
+  margin: 0;
+  color: var(--wf-ink);
+  font-family: var(--wf-type-ui-family);
+  font-size: var(--wf-type-ui-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-ui-line);
+  letter-spacing: var(--wf-type-tracking);
+  text-transform: uppercase;
+}
+
+.wf-404__body {
+  margin: 0;
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  line-height: var(--wf-type-body-line);
+}
+
+.wf-404__home {
+  margin: 0;
+}
+
+/* ---------- 8. 响应式：三个断点承载全部适配（520 / 800 / 1100，令牌层已改框架与列宽） ---------- */
+@media (max-width: 800px) {
+  .wf-footer {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--wf-space-sm);
+  }
+
+  .wf-footer__note {
+    display: none;
+  }
+
+  .wf-menu-panel {
+    inset-block-start: calc(var(--wf-frame-block) + var(--wf-tap-target));
+    inset-inline-end: var(--wf-frame-block);
+  }
+
+  /* 移动端菜单变成全屏纸面板：正文层被覆盖，关闭按钮钉在框架内（D7 + DESIGN.md Chrome）。 */
+  html.js .wf-menu-panel {
+    position: fixed;
+    inset: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--wf-space-lg);
+    padding: var(--wf-page-top) var(--wf-frame-block) var(--wf-frame-block);
+    background: var(--wf-paper);
+    color: var(--wf-ink);
+    overflow-y: auto;
+  }
+
+  html.js .wf-menu-panel .wf-menu-list {
+    align-items: flex-start;
+  }
+
+  html.js .wf-menu-panel .wf-menu-link {
+    justify-content: flex-start;
+  }
+
+  html.js .wf-menu-panel[data-open] .wf-menu-close {
+    position: absolute;
+    inset-block-start: var(--wf-frame-block);
+    inset-inline-end: var(--wf-frame-block);
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 520px) {
+  .wf-header,
+  .wf-footer {
+    gap: var(--wf-space-sm);
+  }
+
+  .wf-footer__controls {
+    gap: var(--wf-space-xs);
+  }
+
+  .wf-hero__sentence {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------- 9. 降级：动效令牌已在 reduce 下归零，这里只处理非时长类效果 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .wf-skip {
+    transition: none;
+  }
+
+  .wf-post-row__star,
+  .wf-action-link__star {
+    transition: none;
+  }
+}

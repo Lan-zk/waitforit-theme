@@ -37,7 +37,7 @@ metadata:
 
 1. 读规则行尾标记：`⟦D⟧ SRC-xx` = 文档明文；`⟦E⟧ E#` = 本地实测；`⟦I⟧` = 推断；`⟦U⟧` = 未核实。
 2. 打开 `references/sources.md`：`SRC-xx` 查到页面 URL 与抓取日期；`E#` 查到情景与一句话结论；`U#` 表示**不得据此写代码**。
-3. 需要更细的原文/行为时：`SRC` 回 gohugo.io 对应页；`E` 读 `evidence/2026-10-20-hugo-v0.168.0-smoke.md`，或直接复跑 `evidence/smoke.ps1`。
+3. 需要更细的原文/行为时：`SRC` 回 gohugo.io 对应页；`E` 读对应证据文件（`evidence/2026-10-20-hugo-v0.168.0-smoke.md`、`evidence/2026-10-20-language-fields.md`），或直接复跑 `evidence/smoke.ps1`。
 
 冲突优先级：**实测 ⟦E⟧ > 文档明文 ⟦D⟧ > 推断 ⟦I⟧**。文档与实测冲突时以实测为准并注释（已知冲突：TPL-02 `_default` 仍能用但报 unused、TPL-15 缺模板不报错、CFG-16 版本不匹配不阻断）。**没有来源标记的规则视为缺陷**：补实测（新增 E#）或降级为 ⟦U⟧，不要留在正文里当依据。
 
@@ -91,5 +91,5 @@ metadata:
 ## 指针
 
 - 来源注册表与未核实清单：`references/sources.md`（§4 未核实项不得作为实现依据；§5 追溯协议；§6 维护协议）。
-- 实测：`evidence/2026-10-20-hugo-v0.168.0-smoke.md`（E1–E12，46 条断言）+ `evidence/smoke.ps1`。
+- 实测：`evidence/2026-10-20-hugo-v0.168.0-smoke.md`（E1–E12）+ `evidence/2026-10-20-language-fields.md`（E13）+ `evidence/smoke.ps1`（49 条断言，0.168 基线）。
 - 仓库硬边界与当前阶段：根 `AGENTS.md`；决策：`docs/decisions.md`（Hugo 规范相关决策见 D4、D18）。

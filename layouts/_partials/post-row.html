@@ -1,0 +1,5 @@
+{{- /* 列表行（DESIGN.md Post row）：整行是链接，日期等宽 + 标题衬线斜体，hover/focus 露出 15px 星。 */}}
+<a class="wf-post-row" href="{{ .RelPermalink }}">
+  <span class="wf-post-row__date">{{ .Date | time.Format ":date_long" }}</span>
+  <span class="wf-post-row__title">{{ .Title }}{{ partial "star.html" (dict "class" "wf-post-row__star") }}</span>
+</a>

@@ -1,0 +1,23 @@
+# waitforit-theme 默认配置
+#
+# 主题根配置只有 Hugo 参与合并的四段会生效（CFG-01）；本站只写 params 与 module 版本护栏。
+# 站点配置始终优先，`params` 嵌套键深合并（CFG-07），自定义参数统一命名空间 `params.waitforit.*`（CFG-05）。
+# 默认导航由模板提供（不在这里声明 menus）：站点声明 `menus.main` 即整体替换（CFG-11，见 docs/decisions.md D20）。
+
+[module]
+  [module.hugoVersion]
+    min = "0.146.0"
+
+[params]
+  [params.waitforit]
+    # 品牌名；空则取 site.Title
+    brand = ""
+    # auto | day | night（auto 跟随系统）
+    defaultTheme = "auto"
+    # 首屏文案；空则取 i18n waitforit.hero
+    hero = ""
+    # 页脚文案；空则取 i18n waitforit.footer.note
+    footer = ""
+    [params.waitforit.features]
+      sea = true
+      transitions = false

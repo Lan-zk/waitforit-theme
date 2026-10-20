@@ -1,0 +1,19 @@
+{{ define "main" }}
+{{- $wf := site.Params.waitforit | default dict }}
+{{- $hero := $wf.hero | default (T "waitforit.hero") }}
+<section class="wf-hero" aria-labelledby="wf-hero-sentence">
+  <h1 class="wf-hero__sentence" id="wf-hero-sentence">{{ $hero }}</h1>
+</section>
+{{- with where site.RegularPages "Section" "posts" }}
+  {{- with first 5 .ByDate.Reverse }}
+<section class="wf-home-posts" aria-labelledby="wf-home-posts-label">
+  <h2 class="wf-section-label" id="wf-home-posts-label">{{ T "waitforit.home.posts" }}</h2>
+  <div class="wf-index__list">
+    {{- range . }}{{ partial "post-row.html" . }}{{ end }}
+  </div>
+  <p class="wf-home-posts__more"><a class="wf-action-link" href="{{ relLangURL "posts/" }}">{{ T "waitforit.posts.read" }}{{ partial "star.html" (dict "class" "wf-action-link__star") }}</a></p>
+</section>
+  {{- end }}
+{{- end }}
+{{- with .Content }}<div class="wf-column wf-prose">{{ . }}</div>{{ end }}
+{{ end }}

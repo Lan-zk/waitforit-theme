@@ -1,0 +1,14 @@
+{{- /* 四层页面表面（D5）：场景 canvas（z0）→ 纸光 veil（z1）→ 颗粒 grain（z2）→ 框架（z3）。
+   features.sea=false 时仍保留 .wf-scene 的纸色层，只是不输出 canvas（正文照常可读）。
+   颗粒与画布各两层（day/night），用 opacity + --wf-motion-theme 做 900ms 交叉淡化。 */}}
+<div class="wf-surface" aria-hidden="true">
+  <div class="wf-scene">
+    {{- if site.Params.waitforit.features.sea }}
+    <canvas class="wf-canvas wf-canvas--day" data-wf-canvas="day" aria-hidden="true"></canvas>
+    <canvas class="wf-canvas wf-canvas--night" data-wf-canvas="night" aria-hidden="true"></canvas>
+    {{- end }}
+  </div>
+  <div class="wf-veil"></div>
+  <div class="wf-grain wf-grain--day"></div>
+  <div class="wf-grain wf-grain--night" data-theme="night"></div>
+</div>

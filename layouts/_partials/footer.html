@@ -1,0 +1,12 @@
+<footer class="wf-footer">
+  <div class="wf-footer__mark">
+    <p class="wf-footer__brand">{{ with site.Params.waitforit.brand }}{{ . }}{{ else }}{{ site.Title }}{{ end }}</p>
+    {{- with (site.Params.waitforit.footer | default (T "waitforit.footer.note")) }}
+    <p class="wf-footer__note">{{ . }}</p>
+    {{- end }}
+  </div>
+  <div class="wf-footer__controls">
+    {{- partial "lang-switch.html" . }}
+    {{- partial "theme-toggle.html" . }}
+  </div>
+</footer>

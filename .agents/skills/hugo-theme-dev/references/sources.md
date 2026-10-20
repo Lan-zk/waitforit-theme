@@ -9,7 +9,7 @@
 | 标记 | 含义 | 使用要求 |
 | --- | --- | --- |
 | `⟦D⟧ SRC-xx` | **文档明文**。gohugo.io（或官方仓库 README）写明的事实，附来源编号 | 可直接据此写代码 |
-| `⟦E⟧ E#` | **本地实测**。本仓库在 Hugo v0.168.0 上跑过的实验，见 `../evidence/2026-10-20-hugo-v0.168.0-smoke.md` | 可直接据此写代码；Hugo 升级后重跑脚本复核 |
+| `⟦E⟧ E#` | **本地实测**。本仓库在 Hugo v0.168.0 上跑过的实验（E13 为 v0.146.0 与 v0.168.0 两版对照），见 `../evidence/2026-10-20-hugo-v0.168.0-smoke.md` 与 `../evidence/2026-10-20-language-fields.md` | 可直接据此写代码；Hugo 升级后重跑脚本复核 |
 | `⟦I⟧` | **推断**。文档未明说，按语义/实现惯例推得 | 落地前先验证，不单独作为设计依据 |
 | `⟦U⟧` | **未核实**。本次未取得原文，也未实测 | **不得据此写代码**，只能当待查项 |
 
@@ -17,7 +17,7 @@
 
 ## 2. 实测证据索引
 
-详见 `../evidence/2026-10-20-hugo-v0.168.0-smoke.md`；可重跑脚本 `../evidence/smoke.ps1`。实验环境：Windows，Hugo `v0.168.0-...-extended windows/amd64`，夹具位于 `%TEMP%\hugo-smoke`。
+详见 `../evidence/2026-10-20-hugo-v0.168.0-smoke.md`（E1–E12）与 `../evidence/2026-10-20-language-fields.md`（E13）；可重跑脚本 `../evidence/smoke.ps1`。实验环境：Windows，Hugo `v0.168.0-...-extended windows/amd64`，夹具位于 `%TEMP%\hugo-smoke`；E13 另有 v0.146.0 标准版对照（夹具 `%TEMP%\wf-lang-probe`，二进制 `%TEMP%\wf-hugo\v146`、`\v168`）。
 
 | 编号 | 验证的问题 | 一句话结论 |
 | --- | --- | --- |
@@ -33,6 +33,7 @@
 | E9 | 旧目录 `layouts/partials/` | 0.168.0 **仍能找到** partial 且无警告（文档称已移除） |
 | E10 | `partial` 的 `return` 返回值与变量作用域 | `return` 值可用；把 `$v := partial ...` 写在 `{{ define }}` 外会 `parse of template failed: undefined variable "$v"` |
 | E12 | `layouts/` 下残留 `page.html.bak` | 被当模板解析并报 `Template /page.html.bak is unused`；`--panicOnWarning` 下 exit 2 |
+| E13 | 语言字段的版本边界：`.Language.Locale/.Direction/.Label` vs `.LanguageCode/.LanguageDirection/.LanguageName`，以及 `.Site.Languages` | 0.146.0 没有 `Locale`/`Direction`/`Label`（用即 exit 1）；0.168.0 反之，旧字段自 0.158 弃用（WARN）、`site.Languages` 自 0.156 弃用；两版同时绿用 `[languages.<lang>.params]` 的 locale/dir/label + `site.Home.AllTranslations` 配方，不需版本分支 |
 
 （E11 编号保留未使用，避免与既有报告交叉引用时错位。）
 
@@ -182,7 +183,7 @@
 
 1. **看规则 ID**：在对应 reference 文档里找到 `TPL-`/`CFG-`/`CNT-`/`AST-`/`REL-` 编号的规则行，读行尾标记。
 2. **`⟦D⟧`**：按 `SRC-xx` 在 §3 表里定位 URL，用 `web_fetch` 取原文确认措辞；文档已改版时以原文为准并回写规则（见 §6 维护协议）。
-3. **`⟦E⟧`**：打开 `../evidence/2026-10-20-hugo-v0.168.0-smoke.md` 的对应实验，读原始命令与原始 WARN/ERROR 文本；需要复核时运行 `../evidence/smoke.ps1`（Windows PowerShell 7）。
+3. **`⟦E⟧`**：打开对应证据文件（E1–E12：`../evidence/2026-10-20-hugo-v0.168.0-smoke.md`；E13：`../evidence/2026-10-20-language-fields.md`）的对应实验，读原始命令与原始 WARN/ERROR 文本；需要复核时运行 `../evidence/smoke.ps1`（Windows PowerShell 7）。
 4. **`⟦I⟧` / `⟦U⟧`**：先补证（抓文档或加一条实测），再决定实现；不得跳过。
 5. **冲突**：`⟦E⟧` 与 `⟦D⟧` 冲突时以实测为准，同时在规则行写明「文档称 X，0.168.0 实测 Y」——历史上有两例：`_default` 旧路径仍可用（E8）、旧 `partials/` 目录仍可用（E9）；本仓库仍**禁用**旧路径，原因是项目约定与 `--printUnusedTemplates` 会报错，而不是"Hugo 不支持"。
 

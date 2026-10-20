@@ -1,0 +1,42 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{- $title := site.Title }}
+  {{- if not .IsHome }}{{ $title = printf "%s · %s" .Title site.Title }}{{ end }}
+  <title>{{ $title }}</title>
+  {{- with (.Description | default site.Params.description) }}
+  <meta name="description" content="{{ . }}">
+  {{- end }}
+  <link rel="canonical" href="{{ .Permalink }}">
+  {{- /* 语言数与 hreflang 用 site.Home.AllTranslations：版本中立（site.Languages 在 0.168 弃用，D20）。 */}}
+  {{- if gt (len site.Home.AllTranslations) 1 }}
+    {{- range .AllTranslations }}
+  <link rel="alternate" hreflang="{{ .Language.Params.locale | default .Language.Lang }}" href="{{ .Permalink }}">
+    {{- end }}
+  {{- end }}
+  {{- /* 主题启动：样式表之前执行，避免首帧闪白/闪暗（D6，任务 4.1）。
+         只读取 localStorage 并设置 data-theme，同时标记 js 与 is-boot；两帧后去掉 is-boot 恢复过渡。 */}}
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var mode = null;
+      try { mode = window.localStorage.getItem("wf-theme"); } catch (error) { mode = null; }
+      if (mode === "day" || mode === "night") { root.setAttribute("data-theme", mode); }
+      root.classList.add("js");
+      root.classList.add("is-boot");
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { root.classList.remove("is-boot"); });
+      });
+    })();
+  </script>
+  {{- with resources.Get "favicon/favicon-light.svg" }}{{ $icon := . | fingerprint }}
+  <link rel="icon" href="{{ $icon.RelPermalink }}" type="image/svg+xml" media="(prefers-color-scheme: light)">
+  {{- end }}
+  {{- with resources.Get "favicon/favicon-dark.svg" }}{{ $icon := . | fingerprint }}
+  <link rel="icon" href="{{ $icon.RelPermalink }}" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+  {{- end }}
+  {{- with resources.Get "favicon/apple-touch-icon.png" }}{{ $icon := . | fingerprint }}
+  <link rel="apple-touch-icon" href="{{ $icon.RelPermalink }}">
+  {{- end }}
+  {{- partial "styles.html" . }}
+</head>

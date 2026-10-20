@@ -1,0 +1,22 @@
+{{- /* 样式发布（D4 / AST-02 / AST-04 / AST-08 / AST-14 / AST-15）：
+   1. 字体与许可文本显式发布（assets/ 不自动发布），字体 @font-face 用指纹后的 RelPermalink 在构建期生成；
+   2. tokens.css + style.css 合并 → minify → fingerprint，单链接带 integrity + crossorigin；
+   3. 颗粒/光标图片显式发布，CSS 里按产物目录写 ../images/ 与 ../cursors/ 相对路径。 */}}
+{{- $nr := resources.Get "fonts/newsreader-latin-var.woff2" | fingerprint }}
+{{- $nri := resources.Get "fonts/newsreader-italic-latin-var.woff2" | fingerprint }}
+{{- $cm400 := resources.Get "fonts/commit-mono-400-latin.woff2" | fingerprint }}
+{{- $cm700 := resources.Get "fonts/commit-mono-700-latin.woff2" | fingerprint }}
+{{- $faces := `@font-face{font-family:"Newsreader";font-style:normal;font-weight:200 800;font-display:swap;src:url("%s") format("woff2")}
+@font-face{font-family:"Newsreader";font-style:italic;font-weight:200 800;font-display:swap;src:url("%s") format("woff2")}
+@font-face{font-family:"Commit Mono";font-style:normal;font-weight:400;font-display:swap;src:url("%s") format("woff2")}
+@font-face{font-family:"Commit Mono";font-style:normal;font-weight:700;font-display:swap;src:url("%s") format("woff2")}` }}
+{{- $fontCSS := printf $faces $nr.RelPermalink $nri.RelPermalink $cm400.RelPermalink $cm700.RelPermalink }}
+{{- $fonts := resources.FromString "css/fonts.css" $fontCSS | fingerprint }}
+{{- $assets := slice "images/grain-light.png" "images/grain-dark.png" "cursors/cursor-dark.svg" "cursors/cursor-light.svg" }}
+{{- range $assets }}{{ with resources.Get . }}{{ .Publish }}{{ end }}{{ end }}
+{{- range $license := slice "fonts/newsreader-OFL.txt" "fonts/commit-mono-OFL.txt" }}{{ with resources.Get $license }}{{ .Publish }}{{ end }}{{ end }}
+  <link rel="preload" href="{{ $nr.RelPermalink }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ $cm400.RelPermalink }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ $fonts.RelPermalink }}" integrity="{{ $fonts.Data.Integrity }}" crossorigin="anonymous">
+{{- $main := slice (resources.Get "css/tokens.css") (resources.Get "css/style.css") | resources.Concat "css/main.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $main.RelPermalink }}" integrity="{{ $main.Data.Integrity }}" crossorigin="anonymous">

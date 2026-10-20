@@ -1,7 +1,7 @@
 # P1 原型 spikes（design-contract 4.1 / 4.2 / 4.3）
 
 三个可独立打开的静态原型，验证设计契约里最不确定的三处：字体 A/B、纸光场景分层、动效时长来源。
-原型按 design.md D11：纯静态 HTML + 内联 CSS/JS，无构建、无运行时网络请求；视觉值唯一来源是 `docs/design/tokens.css`，页面里一律 `var(--wf-*)`，无颜色字面量。
+原型按 design.md D11：纯静态 HTML + 内联 CSS/JS，无构建、无运行时网络请求；视觉值唯一来源是 `assets/css/tokens.css`，页面里一律 `var(--wf-*)`，无颜色字面量。
 
 ## 文件清单
 
@@ -16,7 +16,7 @@
 
 ## 打开方式
 
-页面用相对路径引用 `../tokens.css` 与 `../../../assets/`，必须从仓库根起 HTTP 打开（`file://` 下字体加载不可靠）：
+页面用相对路径引用 `../../../assets/css/tokens.css` 与 `../../../assets/`，必须从仓库根起 HTTP 打开（`file://` 下字体加载不可靠）：
 
 ```powershell
 # 仓库根执行

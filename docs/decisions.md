@@ -264,6 +264,45 @@
 
 后果：`AGENTS.md` 的设计文档指针同步改到根 `DESIGN.md` + sidecar；P2 消费 `docs/design/tokens.css` 时移到 `assets/css/tokens.css` 并删除 docs 副本；本文档 D10/D12 中引用设计文档路径的句子按本修订理解。
 
+## 决策修订（theme-skeleton，2026-10-20）
+
+按维护规则以「追加 + `supersedes`」方式修订既有决策，原始条目正文不改写。
+
+### D5-R 信件字段位于 front matter `params` 下（supersedes D5 的字段位置表述）
+
+**状态：已确认**（2026-10-20，`theme-skeleton` change）。
+
+决定：D5 的文章 front matter 契约中，信件字段 `from`/`to`/`subject` 写在 `params` 下（`[params]` 表内），模板一律读 `.Params.from` / `.Params.to` / `.Params.subject`；`title`、`description`、`date` 仍用顶层保留字段。`from`/`to`/`subject` 不是 Hugo 保留字段，写在顶层会被忽略、不进入 `.Params`（CNT-08，官方 front matter 文档明文）。`archetypes/posts.md` 生成 `params.from/to/subject` 骨架。
+
+理由：D5 原文把三个字段写在顶层；Hugo 只把 `params` 下的自定义键暴露给 `.Params`，照原文写会静默丢字段。
+
+后果：已有站点若用顶层写法，迁移动作是把三个键移进 `params`；D5 其余内容（section 名、列表/404 模板、`archetypes/posts.md`）不变。
+
+### D20 P2 主题骨架实施决策
+
+**状态：已确认**（2026-10-20，`theme-skeleton` change）。
+
+决定：
+
+- **静态首帧边界**：`assets/js/scene.js` 只在启动与 `resize` 时调用一次 `draw(phase = 0)`（与 `prefers-reduced-motion` 同一代码路径），不启 `requestAnimationFrame` 循环；时间驱动海面与页面/入场/菜单转场留给 P3，P3 只把调用换成时间驱动，不改标记结构与 CSS 层级（D11 不返工约束）。
+- **默认导航由模板提供**：主题根 `hugo.toml` 不声明 `menus`；nav/header partial 在 `.Site.Menus.main` 非空时渲染站点菜单，为空时渲染内置四个入口（posts/purpose/values/join，`relLangURL` + i18n 标签）。站点声明 `menus.main` 即整体替换（CFG-11）；`AGENTS.md` 的旧「默认 `menus`」表述同步改掉。
+- **字体 CSS 构建期生成**：4 个 woff2 经 `resources.Get` → `fingerprint` → `.RelPermalink`，`@font-face` 用 `resources.FromString` 生成 `css/fonts.css` 后再指纹并先于主样式链接；首屏 Newsreader regular 与 Commit Mono 400 另发 `preload`（AST-13/AST-14）；OFL 文本与字体同目录发布（AST-15）。
+- **`@property --wf-veil-rgb` 注册在 `assets/css/tokens.css`**：`syntax: "<number>+"`、`inherits: true`、`initial-value: 250 249 246`，让纸光通道能在 900ms 主题切换中插值；只是注册既有令牌，不新增取值。
+- **令牌迁到 `assets/css/tokens.css`**：P1 的 `docs/design/tokens.css` 已 `git mv` 迁入并删除 docs 副本，grain 的 `url()` 改为产物相对路径 `../images/`（AST-08）；活文档路径同步，历史 handoff 与归档 change 不改。
+- **不碰 `outputFormats`/`mediatypes`**：Hugo 默认输出已含 RSS 与 sitemap，主题无权也不需要改站点输出（CFG-13/CFG-14）。
+- **LICENSE 版权方**：MIT，`Copyright (c) 2026 Lan-zk`（沿用 D17 的 GitHub owner）。
+- **语言字段的版本边界与版本中立写法（修正 D8 / CNT-19 的措辞）**：2026-10-20 用标准版 v0.146.0 与 v0.168.0 实测：
+  - 0.146.0：`.Language.LanguageCode` / `.LanguageDirection` / `.LanguageName` 存在；`.Language.Locale` / `.Direction` / `.Label` **不存在**，模板一用即 `can't evaluate field Locale in type *langs.Language`、exit 1。
+  - 0.168.0：反转——`.Locale` / `.Direction` / `.Label` 是现行字段；`.LanguageCode` / `.LanguageDirection` / `.LanguageName` 自 0.158 弃用（deprecation WARN，`--panicOnWarning` 下构建失败），`.Site.Languages` 自 0.156 弃用。
+  - 两版同时绿（exit 0、零 WARN、Pages 21/16）用的是**版本中立配方**，不按 `hugo.Version` 分支：站点在 `[languages.<lang>.params]` 给 `locale` / `dir` / `label`；`baseof` 用 `site.Language.Params.locale | default site.Language.Lang` 与 `site.Language.Params.dir | default "ltr"`；`head` 用 `site.Home.AllTranslations` 判语言数、`range .AllTranslations` 输出 `hreflang="{{ .Language.Params.locale | default .Language.Lang }}"`；`lang-switch` 迭代 `site.Home.AllTranslations`，默认链到各语言首页（无翻译页不再落 `/`），当前页有对应翻译再覆盖为该页 permalink，显示名取 `params.label`。
+  - 被否决的替代方案：模板按 `hugo.Version ge "0.158.0"` 分支切 Locale/LanguageCode。两版实测都 exit 0，但模板行为随 Hugo 版本漂移、两套分支需长期维护，属 maintenance trap；params + AllTranslations 配方无分支。
+  - 对 D8 / 任务文本的修正：「`<html lang="{{ site.Language.LanguageCode }}" dir="{{ .Language.Direction }}">`、hreflang 用 `.Language.Locale`」只在 ≥0.158 成立，不能作为最低支持版的实现依据；`exampleSite` 不写 `languageCode`/`languageDirection`/`languageName` 配置键（0.168 同样弃用为 WARN），`<html lang="zh">` 由 `[languages.zh.params] locale = "zh"` 提供。
+- **2.3 路径修正**：三个 spike 位于 `docs/design/spikes/`（仓库根下三层），令牌迁到 `assets/css/tokens.css` 后正确相对路径是 `../../../assets/css/tokens.css`；`design.md`/`tasks.md` 原写的 `../../assets/css/tokens.css` 会解析到 `docs/assets/` 并 404，已按实测修正并用 headless Chrome 复验 `--wf-ink` = `#353431`。
+
+理由：静态首帧让 P2 一次成型、P3 只加时间驱动；默认导航由模板提供，避免主题菜单把英文名带进中文站点；构建期字体 CSS 让指纹路径可用且无 Node 构建依赖；语言字段的两套 API 各会挂掉 CI 的一端，版本中立配方是唯一能同时满足 0.146.0 与 0.168.0 且不引入版本分支的方案。
+
+后果：`AGENTS.md`、`README.md`（P4）的契约说明按本条目执行；知识库追加 E13 并修正 CNT-19/CNT-20；P3 只改场景时间驱动与转场，不回改 P2 结构。
+
 ## 待定项
 
 | 项 | 需要谁定 | 影响 |

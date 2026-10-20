@@ -57,8 +57,8 @@
 ## 5. i18n 渲染（模板侧）
 
 - **CNT-18** 翻译函数是 `lang.Translate KEY [CONTEXT]`，别名 `T` 与 `i18n`；缺键返回**空字符串**，不报错。⟦D⟧ SRC-104
-- **CNT-19** hreflang 用 `.Language.Locale`（如 `en-US`），**不要**用 `.Language.Lang`（只有 `en`）；文案回退写 `or .Language.Label .Language.Name`。⟦D⟧ SRC-21
-- **CNT-20** 当前语言方向写 `<html dir="{{ site.Language.Direction }}">`；`Direction`/`Label`/`Locale` 是 `.Site.Language` 的现行字段（`languageCode`/`languageDirection`/`languageName` 自 v0.158 弃用）。⟦D⟧ SRC-38, SRC-21
+- **CNT-19** hreflang 的取值有版本边界：`.Language.Locale`（如 `en-US`）/`.Language.Direction`/`.Language.Label` 只在 **≥0.158** 存在，**0.146.0 没有这三个字段**（用即 `can't evaluate field Locale in type *langs.Language`、exit 1）；反过来 0.168.0 已弃用 `.Language.LanguageCode`/`.LanguageDirection`/`.LanguageName`（deprecation WARN，`--panicOnWarning` 下构建失败），`.Site.Languages` 自 0.156 弃用（语言集合改用 `site.Home.AllTranslations`，或 `hugo.Sites`）。跨两端（本项目 CI 矩阵）用版本中立写法：站点在 `[languages.<lang>.params]` 给 `locale`/`label`，hreflang 写 `{{ .Language.Params.locale | default .Language.Lang }}`；配置键不要写成 `languageCode`（0.168.0 同样弃用）。⟦E⟧ E13；⟦D⟧ SRC-21, SRC-38
+- **CNT-20** 当前语言方向写 `<html dir="{{ site.Language.Params.dir | default "ltr" }}">`；`.Language.Direction`/`.Label`/`.Locale` 是 **≥0.158** 的字段（0.146.0 没有），`.LanguageCode`/`.LanguageDirection`/`.LanguageName` 自 0.158 弃用，配置键 `languageCode`/`languageDirection`/`languageName` 同样弃用；跨两端的版本中立配方见 CNT-19（`params.locale/dir/label` + 回退 `.Language.Lang`）。⟦E⟧ E13；⟦D⟧ SRC-38, SRC-21
 - **CNT-21** 内容侧：翻译文件名后缀语言码必须**小写**（`about.en-us.md`）；`translationKey` 可跨路径配对；v0.167.0 起 section/taxonomy/term 的 `slug` 会下传到子页 URL。⟦D⟧ SRC-58
 - **CNT-22** 多语单主机默认不复制共享 page resource，此时 Hugo 自动启用内建 link/image render hook；要复制设 `[markup.goldmark] duplicateResourceFiles = true`。⟦D⟧ SRC-58
 
@@ -99,4 +99,4 @@
 
 ## 10. 来源
 
-`SRC-05`、`SRC-06`、`SRC-10`–`SRC-12`、`SRC-19`–`SRC-22`、`SRC-34`、`SRC-35`、`SRC-38`、`SRC-40`、`SRC-55`–`SRC-61`、`SRC-104`、`SRC-105`；实测 `E1`、`E7`。URL 与未核实项见 `sources.md`。
+`SRC-05`、`SRC-06`、`SRC-10`–`SRC-12`、`SRC-19`–`SRC-22`、`SRC-34`、`SRC-35`、`SRC-38`、`SRC-40`、`SRC-55`–`SRC-61`、`SRC-104`、`SRC-105`；实测 `E1`、`E7`、`E13`。URL 与未核实项见 `sources.md`。

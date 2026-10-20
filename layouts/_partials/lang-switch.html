@@ -1,0 +1,21 @@
+{{- /* 语言切换（D8 / CNT-19）：仅多语言站点渲染；当前页有对应翻译就链到翻译页，没有就落到该语言首页。
+   两个语言用内联链接，不引入 disclosure/ARIA menu。
+   版本中立写法（D20）：迭代 site.Home.AllTranslations 而不是 site.Languages；语言显示名/语言标签
+   取每语言 [languages.<lang>.params] 的 label / locale，缺省回退 .Lang。 */}}
+{{- $homes := site.Home.AllTranslations }}
+{{- if gt (len $homes) 1 }}
+<nav class="wf-lang" aria-label="{{ T "waitforit.lang.label" }}">
+  <ul class="wf-lang-list">
+    {{- $current := site.Language.Lang }}
+    {{- range $home := $homes }}
+      {{- $code := $home.Language.Lang }}
+      {{- $locale := $home.Language.Params.locale | default $code }}
+      {{- $href := $home.RelPermalink }}
+      {{- range $translation := $.AllTranslations }}
+        {{- if eq $translation.Language.Lang $code }}{{ $href = $translation.RelPermalink }}{{ end }}
+      {{- end }}
+    <li class="wf-lang-item"><a class="wf-lang-link" href="{{ $href }}" hreflang="{{ $locale }}" lang="{{ $locale }}"{{ if eq $code $current }} aria-current="true"{{ end }}>{{ $home.Language.Params.label | default (upper $code) }}</a></li>
+    {{- end }}
+  </ul>
+</nav>
+{{- end }}

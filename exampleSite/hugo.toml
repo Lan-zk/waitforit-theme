@@ -1,0 +1,89 @@
+# exampleSite：waitforit-theme 的可构建 fixture（虚构站点，D9/D11）
+# 同时演示站点侧契约：theme 名、双语、站点菜单（整体替换主题默认导航，CFG-11）、params 覆盖。
+#
+# 语言展示名/代码走 [languages.<lang>.params]（label/locale），不写 languageName/languageCode/
+# languageDirection：后三者在 Hugo 0.168 是弃用键（WARN → --panicOnWarning 失败），
+# 而对应的新字段在最低支持版 0.146.0 里不存在；params 两版都可用（CNT-20 / CNT-19 的版本约束）。
+# locale 取 en / zh（不是 en-US / zh-CN），让 <html lang> 与 hreflang 与 spec 场景的字面值一致。
+
+baseURL = "https://example.com/"
+title = "The Night Post"
+theme = "waitforit-theme"
+
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+
+[params]
+  description = "A fictional correspondence, set in type."
+
+  [params.waitforit]
+    brand = "The Night Post"
+    defaultTheme = "auto"
+    hero = "Letters arrive when the tide does, and not before."
+    footer = "The Night Post · correspondence from a fictional coast"
+    [params.waitforit.features]
+      sea = true
+      transitions = false
+
+[languages]
+  [languages.en]
+    weight = 1
+    title = "The Night Post"
+    [languages.en.params]
+      label = "English"
+      locale = "en"
+      description = "A fictional correspondence, set in type."
+    # 站点声明 menus.main 即整体替换主题内置的四个默认入口（CFG-11）。
+    # 多一项 Notes 让“站点菜单”与“内置默认导航”在产物里可区分。
+    [[languages.en.menus.main]]
+      name = "Letters"
+      pageRef = "/posts"
+      weight = 1
+    [[languages.en.menus.main]]
+      name = "Purpose"
+      pageRef = "/purpose"
+      weight = 2
+    [[languages.en.menus.main]]
+      name = "Values"
+      pageRef = "/values"
+      weight = 3
+    [[languages.en.menus.main]]
+      name = "Join"
+      pageRef = "/join"
+      weight = 4
+    [[languages.en.menus.main]]
+      name = "Notes"
+      pageRef = "/notes"
+      weight = 5
+
+  [languages.zh]
+    weight = 2
+    title = "夜邮"
+    [languages.zh.params]
+      label = "中文"
+      locale = "zh"
+      description = "一束虚构的通信，以铅字排出。"
+    [languages.zh.params.waitforit]
+      brand = "夜邮"
+      hero = "信随潮水抵达，不早于潮水。"
+      footer = "夜邮 · 来自虚构海岸的通信"
+    [[languages.zh.menus.main]]
+      name = "信件"
+      pageRef = "/posts"
+      weight = 1
+    [[languages.zh.menus.main]]
+      name = "目的"
+      pageRef = "/purpose"
+      weight = 2
+    [[languages.zh.menus.main]]
+      name = "价值"
+      pageRef = "/values"
+      weight = 3
+    [[languages.zh.menus.main]]
+      name = "加入"
+      pageRef = "/join"
+      weight = 4
+    [[languages.zh.menus.main]]
+      name = "短笺"
+      pageRef = "/notes"
+      weight = 5

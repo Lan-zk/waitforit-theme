@@ -19,7 +19,10 @@ function report(check, ok, detail) {
   console.log(`${ok ? 'PASS' : 'FAIL'}  [${check}] ${detail}`);
 }
 
-// 递归收集文件；跳过符号链接、node_modules 与 .git，保持顺序稳定。
+// 递归收集文件；跳过符号链接、node_modules、.git 与 Hugo 构建产物（public/、resources/），保持顺序稳定。
+// 构建产物不参与门禁：先把 exampleSite 构建过再跑门禁时，public/ 里的指纹字体/图片会被误判（P2 实测）。
+const BUILD_OUTPUT_DIRS = new Set(['node_modules', '.git', 'public', 'resources']);
+
 function walk(dir, filter) {
   if (!existsSync(dir)) {
     return [];
@@ -32,7 +35,7 @@ function walk(dir, filter) {
       continue;
     }
     if (entry.isDirectory()) {
-      if (entry.name === 'node_modules' || entry.name === '.git') {
+      if (BUILD_OUTPUT_DIRS.has(entry.name)) {
         continue;
       }
       out.push(...walk(full, filter));
@@ -105,7 +108,7 @@ function extractCssFromHtml(text) {
 
 // 从令牌文件里读全部 --wf-* 颜色值，作为资产 SVG 允许的字面值来源。
 function tokenColorValues() {
-  const file = join(ROOT, 'docs/design/tokens.css');
+  const file = join(ROOT, 'assets/css/tokens.css');
   if (!existsSync(file)) {
     return new Set(['#353431', '#faf9f6', '#ffffff', '#1c1b1a', '#2e2d2b']);
   }

@@ -1,0 +1,19 @@
+<!doctype html>
+{{- /* 语言字段取版本中立写法（D20）：0.146 没有 .Language.Locale/.Direction，0.168 已弃用
+   .Language.LanguageCode/.LanguageDirection（会 WARN，--panicOnWarning 下直接失败）。
+   站点可选在 [languages.<lang>.params] 里给 locale / dir，缺省回退 .Lang 与 ltr。 */}}
+{{- $lang := site.Language.Params.locale | default site.Language.Lang -}}
+{{- $dir := site.Language.Params.dir | default `ltr` -}}
+<html lang="{{ $lang }}" dir="{{ $dir }}">
+  {{- partial "head.html" . }}
+  <body>
+    <a class="wf-skip" href="#main">{{ T "waitforit.skip" }}</a>
+    {{- partial "scene.html" . }}
+    {{- partial "header.html" . }}
+    <main class="wf-main" id="main">
+      {{- block "main" . }}{{ end }}
+    </main>
+    {{- partial "footer.html" . }}
+    {{- partial "scripts.html" . }}
+  </body>
+</html>

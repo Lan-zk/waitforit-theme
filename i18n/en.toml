@@ -1,0 +1,45 @@
+# waitforit-theme 英文文案（必需回退语言，CFG-23/CFG-24）
+# 键统一 waitforit. 前缀；站点在自身 i18n/<lang>.toml 里写同名键即可覆盖。
+# 模板缺键时渲染空串（CNT-18），所以每个键在中英文两边的集合必须一致。
+
+[waitforit]
+  hero = "A letter held above a drawn sea."
+  skip = "Skip to content"
+
+  [waitforit.nav]
+    menu = "Menu"
+    close = "Close"
+    posts = "Letters"
+    purpose = "Purpose"
+    values = "Values"
+    join = "Join"
+
+  [waitforit.theme]
+    auto = "Auto"
+    day = "Day"
+    night = "Night"
+    label = "Theme"
+
+  [waitforit.lang]
+    label = "Language"
+
+  [waitforit.posts]
+    empty = "No letters have arrived yet."
+    read = "Read"
+
+  [waitforit.home]
+    posts = "Recent letters"
+
+  [waitforit.letter]
+    date = "Date"
+    from = "From"
+    to = "To"
+    subject = "Subject"
+
+  [waitforit.footer]
+    note = "Correspondence, set in type."
+
+  [waitforit.404]
+    title = "404"
+    body = "This is not a letter we sent."
+    home = "Back to the start"

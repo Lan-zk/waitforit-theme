@@ -33,7 +33,7 @@
 | 0.153.0 | mount 过滤字段废弃 | `includeFiles`/`excludeFiles` → `files`（支持 `!`） | SRC-93 |
 | 0.153.0 | libsass 废弃 | `resources.ToCSS` → `css.Sass` | SRC-93, SRC-66 |
 | 0.153.0 | `hugoVersion.extended` 废弃 | `extended = true` → 删除 | SRC-93 |
-| 0.158.0 | `.Site.Language` 字段改名 | `languageCode`/`languageDirection`/`languageName` → `LanguageCode`/`Direction`/`Label` | SRC-38 |
+| 0.158.0 | `.Site.Language` 字段与语言配置键改名 | 字段 `.LanguageCode`/`.LanguageDirection`/`.LanguageName` → `.Locale`/`.Direction`/`.Label`；配置键 `languageCode`/`languageDirection`/`languageName` → `locale`/`direction`/`label`；0.146.0 没有新字段，跨两端写法见 CNT-19/CNT-20 | SRC-38, SRC-21；⟦E⟧ E13 |
 | 0.161.0 | 安全配置支持 `!` 否定语法、`security.node.permissions` 新增 | — | SRC-39 |
 | 0.164.0 | `resources.PostProcess` 弃用 | → `templates.Defer` | SRC-76 |
 | 0.166.0 | `.Render` 增加可选 context；`return` 可用于任意模板；`http.proxyFromEnvironment` 新增 | `.Render "view"` → `.Render "view" $ctx` | SRC-17, SRC-93 |
