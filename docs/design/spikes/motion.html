@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.3 动效 · 页面过渡 / 入场 / 星形 hover / 移动菜单</title>
+<link rel="stylesheet" href="../tokens.css">
+<script>
+/* ?motion-entrance=1200ms：在样式表之后覆盖令牌，证明时长不是硬编码 */
+(function () {
+  var p = new URLSearchParams(window.location.search);
+  var entrance = p.get('motion-entrance');
+  if (entrance && /^\d+(\.\d+)?(ms|s)$/.test(entrance)) {
+    document.documentElement.style.setProperty('--wf-motion-entrance', entrance);
+  }
+})();
+</script>
+<style>
+/* ==========================================================================
+   动效 spike（tasks.md 4.3）——纯静态 HTML + 内联 CSS/JS，无构建、无运行时网络。
+   所有 duration 只从 ../tokens.css 的 --wf-motion-* 读取；页面显示的是
+   getComputedStyle 读值 + transitionend.elapsedTime / performance.now 实测。
+   ========================================================================== */
+
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{
+  margin:0;
+  min-block-size:100vh;
+  background:var(--wf-paper);
+  color:var(--wf-ink);
+  font-family:var(--wf-type-ui-family);
+  font-size:var(--wf-type-ui-size);
+  line-height:var(--wf-type-ui-line);
+}
+.shell{max-inline-size:1200px;margin-inline:auto;padding:var(--wf-space-lg) var(--wf-space-lg) var(--wf-space-block)}
+.kicker{
+  margin:0 0 var(--wf-space-xs);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  letter-spacing:var(--wf-type-tracking);
+  color:var(--wf-muted-ink);
+}
+h1{
+  margin:0 0 var(--wf-space-xs);
+  font-family:var(--wf-type-title-family);
+  font-size:var(--wf-type-display-size);
+  line-height:var(--wf-type-display-line);
+  font-weight:var(--wf-type-weight);
+}
+.hint{
+  margin:0 0 var(--wf-space-block);
+  max-inline-size:var(--wf-measure);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+}
+
+/* ---------- 令牌读数 + 实测表 ---------- */
+.readout{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  gap:var(--wf-space-xs) var(--wf-space-section);
+  margin:0 0 var(--wf-space-md);
+  padding-block:var(--wf-space-sm);
+  border-block:1px solid var(--wf-hairline);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+}
+.readout h2{grid-column:1/-1;margin:0;font-size:var(--wf-type-label-size);line-height:var(--wf-type-label-line);font-weight:700}
+.readout dt{color:var(--wf-muted-ink)}
+.readout dd{margin:0;overflow-wrap:anywhere}
+.readout .mono{font-family:var(--wf-type-code-family);font-size:var(--wf-type-code-size);line-height:var(--wf-type-code-line)}
+
+.table-scroll{overflow-x:auto;margin:0 0 var(--wf-space-sm)}
+.measured{
+  inline-size:100%;
+  border-collapse:collapse;
+  margin:0;
+  font-family:var(--wf-type-code-family);
+  font-size:var(--wf-type-code-size);
+  line-height:var(--wf-type-code-line);
+}
+.measured th,.measured td{
+  text-align:start;
+  padding:var(--wf-space-xs) var(--wf-space-sm);
+  border-block-end:1px solid var(--wf-hairline);
+  vertical-align:top;
+}
+.measured thead th{color:var(--wf-muted-ink);font-weight:400}
+.measured .m-real{color:var(--wf-ink)}
+.measure-status{
+  margin:0 0 var(--wf-space-lg);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+}
+
+/* ---------- 演示区块 ---------- */
+.demos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--wf-space-block)}
+.demo{
+  min-inline-size:0;
+  padding-block-start:var(--wf-space-md);
+  border-block-start:1px solid var(--wf-hairline);
+}
+.demo-head{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:var(--wf-space-xs) var(--wf-space-sm);
+  margin:0 0 var(--wf-space-sm);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-ink);
+}
+.demo-ref{color:var(--wf-muted-ink)}
+.stage{
+  display:grid;
+  place-items:center;
+  min-block-size:120px;
+  padding:var(--wf-space-md);
+  border:1px solid var(--wf-hairline);
+  border-radius:var(--wf-radius-menu);
+  overflow:hidden;
+}
+.demo-actions{display:flex;flex-wrap:wrap;gap:var(--wf-space-sm);margin-block-start:var(--wf-space-sm)}
+.demo-actions button,.menu-trigger{
+  appearance:none;
+  min-block-size:var(--wf-tap-target);
+  padding:var(--wf-space-sm) var(--wf-space-md);
+  border:1px solid var(--wf-hairline);
+  border-radius:var(--wf-radius-key);
+  background:transparent;
+  color:var(--wf-ink);
+  font-family:var(--wf-type-ui-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  cursor:pointer;
+  transition:border-color var(--wf-motion-hover) var(--wf-ease),color var(--wf-motion-hover) var(--wf-ease);
+}
+.demo-actions button:focus-visible,.menu-trigger:focus-visible{
+  outline:var(--wf-focus-width) solid var(--wf-ink);
+  outline-offset:var(--wf-focus-offset);
+}
+.demo-status{
+  margin:var(--wf-space-xs) 0 0;
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+}
+
+/* 1. 页面纵向过渡：进入自下而上，退出向上淡出（两段位移 + 淡入淡出） */
+.page-demo{
+  display:grid;
+  place-items:center;
+  inline-size:100%;
+  min-block-size:88px;
+  border:1px solid var(--wf-hairline);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+  transform:translateY(24px);
+  opacity:0;
+}
+.page-demo.is-inside{transform:none;opacity:1}
+.page-demo.is-enter{
+  transform:none;
+  opacity:1;
+  transition:transform var(--wf-motion-page-enter) var(--wf-ease),opacity var(--wf-motion-page-enter) var(--wf-ease);
+}
+.page-demo.is-exit{
+  transform:translateY(-24px);
+  opacity:0;
+  transition:transform var(--wf-motion-page-exit) var(--wf-ease),opacity var(--wf-motion-page-exit) var(--wf-ease);
+}
+
+/* 2. 入场：固定位移 + 淡入 */
+.entrance-demo{
+  margin:0;
+  max-inline-size:var(--wf-measure);
+  font-family:var(--wf-type-reading-family);
+  font-size:var(--wf-type-reading-size);
+  line-height:var(--wf-type-reading-line);
+  transform:translateY(16px);
+  opacity:0;
+  transition:transform var(--wf-motion-entrance) var(--wf-ease),opacity var(--wf-motion-entrance) var(--wf-ease);
+}
+.entrance-demo.is-in{transform:none;opacity:1}
+
+/* 3. 星形 hover：位移/缩放只用 --wf-motion-hover */
+.star-demo{
+  display:block;
+  inline-size:var(--wf-logo-corner);
+  block-size:var(--wf-logo-corner);
+  background-color:var(--wf-star);
+  -webkit-mask:url("../../../assets/images/star-24.svg") center / contain no-repeat;
+  mask:url("../../../assets/images/star-24.svg") center / contain no-repeat;
+  transition:transform var(--wf-motion-hover) var(--wf-ease);
+  transform:rotate(0deg) scale(1);
+}
+.star-demo.is-hover{transform:rotate(45deg) scale(1.35)}
+
+.no-anim{transition:none !important}
+
+/* 4. 移动菜单：开 240ms / 关 180ms，从底部整体上滑 */
+.motion-menu{
+  position:fixed;
+  inset-inline:0;
+  inset-block-end:0;
+  z-index:calc(var(--wf-z-frame) + 1);
+  display:flex;
+  flex-direction:column;
+  gap:var(--wf-space-sm);
+  padding:var(--wf-space-section) var(--wf-space-lg) var(--wf-space-lg);
+  background:var(--wf-paper);
+  border-block-start:1px solid var(--wf-hairline);
+  transform:translateY(110%);
+  opacity:0;
+  visibility:hidden;
+  transition:transform var(--wf-motion-menu-close) var(--wf-ease),opacity var(--wf-motion-menu-close) var(--wf-ease),visibility 0s linear var(--wf-motion-menu-close);
+}
+.motion-menu.is-open{
+  transform:none;
+  opacity:1;
+  visibility:visible;
+  transition:transform var(--wf-motion-menu-open) var(--wf-ease),opacity var(--wf-motion-menu-open) var(--wf-ease),visibility 0s;
+}
+.motion-menu-nav{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none}
+.motion-menu-nav a{
+  display:flex;
+  align-items:center;
+  min-block-size:var(--wf-tap-target);
+  color:var(--wf-ink);
+  font-family:var(--wf-type-body-family);
+  font-size:var(--wf-type-body-size);
+  line-height:var(--wf-type-body-line);
+  text-decoration:none;
+  border-block-end:1px solid var(--wf-hairline);
+}
+.motion-menu-close{align-self:flex-start}
+
+.topbar{position:fixed;inset-block-start:0;inset-inline-end:0;z-index:var(--wf-z-frame);padding:var(--wf-space-md)}
+.menu-trigger{display:none}
+
+@media (min-width:1000px){
+  .readout{grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr)}
+}
+@media (max-width:999px){
+  .readout{grid-template-columns:max-content minmax(0,1fr);gap:var(--wf-space-xs) var(--wf-space-lg)}
+}
+@media (max-width:800px){
+  .demos{grid-template-columns:1fr;gap:var(--wf-space-section)}
+}
+@media (max-width:640px){
+  /* 窄屏把实测表改成每行一块，避免三列被压到边缘 */
+  .measured thead{display:none}
+  .measured,.measured tbody,.measured tr,.measured th,.measured td{display:block;inline-size:auto}
+  .measured tr{padding-block:var(--wf-space-sm);border-block-end:1px solid var(--wf-hairline)}
+  .measured th[scope="row"]{
+    font-family:var(--wf-type-label-family);
+    font-size:var(--wf-type-label-size);
+    line-height:var(--wf-type-label-line);
+    color:var(--wf-ink);
+    padding:0 0 var(--wf-space-xs);
+  }
+  .measured td{border:0;padding:0 0 2px}
+  .measured td.m-decl::before{content:"声明（令牌读值）：";color:var(--wf-muted-ink)}
+  .measured td.m-real::before{content:"实测：";color:var(--wf-muted-ink)}
+}
+@media (max-width:520px){
+  /* 固定菜单按钮占 44px，标题下移避免与按钮重叠 */
+  .shell{padding:calc(var(--wf-tap-target) + var(--wf-space-md)) var(--wf-space-md) var(--wf-space-md)}
+  .measured .m-token{display:none}
+  .readout{grid-template-columns:max-content minmax(0,1fr)}
+  .menu-trigger{display:inline-flex;align-items:center;justify-content:center}
+}
+
+/* 降级：prefers-reduced-motion 下位移/缩放归零（token 也已经是 0ms） */
+@media (prefers-reduced-motion: reduce){
+  .page-demo,
+  .page-demo.is-enter,
+  .page-demo.is-exit,
+  .entrance-demo,
+  .entrance-demo.is-in,
+  .star-demo,
+  .star-demo.is-hover,
+  .motion-menu,
+  .motion-menu.is-open{transform:none}
+  .page-demo,
+  .entrance-demo{opacity:1}
+  .motion-menu{opacity:0;visibility:hidden}
+  .motion-menu.is-open{opacity:1;visibility:visible}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button type="button" class="menu-trigger" id="menu-trigger" aria-expanded="false" aria-controls="motion-menu">菜单</button>
+</div>
+
+<main class="shell">
+  <p class="kicker">SPIKE 4.3 · MOTION · STATIC HTML</p>
+  <h1>所有时长都从 --wf-motion-* 读取</h1>
+  <p class="hint">下面四个演示的 transition 只引用令牌；表格同时显示令牌读值、transitionend 的 elapsedTime 和 performance.now 墙钟测量。?motion-entrance=1200ms 会在样式表之后覆盖令牌，用来证明时长不是硬编码。</p>
+
+  <dl class="readout" aria-live="polite">
+    <h2>令牌读数（getComputedStyle 实读）</h2>
+    <dt>窗口</dt><dd class="mono" id="r-viewport">读取中…</dd>
+    <dt>--wf-motion-entrance</dt><dd class="mono" id="r-entrance">读取中…</dd>
+    <dt>页面进入 / 退出</dt><dd class="mono" id="r-page">读取中…</dd>
+    <dt>菜单打开 / 关闭</dt><dd class="mono" id="r-menu">读取中…</dd>
+    <dt>--wf-motion-hover</dt><dd class="mono" id="r-hover">读取中…</dd>
+    <dt>--wf-motion-theme</dt><dd class="mono" id="r-theme">读取中…</dd>
+    <dt>--wf-ease</dt><dd class="mono" id="r-ease">读取中…</dd>
+    <dt>降级</dt><dd id="r-reduced">读取中…</dd>
+  </dl>
+
+  <div class="table-scroll">
+<table class="measured" id="measured">
+    <caption class="hint">实测（transitionend 事件时间戳 + performance.now）</caption>
+    <thead>
+      <tr><th scope="col">动效</th><th scope="col" class="m-token">令牌</th><th scope="col">声明（令牌读值）</th><th scope="col">实测</th></tr>
+    </thead>
+    <tbody>
+      <tr data-key="entrance"><th scope="row">入场</th><td class="m-token">--wf-motion-entrance</td><td class="m-decl">—</td><td class="m-real">测量中…</td></tr>
+      <tr data-key="page-enter"><th scope="row">页面进入</th><td class="m-token">--wf-motion-page-enter</td><td class="m-decl">—</td><td class="m-real">测量中…</td></tr>
+      <tr data-key="page-exit"><th scope="row">页面退出</th><td class="m-token">--wf-motion-page-exit</td><td class="m-decl">—</td><td class="m-real">测量中…</td></tr>
+      <tr data-key="star-hover"><th scope="row">星形 hover</th><td class="m-token">--wf-motion-hover</td><td class="m-decl">—</td><td class="m-real">测量中…</td></tr>
+      <tr data-key="menu-open"><th scope="row">菜单打开</th><td class="m-token">--wf-motion-menu-open</td><td class="m-decl">—</td><td class="m-real">测量中…</td></tr>
+      <tr data-key="menu-close"><th scope="row">菜单关闭</th><td class="m-token">--wf-motion-menu-close</td><td class="m-decl">—</td><td class="m-real">测量中…</td></tr>
+    </tbody>
+</table>
+</div>
+  <p class="measure-status" id="measure-status">测量未开始</p>
+
+  <div class="demos">
+    <section class="demo">
+      <p class="demo-head"><span class="tag">1</span>页面纵向过渡<span class="demo-ref">进入自下而上 · 退出向上淡出</span></p>
+      <div class="stage"><div class="page-demo" id="page-demo">进入 520ms · 退出 220ms</div></div>
+      <div class="demo-actions">
+        <button type="button" data-action="page-enter">播放进入</button>
+        <button type="button" data-action="page-exit">播放退出</button>
+      </div>
+      <p class="demo-status" id="s-page">待测</p>
+    </section>
+
+    <section class="demo">
+      <p class="demo-head"><span class="tag">2</span>入场<span class="demo-ref">固定位移 + 淡入</span></p>
+      <div class="stage"><p class="entrance-demo" id="entrance-demo">入场：自下而上 16px 淡入，时长来自 --wf-motion-entrance。</p></div>
+      <div class="demo-actions"><button type="button" data-action="entrance-replay">重播入场</button></div>
+      <p class="demo-status" id="s-entrance">待测</p>
+    </section>
+
+    <section class="demo">
+      <p class="demo-head"><span class="tag">3</span>星形 hover<span class="demo-ref">旋转 + 缩放</span></p>
+      <div class="stage"><span class="star-demo" id="star-demo" aria-hidden="true"></span></div>
+      <div class="demo-actions"><button type="button" data-action="star-hover">播放 hover</button></div>
+      <p class="demo-status" id="s-star">待测</p>
+    </section>
+
+    <section class="demo">
+      <p class="demo-head"><span class="tag">4</span>移动菜单<span class="demo-ref">?menu=open 可直接打开（390 截图用）</span></p>
+      <div class="stage"><p class="demo-status" id="s-menu">菜单关闭；打开后从底部上滑覆盖全宽。</p></div>
+      <div class="demo-actions">
+        <button type="button" data-action="menu-open">打开</button>
+        <button type="button" data-action="menu-close">关闭</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="motion-menu" id="motion-menu" aria-hidden="true">
+  <nav aria-label="示例移动菜单">
+    <ul class="motion-menu-nav">
+      <li><a href="#home">首页</a></li>
+      <li><a href="#posts">文章</a></li>
+      <li><a href="#purpose">目的</a></li>
+      <li><a href="#join">加入</a></li>
+      <li><a href="#404">404</a></li>
+    </ul>
+  </nav>
+  <button type="button" class="menu-trigger motion-menu-close" data-action="menu-close">关闭菜单</button>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var params = new URLSearchParams(window.location.search);
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var page = document.getElementById('page-demo');
+  var entrance = document.getElementById('entrance-demo');
+  var star = document.getElementById('star-demo');
+  var menu = document.getElementById('motion-menu');
+  var trigger = document.getElementById('menu-trigger');
+
+  var TOKENS = {
+    'entrance': '--wf-motion-entrance',
+    'page-enter': '--wf-motion-page-enter',
+    'page-exit': '--wf-motion-page-exit',
+    'star-hover': '--wf-motion-hover',
+    'menu-open': '--wf-motion-menu-open',
+    'menu-close': '--wf-motion-menu-close'
+  };
+
+  function computedToken(name) {
+    return getComputedStyle(root).getPropertyValue(name).trim();
+  }
+
+  function tokenMs(name) {
+    var v = computedToken(name);
+    if (/ms$/.test(v)) { return parseFloat(v); }
+    if (/s$/.test(v)) { return parseFloat(v) * 1000; }
+    return 0;
+  }
+
+  function frame() {
+    return new Promise(function (resolve) {
+      window.requestAnimationFrame(function () { resolve(); });
+    });
+  }
+
+  function setStatus(key, text) {
+    var el = document.getElementById('s-' + key);
+    if (el) { el.textContent = text; }
+  }
+
+  function setResult(key, declared, measured, wall, instant) {
+    var row = document.querySelector('.measured tr[data-key="' + key + '"]');
+    if (!row) { return; }
+    row.querySelector('.m-decl').textContent = declared + 'ms';
+    if (instant) {
+      row.querySelector('.m-real').textContent = '0ms（instant，无 transition）';
+    } else if (isNaN(measured)) {
+      row.querySelector('.m-real').textContent = '未收到 transitionend（超时）';
+    } else {
+      row.querySelector('.m-real').textContent =
+        'elapsedTime ' + (Math.round(measured * 10) / 10) + 'ms · 墙钟 ' + (Math.round(wall * 10) / 10) + 'ms';
+    }
+  }
+
+  /* 监听 transitionstart/end，记录 elapsedTime 与 performance.now 差值；declared 来自令牌读值 */
+  function measure(el, prop, mutate, declared) {
+    return new Promise(function (resolve) {
+      var done = false;
+      var startedAt = 0;
+      var guard = 0;
+      function cleanup() {
+        el.removeEventListener('transitionstart', onStart);
+        el.removeEventListener('transitionend', onEnd);
+        window.clearTimeout(guard);
+      }
+      function finish(result) {
+        if (done) { return; }
+        done = true;
+        cleanup();
+        resolve(result);
+      }
+      function onStart(ev) {
+        if (ev.target !== el) { return; }
+        startedAt = performance.now();
+      }
+      function onEnd(ev) {
+        if (ev.target !== el || ev.propertyName !== prop) { return; }
+        finish({ elapsed: ev.elapsedTime * 1000, wall: performance.now() - startedAt });
+      }
+      guard = window.setTimeout(function () { finish({ elapsed: NaN, wall: NaN }); }, Math.max(declared, 100) + 900);
+      el.addEventListener('transitionstart', onStart);
+      el.addEventListener('transitionend', onEnd);
+      void el.offsetWidth;
+      window.requestAnimationFrame(function () {
+        void el.offsetWidth;
+        mutate();
+      });
+    });
+  }
+
+  async function runOne(key, el, prop, mutate) {
+    var declared = tokenMs(TOKENS[key]);
+    if (declared === 0) {
+      mutate();
+      await frame();
+      setResult(key, 0, 0, 0, true);
+      return { declared: 0, elapsed: 0, wall: 0, instant: true };
+    }
+    var r = await measure(el, prop, mutate, declared);
+    setResult(key, declared, r.elapsed, r.wall, false);
+    return { declared: declared, elapsed: r.elapsed, wall: r.wall, instant: false };
+  }
+
+  function updateTokens() {
+    document.getElementById('r-viewport').textContent = window.innerWidth + '×' + window.innerHeight;
+    var override = params.get('motion-entrance');
+    document.getElementById('r-entrance').textContent = computedToken('--wf-motion-entrance') +
+      (override ? '（URL 覆盖 ?motion-entrance=' + override + '）' : '（tokens.css 默认）');
+    document.getElementById('r-page').textContent =
+      computedToken('--wf-motion-page-enter') + ' / ' + computedToken('--wf-motion-page-exit');
+    document.getElementById('r-menu').textContent =
+      computedToken('--wf-motion-menu-open') + ' / ' + computedToken('--wf-motion-menu-close');
+    document.getElementById('r-hover').textContent = computedToken('--wf-motion-hover');
+    document.getElementById('r-theme').textContent = computedToken('--wf-motion-theme') + '（纸光/场景上下文）';
+    document.getElementById('r-ease').textContent = computedToken('--wf-ease');
+    var reducedText = reduce.matches
+      ? 'prefers-reduced-motion: reduce 命中（transition 令牌全部 0ms）'
+      : 'prefers-reduced-motion: no-preference';
+    var starTransform = getComputedStyle(star).transform;
+    document.getElementById('r-reduced').textContent = reducedText + ' · 星形 hover 计算后 transform ' + starTransform;
+  }
+
+  async function sequence() {
+    document.getElementById('measure-status').textContent = '自动测量中：按顺序跑完六个动效…';
+    await frame();
+
+    entrance.className = 'entrance-demo no-anim';
+    await frame();
+    await runOne('entrance', entrance, 'opacity', function () { entrance.className = 'entrance-demo is-in'; });
+    setStatus('entrance', '实测见上表');
+
+    page.className = 'page-demo no-anim';
+    await frame();
+    await runOne('page-enter', page, 'opacity', function () { page.className = 'page-demo is-enter'; });
+    page.className = 'page-demo is-inside no-anim';
+    await frame();
+    await runOne('page-exit', page, 'opacity', function () { page.className = 'page-demo is-exit'; });
+    page.className = 'page-demo is-inside no-anim';
+    setStatus('page', '进入：+24px → 0（淡入）；退出：0 → -24px（淡出）');
+
+    star.className = 'star-demo';
+    await frame();
+    await runOne('star-hover', star, 'transform', function () { star.classList.add('is-hover'); });
+    setStatus('star', 'hover 后 transform ' + getComputedStyle(star).transform);
+
+    menu.className = 'motion-menu no-anim';
+    await frame();
+    await runOne('menu-open', menu, 'transform', function () { menu.className = 'motion-menu is-open'; });
+    await runOne('menu-close', menu, 'transform', function () { menu.className = 'motion-menu'; });
+    setStatus('menu', '开关实测见上表');
+
+    if (params.get('menu') === 'open') {
+      menu.className = 'motion-menu no-anim';
+      await frame();
+      menu.className = 'motion-menu is-open';
+      trigger.setAttribute('aria-expanded', 'true');
+      setStatus('menu', '已打开（?menu=open）');
+    }
+
+    document.getElementById('measure-status').textContent = '测量完成' +
+      (params.get('motion-entrance') ? '（本次 --wf-motion-entrance 被 URL 覆盖）' : '') + ' · 声明值来自令牌读值';
+    updateTokens();
+    document.body.dataset.measureDone = '1';
+  }
+
+  function bind(id, handler) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-action="' + id + '"]'), function (b) {
+      b.addEventListener('click', handler);
+    });
+  }
+
+  bind('page-enter', function () {
+    page.className = 'page-demo no-anim';
+    void page.offsetWidth;
+    page.className = 'page-demo is-enter';
+  });
+  bind('page-exit', function () {
+    page.className = 'page-demo is-inside no-anim';
+    void page.offsetWidth;
+    page.className = 'page-demo is-exit';
+  });
+  bind('entrance-replay', function () {
+    entrance.className = 'entrance-demo no-anim';
+    void entrance.offsetWidth;
+    entrance.className = 'entrance-demo is-in';
+  });
+  bind('star-hover', function () {
+    star.className = 'star-demo';
+    void star.offsetWidth;
+    star.className = 'star-demo is-hover';
+  });
+  bind('menu-open', function () {
+    menu.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    setStatus('menu', '打开');
+  });
+  bind('menu-close', function () {
+    menu.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+    setStatus('menu', '关闭');
+  });
+
+  trigger.addEventListener('click', function () {
+    if (menu.classList.contains('is-open')) {
+      menu.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      setStatus('menu', '关闭');
+    } else {
+      menu.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      setStatus('menu', '打开');
+    }
+  });
+
+  updateTokens();
+  sequence().then(function () { updateTokens(); });
+  window.addEventListener('resize', updateTokens);
+})();
+</script>
+</body>
+</html>

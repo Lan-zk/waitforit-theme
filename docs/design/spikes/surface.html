@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.2 表面层 · Canvas 线场 + 径向纸光 + 颗粒</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+/* ==========================================================================
+   表面层 spike（tasks.md 4.2）——纯静态 HTML + 内联 CSS/JS，无构建、无运行时网络。
+   分层（D3）：canvas.scene(0) → .veil(1) → .grain(2) → .frame(3)。
+   所有颜色/纸光/颗粒/动效值都来自 ../tokens.css；无任何颜色字面量。
+   ========================================================================== */
+
+/* 注册 --wf-veil-rgb 为编号列表，才能按通道插值（JS 用令牌实读值注册初值） */
+:root{color-scheme:light dark}
+
+*{box-sizing:border-box}
+html{
+  /* 纸光的 900ms 通道插值：声明必须落在承载该令牌的元素（html）上 */
+  transition:--wf-veil-rgb var(--wf-motion-theme) linear;
+}
+html.is-boot{transition:none}
+/* 首帧落定主题时不播放 900ms 交叉淡化（否则首屏会看到过渡中间态） */
+html.is-boot .scene,html.is-boot .grain,html.is-boot .veil{transition:none}
+body{
+  margin:0;
+  min-block-size:100vh;
+  color:var(--wf-ink);
+  font-family:var(--wf-type-reading-family);
+  font-size:var(--wf-type-reading-size);
+  line-height:var(--wf-type-reading-line);
+}
+
+/* ---------- 第 0 层：Canvas 线场（日光 / 夜色各一张，交叉淡化） ---------- */
+.scene{
+  position:fixed;
+  inset:0;
+  z-index:var(--wf-z-scene);
+  inline-size:100%;
+  block-size:100%;
+  display:block;
+  pointer-events:none;
+  transition:opacity var(--wf-motion-theme) linear;
+}
+.scene--day{opacity:1}
+.scene--night{opacity:0}
+html.is-night .scene--day{opacity:0}
+html.is-night .scene--night{opacity:1}
+
+/* ---------- 第 1 层：径向纸光（令牌驱动的渐变，光心随断点移动） ---------- */
+.veil{
+  position:fixed;
+  inset:0;
+  z-index:var(--wf-z-veil);
+  pointer-events:none;
+  background:radial-gradient(
+    ellipse var(--wf-veil-size) at var(--wf-veil-position),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-center)) var(--wf-veil-stop-center),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-solid)) var(--wf-veil-stop-solid),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-mid)) var(--wf-veil-stop-mid),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-far)) var(--wf-veil-stop-far),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-near)) var(--wf-veil-stop-near),
+    rgb(var(--wf-veil-rgb) / var(--wf-veil-alpha-end)) var(--wf-veil-stop-end)
+  );
+}
+
+/* ---------- 第 2 层：颗粒（两套 TOKEN 颗粒图，随主题交叉淡化） ---------- */
+.grain{
+  position:fixed;
+  inset:0;
+  z-index:var(--wf-z-grain);
+  pointer-events:none;
+  background-repeat:repeat;
+  background-size:var(--wf-grain-size);
+  transition:opacity var(--wf-motion-theme) linear;
+}
+.grain--day{opacity:var(--spike-grain-day-o, 0)}
+.grain--night{opacity:0}
+html.is-night .grain--day{opacity:0}
+html.is-night .grain--night{opacity:var(--spike-grain-night-o, 0)}
+
+html.is-hide-scene .scene{display:none}
+html.is-hide-veil .veil{display:none}
+html.is-hide-grain .grain{display:none}
+
+/* ---------- 第 3 层：固定框架 ---------- */
+.frame{
+  position:fixed;
+  inset:0;
+  z-index:var(--wf-z-frame);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:var(--wf-space-section) var(--wf-frame-block);
+  pointer-events:none;
+}
+.frame-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--wf-space-md)}
+.frame-bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--wf-space-md)}
+.frame-star{
+  inline-size:var(--wf-logo-corner);
+  block-size:var(--wf-logo-corner);
+  background-color:var(--wf-star);
+  -webkit-mask:url("../../../assets/images/star-24.svg") center / contain no-repeat;
+  mask:url("../../../assets/images/star-24.svg") center / contain no-repeat;
+  transition:background-color var(--wf-motion-theme) linear;
+}
+.frame-label{
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  letter-spacing:var(--wf-type-tracking);
+  color:var(--wf-muted-ink);
+}
+.theme-toggle{display:flex;gap:var(--wf-space-xs);pointer-events:auto}
+.theme-toggle button{
+  appearance:none;
+  min-block-size:var(--wf-tap-target);
+  padding:var(--wf-space-sm) var(--wf-space-md);
+  border:1px solid var(--wf-hairline);
+  border-radius:var(--wf-radius-key);
+  background:transparent;
+  color:var(--wf-ink);
+  font-family:var(--wf-type-ui-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  cursor:pointer;
+  transition:border-color var(--wf-motion-hover) var(--wf-ease),color var(--wf-motion-hover) var(--wf-ease);
+}
+.theme-toggle button[aria-pressed="true"]{border-color:var(--wf-ink)}
+.theme-toggle button:focus-visible,.layer-toggle button:focus-visible{
+  outline:var(--wf-focus-width) solid var(--wf-ink);
+  outline-offset:var(--wf-focus-offset);
+}
+
+/* ---------- 内容层（纸之上，z 与框架同层） ---------- */
+.content{
+  position:relative;
+  z-index:var(--wf-z-frame);
+  max-inline-size:var(--wf-measure);
+  margin-inline:auto;
+  padding:var(--wf-page-top) var(--wf-space-lg) var(--wf-page-bottom);
+}
+h1{
+  margin:0 0 var(--wf-space-sm);
+  font-family:var(--wf-type-display-family);
+  font-size:var(--wf-type-display-size);
+  line-height:var(--wf-type-display-line);
+  font-weight:var(--wf-type-weight);
+}
+.lead{margin:0 0 var(--wf-space-sm)}
+.prose{margin:0 0 var(--wf-space-block);color:var(--wf-ink)}
+
+/* ---------- 令牌读数面板 ---------- */
+.readout{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  gap:var(--wf-space-xs) var(--wf-space-section);
+  margin:0 0 var(--wf-space-block);
+  padding-block:var(--wf-space-sm);
+  border-block:1px solid var(--wf-hairline);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+}
+.readout h2{
+  grid-column:1/-1;
+  margin:0;
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  font-weight:700;
+}
+.readout dt{color:var(--wf-muted-ink)}
+.readout dd{margin:0;overflow-wrap:anywhere}
+.readout .mono{font-family:var(--wf-type-code-family);font-size:var(--wf-type-code-size);line-height:var(--wf-type-code-line)}
+.layer-toggle{display:flex;flex-wrap:wrap;gap:var(--wf-space-xs)}
+.layer-toggle button{
+  appearance:none;
+  min-block-size:var(--wf-tap-target);
+  padding:0 var(--wf-space-sm);
+  border:1px solid var(--wf-hairline);
+  border-radius:var(--wf-radius-key);
+  background:transparent;
+  color:var(--wf-ink);
+  font-family:var(--wf-type-ui-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  cursor:pointer;
+  transition:border-color var(--wf-motion-hover) var(--wf-ease),color var(--wf-motion-hover) var(--wf-ease);
+}
+.layer-toggle button[aria-pressed="false"]{color:var(--wf-muted-ink)}
+
+@media (max-width:520px){
+  .readout .opt{display:none}
+  .readout{grid-template-columns:max-content minmax(0,1fr);gap:var(--wf-space-xs) var(--wf-space-lg)}
+  .frame-label{display:none}
+}
+</style>
+</head>
+<body>
+<!-- 夜色在下、日光在上：交叉淡化时上层淡出即露出下层，不会让任何背景透出来 -->
+<canvas class="scene scene--night" id="scene-night" aria-hidden="true"></canvas>
+<canvas class="scene scene--day" id="scene-day" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="grain grain--day" id="grain-day" aria-hidden="true"></div>
+<div class="grain grain--night" id="grain-night" aria-hidden="true"></div>
+
+<header class="frame">
+  <div class="frame-top">
+    <span class="frame-star" aria-hidden="true"></span>
+    <div class="theme-toggle" role="group" aria-label="纸光三态切换">
+      <button type="button" data-mode="day" aria-pressed="false">日光</button>
+      <button type="button" data-mode="night" aria-pressed="false">夜色</button>
+      <button type="button" data-mode="auto" aria-pressed="false">跟随系统</button>
+    </div>
+  </div>
+  <div class="frame-bottom">
+    <span class="frame-label">WAITFORIT · DESIGN CONTRACT · SPIKE 4.2</span>
+    <span class="frame-label">SURFACE · STATIC HTML</span>
+  </div>
+</header>
+
+<main class="content">
+  <dl class="readout" id="readout" aria-live="polite">
+    <h2>令牌读数（getComputedStyle 实读，非常量）</h2>
+    <dt>模式</dt><dd id="r-mode">读取中…</dd>
+    <dt>--wf-ink</dt><dd class="mono" id="r-ink">读取中…</dd>
+    <dt>--wf-paper</dt><dd class="mono" id="r-paper">读取中…</dd>
+    <dt>--wf-veil-rgb</dt><dd class="mono" id="r-veil">读取中…</dd>
+    <dt>--wf-veil-position</dt><dd class="mono" id="r-veilpos">读取中…</dd>
+    <dt>--wf-grain-image</dt><dd class="mono" id="r-grain">读取中…</dd>
+    <dt class="opt">--wf-motion-theme</dt><dd class="opt mono" id="r-motion">读取中…</dd>
+    <dt class="opt">交叉淡化采样</dt><dd class="opt mono" id="r-trace">切换 日光/夜色 后逐帧采样 --wf-veil-rgb</dd>
+    <dt class="opt">层</dt>
+    <dd class="opt"><span class="layer-toggle" role="group" aria-label="分层观察">
+      <button type="button" data-layer="scene" aria-pressed="true">线场</button>
+      <button type="button" data-layer="veil" aria-pressed="true">纸光</button>
+      <button type="button" data-layer="grain" aria-pressed="true">颗粒</button>
+    </span></dd>
+    <dt>横向溢出</dt><dd class="mono" id="r-overflow">读取中…</dd>
+  </dl>
+
+  <h1>海面在句子下方呼吸</h1>
+  <p class="lead">线场只在地平线以下出现：越靠近观者，横纹越密、越淡，像退潮留下的纸痕。纸光从 48% 高度向下铺开，颗粒以 120px 的周期铺满整页；三者各自来自 tokens.css，而不是任何一张整页背景图。</p>
+  <p class="prose">This is a fictional surface sample for the design contract: a line field drawn by Canvas 2D, a radial paper light, and a grain tile. 切换右上角三态时，场景与纸光在 900ms 内同步交叉淡化；断点收窄到 520px 以下，光心上移到 40%，页面始终没有横向滚动。</p>
+  <p class="frame-label">SPIKE 4.2 · FICTIONAL CONTENT · NO RUNTIME NETWORK</p>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var params = new URLSearchParams(window.location.search);
+  var state = {
+    mode: 'auto',
+    day: null,
+    night: null,
+    reduce: window.matchMedia('(prefers-reduced-motion: reduce)'),
+    raf: 0
+  };
+
+  function computedToken(name) {
+    return getComputedStyle(root).getPropertyValue(name).trim();
+  }
+
+  /* tokens.css 的 --wf-grain-image 是相对 docs/design/ 的 url()；页面内 var() 使用会把相对路径
+     按页面地址解析（会打到 /docs/assets/），所以这里读令牌原文，以 tokens.css 自身位置为基准
+     手工解析成绝对 URL——唯一来源仍是 tokens.css。 */
+  var tokensCssUrl = new URL('../tokens.css', document.baseURI);
+
+  function resolveTokenUrl(value) {
+    var match = /url\(\s*["']?([^"')]+)["']?\s*\)/.exec(value);
+    if (!match) { return 'none'; }
+    return 'url("' + new URL(match[1], tokensCssUrl).href + '")';
+  }
+
+  /* 以临时 data-theme 读取某套主题的令牌 */
+  function readPalette(theme) {
+    root.setAttribute('data-theme', theme);
+    var cs = getComputedStyle(root);
+    return {
+      ink: cs.getPropertyValue('--wf-ink').trim(),
+      paper: cs.getPropertyValue('--wf-paper').trim(),
+      hairline: cs.getPropertyValue('--wf-hairline').trim(),
+      veilRgb: cs.getPropertyValue('--wf-veil-rgb').trim(),
+      veilPosition: cs.getPropertyValue('--wf-veil-position').trim(),
+      grainImage: resolveTokenUrl(cs.getPropertyValue('--wf-grain-image').trim()),
+      grainSize: cs.getPropertyValue('--wf-grain-size').trim(),
+      grainOpacity: cs.getPropertyValue('--wf-grain-opacity').trim(),
+      motionTheme: cs.getPropertyValue('--wf-motion-theme').trim(),
+      horizon: cs.getPropertyValue('--wf-horizon').trim()
+    };
+  }
+
+  /* ---- 启动：先读两套调色板，再落定初始主题（都在首次绘制前完成） ---- */
+  var requested = params.get('theme');
+  if (requested !== 'day' && requested !== 'night') { requested = 'auto'; }
+  state.day = readPalette('day');
+  state.night = readPalette('night');
+
+  /* 注册 --wf-veil-rgb 为可插值的编号列表；初值取日光令牌实读值 */
+  if (window.CSS && typeof window.CSS.registerProperty === 'function') {
+    try {
+      window.CSS.registerProperty({
+        name: '--wf-veil-rgb',
+        syntax: '<number>+',
+        inherits: true,
+        initialValue: state.day.veilRgb.replace(/\s+/g, ' ')
+      });
+    } catch (err) { /* 已注册或环境不支持时，纸光仍可用，只是不做通道插值 */ }
+  }
+
+  function effective(mode) {
+    if (mode === 'auto') {
+      return state.reduce.matches ? 'day' : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day');
+    }
+    return mode;
+  }
+
+  function updateButtons(mode) {
+    Array.prototype.forEach.call(document.querySelectorAll('.theme-toggle button'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === mode));
+    });
+  }
+
+  function paletteFor(eff) {
+    return eff === 'night' ? state.night : state.day;
+  }
+
+  function updateReadout() {
+    var eff = effective(state.mode);
+    var p = paletteFor(eff);
+    document.getElementById('r-mode').textContent =
+      (state.mode === 'auto' ? 'auto（跟随系统 → ' + eff + '）' : state.mode + '（显式 ?theme=' + state.mode + '）') +
+      ' · 窗口 ' + window.innerWidth + '×' + window.innerHeight;
+    document.getElementById('r-ink').textContent = computedToken('--wf-ink');
+    document.getElementById('r-paper').textContent = computedToken('--wf-paper');
+    document.getElementById('r-veil').textContent = computedToken('--wf-veil-rgb');
+    document.getElementById('r-veilpos').textContent = computedToken('--wf-veil-position');
+    document.getElementById('r-grain').textContent =
+      (p.grainImage.match(/[^/]+\.png/) || ['—'])[0] + ' · opacity ' + p.grainOpacity + ' · size ' + p.grainSize;
+    document.getElementById('r-motion').textContent = computedToken('--wf-motion-theme') +
+      '（纸光与场景同源）' + (state.reduce.matches ? ' · reduced-motion 生效' : '');
+    var de = document.documentElement;
+    document.getElementById('r-overflow').textContent =
+      'scrollWidth ' + de.scrollWidth + ' / clientWidth ' + de.clientWidth +
+      (de.scrollWidth <= de.clientWidth ? ' ✓' : ' ✗ 有横向溢出');
+  }
+
+  function sampleTrace() {
+    var el = document.getElementById('r-trace');
+    var start = performance.now();
+    var samples = [];
+    function step() {
+      var t = Math.round(performance.now() - start);
+      var v = computedToken('--wf-veil-rgb').replace(/\s+/g, ' ');
+      samples.push(t + 'ms→' + v);
+      if (t < 960) {
+        window.requestAnimationFrame(step);
+      } else {
+        /* 全量采样留在 dataset（供 CDP 读取），面板只显示约每 133ms 一帧的紧凑时间线 */
+        document.body.dataset.trace = samples.join('|');
+        var compact = [];
+        for (var i = 0; i < samples.length; i += 8) { compact.push(samples[i]); }
+        if (compact[compact.length - 1] !== samples[samples.length - 1]) {
+          compact.push(samples[samples.length - 1]);
+        }
+        el.textContent = '共 ' + samples.length + ' 帧（每 8 帧取 1）· ' + compact.join(' · ');
+        document.body.dataset.traceDone = '1';
+      }
+    }
+    window.requestAnimationFrame(step);
+  }
+
+  function setMode(mode, initial) {
+    state.mode = mode;
+    /* 首次落定主题时不播放 900ms 交叉淡化：先禁过渡，下一帧再恢复 */
+    if (initial) { root.classList.add('is-boot'); }
+    if (mode === 'auto') { root.removeAttribute('data-theme'); } else { root.setAttribute('data-theme', mode); }
+    root.classList.toggle('is-night', effective(mode) === 'night');
+    if (initial) {
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () { root.classList.remove('is-boot'); });
+      });
+    }
+    updateButtons(mode);
+    updateReadout();
+    if (!initial && !state.reduce.matches) { sampleTrace(); }
+  }
+
+  /* ---- 冻结颗粒层：从令牌读到的绝对 URL 与不透明度，两套图各一层 ---- */
+  var grainDay = document.getElementById('grain-day');
+  var grainNight = document.getElementById('grain-night');
+  grainDay.style.backgroundImage = state.day.grainImage;
+  grainDay.style.backgroundSize = state.day.grainSize;
+  grainNight.style.backgroundImage = state.night.grainImage;
+  grainNight.style.backgroundSize = state.night.grainSize;
+  root.style.setProperty('--spike-grain-day-o', state.day.grainOpacity);
+  root.style.setProperty('--spike-grain-night-o', state.night.grainOpacity);
+
+  setMode(requested, true);
+
+  /* ---- Canvas 2D 线场：地平线以下是低对比横纹；reduced-motion 只画静态首帧 ---- */
+  var canvases = [
+    { el: document.getElementById('scene-day'), palette: state.day },
+    { el: document.getElementById('scene-night'), palette: state.night }
+  ];
+
+  function drawScene(item, phase) {
+    var canvas = item.el;
+    var palette = item.palette;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var pw = Math.round(w * dpr);
+    var ph = Math.round(h * dpr);
+    if (canvas.width !== pw || canvas.height !== ph) {
+      canvas.width = pw;
+      canvas.height = ph;
+    }
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = palette.paper;
+    ctx.fillRect(0, 0, w, h);
+
+    var horizonY = h * (parseFloat(palette.horizon) / 100);
+    var below = h - horizonY;
+    var rows = 16;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = palette.hairline;
+    for (var i = 0; i < rows; i += 1) {
+      var t = (i + 1) / rows;
+      var y = horizonY + Math.pow(t, 2.1) * below;
+      var amp = 0.6 + t * 10;
+      var freq = 0.0045 + t * 0.0035;
+      var speed = 0.35 + t * 0.9;
+      ctx.globalAlpha = 0.22 + t * 0.5;
+      ctx.beginPath();
+      for (var x = -24; x <= w + 24; x += 6) {
+        var yy = y +
+          Math.sin(x * freq + phase * speed + i * 0.8) * amp * (0.5 + 0.5 * Math.sin(x * 0.0021 + i * 0.55 + phase * 0.2)) +
+          Math.sin(x * freq * 2.7 - phase * speed * 0.6 + i) * amp * 0.22;
+        if (x === -24) { ctx.moveTo(x, yy); } else { ctx.lineTo(x, yy); }
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawAll(phase) {
+    for (var i = 0; i < canvases.length; i += 1) { drawScene(canvases[i], phase); }
+  }
+
+  if (state.reduce.matches) {
+    drawAll(0);
+    document.getElementById('r-motion').textContent = computedToken('--wf-motion-theme') +
+      ' · reduced-motion：场景仅绘制静态首帧（rAF 循环未启动）';
+    document.body.dataset.ready = '1';
+  } else {
+    var started = 0;
+    function loop(now) {
+      if (!started) { started = now; document.body.dataset.ready = '1'; }
+      drawAll((now - started) / 1000);
+      state.raf = window.requestAnimationFrame(loop);
+    }
+    state.raf = window.requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', function () {
+    if (state.reduce.matches) { drawAll(0); }
+    updateReadout();
+  });
+
+  /* ---- 交互：三态切换 / 分层观察 ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.theme-toggle button'), function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-mode'), false); });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.layer-toggle button'), function (b) {
+    b.addEventListener('click', function () {
+      var layer = b.getAttribute('data-layer');
+      var on = b.getAttribute('aria-pressed') === 'true';
+      b.setAttribute('aria-pressed', String(!on));
+      root.classList.toggle('is-hide-' + layer, on);
+    });
+  });
+
+  /* ?crossfade=demo：先落日光，300ms 后切夜色并采样，供截图读取 900ms 过程 */
+  if (params.get('crossfade') === 'demo') {
+    window.setTimeout(function () { setMode('night', false); }, 300);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.1 字体 A/B · Newsreader vs Source Serif 4</title>
+<link rel="stylesheet" href="../tokens.css">
+<style>
+/* ==========================================================================
+   字体 A/B spike（tasks.md 4.1）——纯静态，无构建，无运行时网络。
+   视觉值一律来自 ../tokens.css 的 --wf-*；唯一例外是 A/B 对照字族本身：
+   Source Serif 4 只作对照，不入库（design.md D1/D11），截图前临时下载。
+   ========================================================================== */
+
+/* 主题自有 OFL 字体（由任务 5.3 产出；缺失时按 tokens.css 的回退链落到系统字体） */
+@font-face{font-family:"Newsreader";src:url("../../../assets/fonts/newsreader-latin-var.woff2") format("woff2-variations");font-weight:200 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Newsreader";src:url("../../../assets/fonts/newsreader-italic-latin-var.woff2") format("woff2-variations");font-weight:200 800;font-style:italic;font-display:swap}
+@font-face{font-family:"Commit Mono";src:url("../../../assets/fonts/commit-mono-400-latin.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Commit Mono";src:url("../../../assets/fonts/commit-mono-700-latin.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+
+/* A/B 对照字族 Source Serif 4：仅截图期间存在，截图后删除；缺失时回退 Georgia（D11 允许） */
+@font-face{font-family:"Source Serif 4";src:url("fonts/source-serif-4.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Source Serif 4";src:url("fonts/source-serif-4-italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+
+/* A/B 对照用的两组控制字栈：spike 局部，不写进 tokens.css，也不进主题产物 */
+:root{
+  --spike-serif-control:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --spike-mono-control:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+html{color-scheme:light dark}
+body{
+  margin:0;
+  min-block-size:100vh;
+  background:var(--wf-paper);
+  color:var(--wf-ink);
+  font-family:var(--wf-type-ui-family);
+  font-size:var(--wf-type-ui-size);
+  line-height:var(--wf-type-ui-line);
+}
+.shell{
+  max-inline-size:1400px;
+  margin-inline:auto;
+  padding:var(--wf-space-lg);
+  padding-block-end:var(--wf-space-block);
+}
+
+/* ---------- 页头 ---------- */
+.kicker{
+  margin:0 0 var(--wf-space-xs);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  letter-spacing:var(--wf-type-tracking);
+  color:var(--wf-muted-ink);
+}
+h1{
+  margin:0 0 var(--wf-space-xs);
+  font-family:var(--wf-type-title-family);
+  font-size:var(--wf-type-display-size);
+  line-height:var(--wf-type-display-line);
+  font-weight:var(--wf-type-weight);
+}
+.note{
+  margin:0 0 var(--wf-space-lg);
+  max-inline-size:var(--wf-measure);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+}
+
+/* ---------- 令牌读数面板（getComputedStyle 实读，不是常量） ---------- */
+.readout{
+  display:grid;
+  grid-template-columns:max-content minmax(0,1fr);
+  gap:var(--wf-space-xs) var(--wf-space-section);
+  margin:0 0 var(--wf-space-lg);
+  padding-block:var(--wf-space-sm);
+  border-block:1px solid var(--wf-hairline);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+}
+.readout h2{
+  grid-column:1/-1;
+  margin:0;
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  font-weight:700;
+}
+.readout dt{color:var(--wf-muted-ink)}
+.readout dd{margin:0;overflow-wrap:anywhere}
+.readout .ok{color:var(--wf-ink)}
+.readout .bad{color:var(--wf-ink);text-decoration:line-through}
+
+/* ---------- 组合切换（不依赖任何动效；只做 border/color 过渡，reduced-motion 下为 0ms） ---------- */
+.controls{display:flex;flex-wrap:wrap;gap:var(--wf-space-sm);margin:0 0 var(--wf-space-lg)}
+.controls button{
+  appearance:none;
+  min-block-size:var(--wf-tap-target);
+  padding:var(--wf-space-sm) var(--wf-space-md);
+  border:1px solid var(--wf-hairline);
+  border-radius:var(--wf-radius-key);
+  background:transparent;
+  color:var(--wf-ink);
+  font-family:var(--wf-type-ui-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  cursor:pointer;
+  transition:border-color var(--wf-motion-hover) var(--wf-ease),color var(--wf-motion-hover) var(--wf-ease);
+}
+.controls button[aria-pressed="true"]{border-color:var(--wf-ink)}
+.controls button:focus-visible{
+  outline:var(--wf-focus-width) solid var(--wf-ink);
+  outline-offset:var(--wf-focus-offset);
+}
+
+/* ---------- 四组合 ---------- */
+.combos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--wf-space-block)}
+.combo{
+  min-inline-size:0;
+  padding-block-start:var(--wf-space-md);
+  border-block-start:1px solid var(--wf-hairline);
+}
+.combo-head{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:var(--wf-space-xs) var(--wf-space-sm);
+  margin-block-end:var(--wf-space-sm);
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+}
+.combo-tag{color:var(--wf-ink);font-weight:700}
+.combo-name{color:var(--wf-ink)}
+.combo-meta{font-size:var(--wf-type-label-size)}
+
+/* 角色样式：一律消费 tokens.css 的排版角色令牌 */
+.role-title{
+  margin:0 0 var(--wf-space-xs);
+  font-family:var(--wf-type-title-family);
+  font-size:var(--wf-type-title-size);
+  line-height:var(--wf-type-title-line);
+  font-weight:var(--wf-type-weight);
+}
+.role-reading{
+  margin:0 0 var(--wf-space-sm);
+  max-inline-size:var(--wf-measure);
+  font-family:var(--wf-type-reading-family);
+  font-size:var(--wf-type-reading-size);
+  line-height:var(--wf-type-reading-line);
+  font-weight:var(--wf-type-weight);
+}
+.role-code{
+  margin:0 0 var(--wf-space-xs);
+  font-family:var(--wf-type-code-family);
+  font-size:var(--wf-type-code-size);
+  line-height:var(--wf-type-code-line);
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.role-label{
+  margin:0;
+  font-family:var(--wf-type-label-family);
+  font-size:var(--wf-type-label-size);
+  line-height:var(--wf-type-label-line);
+  color:var(--wf-muted-ink);
+}
+
+/* 组合 B / D：衬线角色换成对照字族（等宽角色保持） */
+.combo[data-combo="b"],.combo[data-combo="d"]{
+  --wf-type-display-family:var(--spike-serif-control);
+  --wf-type-title-family:var(--spike-serif-control);
+  --wf-type-reading-family:var(--spike-serif-control);
+}
+/* 组合 C / D：等宽角色换成系统 monospace（衬线角色保持） */
+.combo[data-combo="c"],.combo[data-combo="d"]{
+  --wf-type-body-family:var(--spike-mono-control);
+  --wf-type-ui-family:var(--spike-mono-control);
+  --wf-type-form-family:var(--spike-mono-control);
+  --wf-type-label-family:var(--spike-mono-control);
+  --wf-type-code-family:var(--spike-mono-control);
+}
+
+/* 单组合模式与 390 紧凑模式的呈现控制 */
+.combos.is-single{grid-template-columns:1fr}
+.combo[hidden]{display:none}
+.sample-compact{display:none}
+
+@media (max-width:800px){
+  .combos{grid-template-columns:1fr;gap:var(--wf-space-section)}
+}
+@media (max-width:520px){
+  .shell{padding:var(--wf-space-md)}
+  .note{display:none}
+  .kicker{display:none}
+  .shell h1{font-size:var(--wf-type-title-size);line-height:var(--wf-type-title-line)}
+  .readout{grid-template-columns:max-content minmax(0,1fr);gap:var(--wf-space-xs) var(--wf-space-lg)}
+  .readout .opt{display:none}
+  .combos{gap:var(--wf-space-xs)}
+  .combo{padding-block-start:var(--wf-space-sm)}
+  .combo-head{margin-block-end:var(--wf-space-xs)}
+  .combo-meta{display:none}
+  .role-title{display:none}
+  .role-reading{margin-block-end:var(--wf-space-xs)}
+  .role-code{margin-block-end:var(--wf-space-xs)}
+  .sample-long{display:none}
+  .sample-compact{display:block}
+}
+</style>
+</head>
+<body>
+<main class="shell">
+  <p class="kicker">SPIKE 4.1 · FONT A/B · STATIC HTML</p>
+  <h1>Newsreader 与 Source Serif 4，Commit Mono 与系统 mono</h1>
+  <p class="note">同一段中英混排 + 同一段代码，四组合同屏对比；A 为主题默认（tokens.css 字体角色），B/D 的 Source Serif 4 仅作 A/B 对照、截图后删除。切组按钮不依赖动效。</p>
+
+  <dl class="readout" id="readout" aria-live="polite">
+    <h2>令牌读数（getComputedStyle(document.documentElement) / 活动组合）</h2>
+    <dt>组合</dt><dd id="r-combo">全部四组（A 为默认）</dd>
+    <dt class="opt">--wf-font-serif</dt><dd class="opt" id="r-serif">读取中…</dd>
+    <dt class="opt">--wf-font-mono</dt><dd class="opt" id="r-mono">读取中…</dd>
+    <dt>字体文件</dt><dd id="r-faces">读取中…</dd>
+    <dt class="opt">正文 role</dt><dd class="opt" id="r-reading">读取中…</dd>
+    <dt class="opt">--wf-motion-hover</dt><dd class="opt" id="r-hover">读取中…</dd>
+    <dt class="opt">窗口</dt><dd class="opt" id="r-window">读取中…</dd>
+    <dt>降级</dt><dd id="r-reduced">读取中…</dd>
+  </dl>
+
+  <div class="controls" role="group" aria-label="字体组合切换">
+    <button type="button" data-mode="all" aria-pressed="true" aria-label="显示全部四组" title="显示全部四组">全部 A–D</button>
+    <button type="button" data-mode="a" aria-pressed="false" aria-label="组合 A：Newsreader × Commit Mono" title="组合 A：Newsreader × Commit Mono">A</button>
+    <button type="button" data-mode="b" aria-pressed="false" aria-label="组合 B：Source Serif 4 × Commit Mono" title="组合 B：Source Serif 4 × Commit Mono">B</button>
+    <button type="button" data-mode="c" aria-pressed="false" aria-label="组合 C：Newsreader × 系统 mono" title="组合 C：Newsreader × 系统 mono">C</button>
+    <button type="button" data-mode="d" aria-pressed="false" aria-label="组合 D：Source Serif 4 × 系统 mono" title="组合 D：Source Serif 4 × 系统 mono">D</button>
+  </div>
+
+  <section class="combos" id="combos" aria-label="字体组合对比">
+    <article class="combo" data-combo="a">
+      <p class="combo-head"><span class="combo-tag">A</span><span class="combo-name">Newsreader × Commit Mono</span><span class="combo-meta">主题默认 · 衬线正/斜 VF 125.8+140.7KB · mono 15.1+15.1KB</span></p>
+      <p class="role-title">潮汐把光折成横线 Tide folds light into lines</p>
+      <p class="role-reading sample-long">海平线以下是退潮的横纹，纸面安静，只有风在替句子换气；<em>the quiet work is left to the paper</em>。This column stays at 760px.</p>
+      <p class="role-reading sample-compact">退潮的横纹，<em>the quiet work</em>.</p>
+      <p class="role-code">const horizon = 0.394309; // vh</p>
+      <p class="role-label">A · Newsreader × Commit Mono · label</p>
+    </article>
+
+    <article class="combo" data-combo="b">
+      <p class="combo-head"><span class="combo-tag">B</span><span class="combo-name">Source Serif 4 × Commit Mono</span><span class="combo-meta">A/B 对照衬线 · 临时文件 48.5KB（latin 400）· mono 同上</span></p>
+      <p class="role-title">潮汐把光折成横线 Tide folds light into lines</p>
+      <p class="role-reading sample-long">海平线以下是退潮的横纹，纸面安静，只有风在替句子换气；<em>the quiet work is left to the paper</em>。This column stays at 760px.</p>
+      <p class="role-reading sample-compact">退潮的横纹，<em>the quiet work</em>.</p>
+      <p class="role-code">const horizon = 0.394309; // vh</p>
+      <p class="role-label">B · Source Serif 4 × Commit Mono · label</p>
+    </article>
+
+    <article class="combo" data-combo="c">
+      <p class="combo-head"><span class="combo-tag">C</span><span class="combo-name">Newsreader × 系统 monospace</span><span class="combo-meta">mono 对照组 · 系统按平台回退（Windows: Consolas）</span></p>
+      <p class="role-title">潮汐把光折成横线 Tide folds light into lines</p>
+      <p class="role-reading sample-long">海平线以下是退潮的横纹，纸面安静，只有风在替句子换气；<em>the quiet work is left to the paper</em>。This column stays at 760px.</p>
+      <p class="role-reading sample-compact">退潮的横纹，<em>the quiet work</em>.</p>
+      <p class="role-code">const horizon = 0.394309; // vh</p>
+      <p class="role-label">C · Newsreader × 系统 mono · label</p>
+    </article>
+
+    <article class="combo" data-combo="d">
+      <p class="combo-head"><span class="combo-tag">D</span><span class="combo-name">Source Serif 4 × 系统 monospace</span><span class="combo-meta">双对照组 · 两者都换成非主题字族</span></p>
+      <p class="role-title">潮汐把光折成横线 Tide folds light into lines</p>
+      <p class="role-reading sample-long">海平线以下是退潮的横纹，纸面安静，只有风在替句子换气；<em>the quiet work is left to the paper</em>。This column stays at 760px.</p>
+      <p class="role-reading sample-compact">退潮的横纹，<em>the quiet work</em>.</p>
+      <p class="role-code">const horizon = 0.394309; // vh</p>
+      <p class="role-label">D · Source Serif 4 × 系统 mono · label</p>
+    </article>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var combos = Array.prototype.slice.call(document.querySelectorAll('.combo'));
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('.controls button'));
+  var modes = { a: 'A · Newsreader × Commit Mono', b: 'B · Source Serif 4 × Commit Mono', c: 'C · Newsreader × 系统 mono', d: 'D · Source Serif 4 × 系统 mono' };
+
+  function token(name) {
+    return getComputedStyle(root).getPropertyValue(name).trim();
+  }
+
+  function faceStatus() {
+    var byFamily = {};
+    document.fonts.forEach(function (face) {
+      var key = face.family.replace(/^["']|["']$/g, '');
+      byFamily[key] = byFamily[key] || { total: 0, loaded: 0, error: 0 };
+      byFamily[key].total += 1;
+      if (face.status === 'loaded') { byFamily[key].loaded += 1; }
+      if (face.status === 'error') { byFamily[key].error += 1; }
+    });
+    var order = ['Newsreader', 'Commit Mono', 'Source Serif 4'];
+    return order.map(function (name) {
+      var f = byFamily[name];
+      if (!f) { return name + ' 未声明'; }
+      if (f.error) { return name + ' 加载失败 ' + f.error + '/' + f.total; }
+      return name + ' 已加载 ' + f.loaded + '/' + f.total;
+    }).join(' · ');
+  }
+
+  function activeCombo() {
+    for (var i = 0; i < combos.length; i += 1) {
+      if (!combos[i].hidden) { return combos[i]; }
+    }
+    return combos[0];
+  }
+
+  function update(mode) {
+    var el = activeCombo();
+    var cs = getComputedStyle(el);
+    document.getElementById('r-combo').textContent = mode === 'all'
+      ? '全部四组并排（读数取 A，主题默认）'
+      : modes[mode];
+    document.getElementById('r-serif').textContent = (mode === 'all' ? '' : '活动组合 → ') + cs.getPropertyValue('--wf-type-reading-family').trim();
+    document.getElementById('r-mono').textContent = cs.getPropertyValue('--wf-type-code-family').trim();
+    document.getElementById('r-faces').textContent = faceStatus();
+    document.getElementById('r-reading').textContent =
+      cs.getPropertyValue('--wf-type-reading-size').trim() + ' / ' + cs.getPropertyValue('--wf-type-reading-line').trim();
+    document.getElementById('r-hover').textContent = '动效 = ' + token('--wf-motion-hover') + '（组合切换不消费动效）';
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('r-window').textContent = window.innerWidth + '×' + window.innerHeight + ' · DPR ' + window.devicePixelRatio;
+    document.getElementById('r-reduced').textContent =
+      (reduce ? 'prefers-reduced-motion: reduce（命中）' : 'prefers-reduced-motion: no-preference') +
+      ' · hover 令牌取值为 ' + token('--wf-motion-hover');
+  }
+
+  function setMode(mode) {
+    modes[mode] = modes[mode] || mode;
+    var all = mode === 'all';
+    document.getElementById('combos').classList.toggle('is-single', !all);
+    combos.forEach(function (combo) {
+      var show = all || combo.getAttribute('data-combo') === mode;
+      combo.hidden = !show;
+    });
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === mode));
+    });
+    update(mode);
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
+  });
+
+  // 支持 ?combo=a|b|c|d 直接打开单组合（截图与评审复用）
+  var q = new URLSearchParams(window.location.search).get('combo');
+  setMode(q && ['a', 'b', 'c', 'd'].indexOf(q) >= 0 ? q : 'all');
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { update(document.querySelector('.controls button[aria-pressed="true"]').getAttribute('data-mode')); });
+  }
+  setTimeout(function () { update(document.querySelector('.controls button[aria-pressed="true"]').getAttribute('data-mode')); }, 600);
+
+  // 截图/自动化就绪标记：字体加载完成（或超时兜底）后置位
+  document.fonts.ready.then(function () { document.body.dataset.ready = '1'; });
+  setTimeout(function () { document.body.dataset.ready = '1'; }, 900);
+})();
+</script>
+</body>
+</html>

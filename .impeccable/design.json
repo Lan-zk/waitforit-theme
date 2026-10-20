@@ -1,0 +1,454 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-20T08:42:50.916Z",
+  "title": "waitforit-theme Design System",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Ink",
+        "canonical": "oklch(32.50% 0.0054 91.6)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0054 91.6)",
+          "oklch(24.00% 0.0054 91.6)",
+          "oklch(36.00% 0.0054 91.6)",
+          "oklch(48.00% 0.0054 91.6)",
+          "oklch(60.00% 0.0054 91.6)",
+          "oklch(72.00% 0.0054 91.6)",
+          "oklch(84.00% 0.0054 91.6)",
+          "oklch(96.00% 0.0054 91.6)"
+        ]
+      },
+      "muted-ink": {
+        "role": "secondary",
+        "displayName": "Muted Ink",
+        "canonical": "oklch(20.94% 0.0042 84.6 / 0.6)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0042 84.6)",
+          "oklch(24.00% 0.0042 84.6)",
+          "oklch(36.00% 0.0042 84.6)",
+          "oklch(48.00% 0.0042 84.6)",
+          "oklch(60.00% 0.0042 84.6)",
+          "oklch(72.00% 0.0042 84.6)",
+          "oklch(84.00% 0.0042 84.6)",
+          "oklch(96.00% 0.0042 84.6)"
+        ]
+      },
+      "hairline": {
+        "role": "secondary",
+        "displayName": "Hairline",
+        "canonical": "oklch(26.55% 0.0062 78.2 / 0.18)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0062 78.2)",
+          "oklch(24.00% 0.0062 78.2)",
+          "oklch(36.00% 0.0062 78.2)",
+          "oklch(48.00% 0.0062 78.2)",
+          "oklch(60.00% 0.0062 78.2)",
+          "oklch(72.00% 0.0062 78.2)",
+          "oklch(84.00% 0.0062 78.2)",
+          "oklch(96.00% 0.0062 78.2)"
+        ]
+      },
+      "paper": {
+        "role": "primary",
+        "displayName": "Paper",
+        "canonical": "oklch(98.20% 0.0040 91.8)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0040 91.8)",
+          "oklch(24.00% 0.0040 91.8)",
+          "oklch(36.00% 0.0040 91.8)",
+          "oklch(48.00% 0.0040 91.8)",
+          "oklch(60.00% 0.0040 91.8)",
+          "oklch(72.00% 0.0040 91.8)",
+          "oklch(84.00% 0.0040 91.8)",
+          "oklch(96.00% 0.0040 91.8)"
+        ]
+      },
+      "pure-white": {
+        "role": "secondary",
+        "displayName": "Pure White",
+        "canonical": "oklch(100.00% 0.0000 0)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0000 0)",
+          "oklch(24.00% 0.0000 0)",
+          "oklch(36.00% 0.0000 0)",
+          "oklch(48.00% 0.0000 0)",
+          "oklch(60.00% 0.0000 0)",
+          "oklch(72.00% 0.0000 0)",
+          "oklch(84.00% 0.0000 0)",
+          "oklch(96.00% 0.0000 0)"
+        ]
+      },
+      "night-ink": {
+        "role": "neutral",
+        "displayName": "Night Ink",
+        "canonical": "oklch(95.51% 0.0000 0 / 0.8)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0000 0)",
+          "oklch(24.00% 0.0000 0)",
+          "oklch(36.00% 0.0000 0)",
+          "oklch(48.00% 0.0000 0)",
+          "oklch(60.00% 0.0000 0)",
+          "oklch(72.00% 0.0000 0)",
+          "oklch(84.00% 0.0000 0)",
+          "oklch(96.00% 0.0000 0)"
+        ]
+      },
+      "night-bright": {
+        "role": "neutral",
+        "displayName": "Night Bright",
+        "canonical": "oklch(100.00% 0.0000 0)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0000 0)",
+          "oklch(24.00% 0.0000 0)",
+          "oklch(36.00% 0.0000 0)",
+          "oklch(48.00% 0.0000 0)",
+          "oklch(60.00% 0.0000 0)",
+          "oklch(72.00% 0.0000 0)",
+          "oklch(84.00% 0.0000 0)",
+          "oklch(96.00% 0.0000 0)"
+        ]
+      },
+      "night-muted": {
+        "role": "neutral",
+        "displayName": "Night Muted",
+        "canonical": "oklch(95.51% 0.0000 0 / 0.6)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0000 0)",
+          "oklch(24.00% 0.0000 0)",
+          "oklch(36.00% 0.0000 0)",
+          "oklch(48.00% 0.0000 0)",
+          "oklch(60.00% 0.0000 0)",
+          "oklch(72.00% 0.0000 0)",
+          "oklch(84.00% 0.0000 0)",
+          "oklch(96.00% 0.0000 0)"
+        ]
+      },
+      "night-hairline": {
+        "role": "neutral",
+        "displayName": "Night Hairline",
+        "canonical": "oklch(96.16% 0.0056 84.7 / 0.18)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0056 84.7)",
+          "oklch(24.00% 0.0056 84.7)",
+          "oklch(36.00% 0.0056 84.7)",
+          "oklch(48.00% 0.0056 84.7)",
+          "oklch(60.00% 0.0056 84.7)",
+          "oklch(72.00% 0.0056 84.7)",
+          "oklch(84.00% 0.0056 84.7)",
+          "oklch(96.00% 0.0056 84.7)"
+        ]
+      },
+      "night-paper": {
+        "role": "neutral",
+        "displayName": "Night Paper",
+        "canonical": "oklch(29.75% 0.0038 84.6)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0038 84.6)",
+          "oklch(24.00% 0.0038 84.6)",
+          "oklch(36.00% 0.0038 84.6)",
+          "oklch(48.00% 0.0038 84.6)",
+          "oklch(60.00% 0.0038 84.6)",
+          "oklch(72.00% 0.0038 84.6)",
+          "oklch(84.00% 0.0038 84.6)",
+          "oklch(96.00% 0.0038 84.6)"
+        ]
+      },
+      "moonlight": {
+        "role": "neutral",
+        "displayName": "Moonlight",
+        "canonical": "oklch(100.00% 0.0000 0 / 0.95)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0000 0)",
+          "oklch(24.00% 0.0000 0)",
+          "oklch(36.00% 0.0000 0)",
+          "oklch(48.00% 0.0000 0)",
+          "oklch(60.00% 0.0000 0)",
+          "oklch(72.00% 0.0000 0)",
+          "oklch(84.00% 0.0000 0)",
+          "oklch(96.00% 0.0000 0)"
+        ]
+      },
+      "chrome-scrim": {
+        "role": "secondary",
+        "displayName": "Chrome Scrim",
+        "canonical": "oklch(23.50% 0.0000 0 / 0.95)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0000 0)",
+          "oklch(24.00% 0.0000 0)",
+          "oklch(36.00% 0.0000 0)",
+          "oklch(48.00% 0.0000 0)",
+          "oklch(60.00% 0.0000 0)",
+          "oklch(72.00% 0.0000 0)",
+          "oklch(84.00% 0.0000 0)",
+          "oklch(96.00% 0.0000 0)"
+        ]
+      },
+      "star-dark": {
+        "role": "neutral",
+        "displayName": "Star Dark",
+        "canonical": "oklch(22.28% 0.0024 67.6)",
+        "tonalRamp": [
+          "oklch(12.00% 0.0024 67.6)",
+          "oklch(24.00% 0.0024 67.6)",
+          "oklch(36.00% 0.0024 67.6)",
+          "oklch(48.00% 0.0024 67.6)",
+          "oklch(60.00% 0.0024 67.6)",
+          "oklch(72.00% 0.0024 67.6)",
+          "oklch(84.00% 0.0024 67.6)",
+          "oklch(96.00% 0.0024 67.6)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home hero sentence, 20 to 40px, two lines maximum"
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Page titles, post titles, and disclosure headings"
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Post bodies and every long-form reading surface at the 760px measure"
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Letter meta, post dates, captions, and letter footers"
+      },
+      "ui": {
+        "displayName": "UI",
+        "purpose": "Nav, footer, theme and language controls, uppercase"
+      },
+      "form": {
+        "displayName": "Form",
+        "purpose": "The subscribe input, the only form control on the site"
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Action links such as APPLY, ATOM, and RSS, plus language codes and keycaps"
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code blocks, no fill, hairline rules above and below"
+      }
+    },
+    "shadows": [
+      {
+        "name": "Menu scrim",
+        "value": "0 8px 32px rgba(0, 0, 0, 0.4)",
+        "purpose": "The language menu, the only true drop shadow on the site"
+      },
+      {
+        "name": "Sky-legibility",
+        "value": "0 2px 8px rgba(0, 0, 0, 0.5)",
+        "purpose": "The 404 line where it sits directly on the drawn scene"
+      },
+      {
+        "name": "Keycap ring",
+        "value": "0 0 0 1px rgb(28 27 26 / 10%), 0 3px 0 rgb(28 27 26 / 10%)",
+        "purpose": "kbd keycaps in prose, the only two-part shadow"
+      }
+    ],
+    "motion": [
+      {
+        "name": "page-enter",
+        "value": "520ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "The page fades and rises into place"
+      },
+      {
+        "name": "page-exit",
+        "value": "220ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "The outgoing page fades before navigation"
+      },
+      {
+        "name": "theme",
+        "value": "900ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "Scene, veil, grain, and chrome change light together"
+      },
+      {
+        "name": "entrance",
+        "value": "300ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "Content enters after the page frame settles"
+      },
+      {
+        "name": "menu-open",
+        "value": "240ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "The menu panel opens"
+      },
+      {
+        "name": "menu-close",
+        "value": "180ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "The menu panel closes"
+      },
+      {
+        "name": "subscribe",
+        "value": "720ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "The subscribe line confirmation sweep"
+      },
+      {
+        "name": "hover",
+        "value": "180ms cubic-bezier(0.333333, 0, 0.666667, 1)",
+        "purpose": "Any link, control, or star hover"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "small",
+        "value": "520px",
+        "purpose": "Frame drops to 28px, the veil light center moves up to 50% 40%, and post rows stack"
+      },
+      {
+        "name": "medium",
+        "value": "800px",
+        "purpose": "Frame 40px, measure 680px, display type capped at 32px, and the menu becomes a full-screen paper panel"
+      },
+      {
+        "name": "wide",
+        "value": "1100px",
+        "purpose": "The column settles at min(100%, 760px); between 801px and 1100px it is min(680px, calc(100vw - 360px))"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Text link",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Body links carry a dotted underline that turns solid and brightens one ink step on hover or focus; at night the link brightens to night-bright.",
+      "html": "<p class=\"wf-text-paragraph\">Read <a class=\"wf-text-link\" href=\"#\">the announcement</a> before the letter is sealed.</p>",
+      "css": ".wf-text-paragraph {\n  font-family: var(--wf-font-serif, Georgia, serif);\n  font-size: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);\n  line-height: 1.6;\n  color: var(--wf-ink, #353431);\n}\n.wf-text-link {\n  color: inherit;\n  text-decoration-line: underline;\n  text-decoration-style: dotted;\n  text-decoration-thickness: 0.06em;\n  text-underline-offset: 0.14em;\n  transition: color var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-text-link:hover,\n.wf-text-link:focus-visible {\n  color: var(--wf-ink, #353431);\n  text-decoration-style: solid;\n}\n.wf-text-link:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n[data-theme=\"night\"] .wf-text-link:hover,\n[data-theme=\"night\"] .wf-text-link:focus-visible {\n  color: var(--wf-night-bright, #ffffff);\n}"
+    },
+    {
+      "name": "Action link",
+      "kind": "button",
+      "refersTo": "apply-link",
+      "description": "The only affordance the theme treats as an action: mono label casing, no fill or border, and a 15px star revealed after the hover duration.",
+      "html": "<a class=\"wf-action-link\" href=\"#\">APPLY<span class=\"wf-action-link__star\" aria-hidden=\"true\"><svg viewBox=\"0 0 32 32\" width=\"15\" height=\"15\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M30.60 16.00L23.00 17.62L19.00 16.00L23.00 14.38Z M16.00 30.60L14.38 23.00L16.00 19.00L17.62 23.00Z M1.40 16.00L9.00 14.38L13.00 16.00L9.00 17.62Z M16.00 1.40L17.62 9.00L16.00 13.00L14.38 9.00Z M22.58 22.58L18.93 20.42L17.70 17.70L20.42 18.93Z M9.42 22.58L11.58 18.93L14.30 17.70L13.07 20.42Z M9.42 9.42L13.07 11.58L14.30 14.30L11.58 13.07Z M22.58 9.42L20.42 13.07L17.70 14.30L18.93 11.58Z M20.20 16.00L16.00 20.20L11.80 16.00L16.00 11.80Z M16.00 14.10L14.10 16.00L16.00 17.90L17.90 16.00Z\"/><circle cx=\"16\" cy=\"16\" r=\"0.6\"/></svg></span></a>",
+      "css": ".wf-action-link {\n  display: inline-flex;\n  align-items: baseline;\n  gap: var(--wf-space-xs, 6px);\n  color: var(--wf-ink, #353431);\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.8125rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.25;\n  letter-spacing: 0;\n  text-transform: uppercase;\n  text-decoration: none;\n}\n.wf-action-link__star {\n  display: inline-flex;\n  opacity: 0;\n  transition: opacity var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-action-link:hover .wf-action-link__star,\n.wf-action-link:focus-visible .wf-action-link__star {\n  opacity: 1;\n}\n.wf-action-link:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n[data-theme=\"night\"] .wf-action-link:hover,\n[data-theme=\"night\"] .wf-action-link:focus-visible {\n  color: var(--wf-night-bright, #ffffff);\n}"
+    },
+    {
+      "name": "Menu trigger + panel",
+      "kind": "nav",
+      "refersTo": "menu-trigger",
+      "description": "The chrome: bare uppercase MENU over the scene with a right-aligned column of mono links; below 800px the panel becomes a full-screen paper sheet with 44px rows.",
+      "html": "<nav class=\"wf-menu\" aria-label=\"Primary\">\n  <button class=\"wf-menu-trigger\" type=\"button\" aria-expanded=\"false\" aria-controls=\"wf-menu-panel-1\">MENU</button>\n  <ul class=\"wf-menu-panel\" id=\"wf-menu-panel-1\" hidden>\n    <li><a class=\"wf-menu-link\" href=\"#\">Purpose</a></li>\n    <li><a class=\"wf-menu-link\" href=\"#\">Values</a></li>\n    <li><a class=\"wf-menu-link\" href=\"#\">Join Us</a></li>\n    <li><a class=\"wf-menu-link\" href=\"#\">Posts</a></li>\n  </ul>\n</nav>",
+      "css": ".wf-menu-trigger {\n  appearance: none;\n  margin: 0;\n  padding: 0;\n  border: 0;\n  background: transparent;\n  color: var(--wf-moonlight, rgba(255, 255, 255, 0.95));\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.25;\n  letter-spacing: 0;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: color var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-menu-trigger:hover,\n.wf-menu-trigger[aria-expanded=\"true\"] {\n  color: var(--wf-pure-white, #ffffff);\n}\n.wf-menu-trigger:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n.wf-menu-panel {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n  gap: var(--wf-space-sm, 8px);\n  margin: 0;\n  padding: var(--wf-space-md, 10px) 0 0;\n  list-style: none;\n}\n.wf-menu-panel[hidden] {\n  display: none;\n}\n.wf-menu-link {\n  color: inherit;\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.25;\n  letter-spacing: 0;\n  text-transform: uppercase;\n  text-decoration: none;\n}\n.wf-menu-link:hover,\n.wf-menu-link:focus-visible {\n  color: var(--wf-pure-white, #ffffff);\n  text-decoration-line: underline;\n  text-decoration-style: dotted;\n  text-decoration-thickness: 0.06em;\n  text-underline-offset: 0.14em;\n}\n@media (max-width: 800px) {\n  .wf-menu-panel:not([hidden]) {\n    position: fixed;\n    inset: 0;\n    align-items: flex-start;\n    justify-content: center;\n    gap: var(--wf-space-lg, 16px);\n    padding: var(--wf-frame-block, 40px) var(--wf-space-block, 28px);\n    background: var(--wf-paper, #faf9f6);\n    color: var(--wf-ink, #353431);\n    z-index: var(--wf-z-frame, 3);\n  }\n  .wf-menu-link {\n    display: flex;\n    align-items: center;\n    min-height: var(--wf-tap-target, 44px);\n  }\n}"
+    },
+    {
+      "name": "Letter meta",
+      "kind": "custom",
+      "refersTo": "letter-meta",
+      "description": "The post signature: a mono Date, From, To, Subject block in two grid columns with muted keys, closed by a hairline 24px below.",
+      "html": "<dl class=\"wf-letter-meta\">\n  <dt class=\"wf-letter-meta__key\">Date</dt><dd class=\"wf-letter-meta__value\">20 October 2026</dd>\n  <dt class=\"wf-letter-meta__key\">From</dt><dd class=\"wf-letter-meta__value\">W. Forth</dd>\n  <dt class=\"wf-letter-meta__key\">To</dt><dd class=\"wf-letter-meta__value\">You</dd>\n  <dt class=\"wf-letter-meta__key\">Subject</dt><dd class=\"wf-letter-meta__value\">A page held above the sea</dd>\n</dl>",
+      "css": ".wf-letter-meta {\n  display: grid;\n  grid-template-columns: max-content 1fr;\n  column-gap: 1ch;\n  row-gap: var(--wf-space-xs, 6px);\n  margin: 0;\n  padding: 0 0 var(--wf-space-section, 24px);\n  border-bottom: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  color: var(--wf-ink, #353431);\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.6;\n}\n.wf-letter-meta__key {\n  color: var(--wf-muted-ink, rgba(25, 24, 22, 0.6));\n}\n.wf-letter-meta__value {\n  margin: 0;\n}"
+    },
+    {
+      "name": "Post row",
+      "kind": "custom",
+      "refersTo": "post-title",
+      "description": "One link per post: mono date in muted ink and a serif italic title, with the whole row as the click target and a star revealed on hover or focus.",
+      "html": "<a class=\"wf-post-row\" href=\"#\">\n  <span class=\"wf-post-row__date\">2026-10-20</span>\n  <span class=\"wf-post-row__title\">A page held above the sea<span class=\"wf-post-row__star\" aria-hidden=\"true\"><svg viewBox=\"0 0 32 32\" width=\"15\" height=\"15\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M30.60 16.00L23.00 17.62L19.00 16.00L23.00 14.38Z M16.00 30.60L14.38 23.00L16.00 19.00L17.62 23.00Z M1.40 16.00L9.00 14.38L13.00 16.00L9.00 17.62Z M16.00 1.40L17.62 9.00L16.00 13.00L14.38 9.00Z M22.58 22.58L18.93 20.42L17.70 17.70L20.42 18.93Z M9.42 22.58L11.58 18.93L14.30 17.70L13.07 20.42Z M9.42 9.42L13.07 11.58L14.30 14.30L11.58 13.07Z M22.58 9.42L20.42 13.07L17.70 14.30L18.93 11.58Z M20.20 16.00L16.00 20.20L11.80 16.00L16.00 11.80Z M16.00 14.10L14.10 16.00L16.00 17.90L17.90 16.00Z\"/><circle cx=\"16\" cy=\"16\" r=\"0.6\"/></svg></span></span>\n</a>",
+      "css": ".wf-post-row {\n  display: grid;\n  grid-template-columns: max-content minmax(0, 1fr);\n  column-gap: 0.6em;\n  row-gap: var(--wf-space-xs, 6px);\n  align-items: baseline;\n  padding: var(--wf-space-sm, 8px) 0;\n  color: var(--wf-ink, #353431);\n  text-decoration: none;\n}\n.wf-post-row__date {\n  color: var(--wf-muted-ink, rgba(25, 24, 22, 0.6));\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  line-height: 1.6;\n}\n.wf-post-row__title {\n  font-family: var(--wf-font-serif, Georgia, serif);\n  font-size: 1.25rem;\n  font-style: italic;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.15;\n}\n.wf-post-row__star {\n  display: inline-flex;\n  margin-inline-start: var(--wf-space-sm, 8px);\n  opacity: 0;\n  transition: opacity var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-post-row:hover .wf-post-row__star,\n.wf-post-row:focus-visible .wf-post-row__star {\n  opacity: 1;\n}\n.wf-post-row:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n[data-theme=\"night\"] .wf-post-row:hover .wf-post-row__title {\n  color: var(--wf-night-bright, #ffffff);\n}\n@media (max-width: 520px) {\n  .wf-post-row {\n    grid-template-columns: minmax(0, 1fr);\n  }\n}"
+    },
+    {
+      "name": "Values disclosure",
+      "kind": "custom",
+      "refersTo": "disclosure",
+      "description": "A details element whose summary is a serif title with a 7px hairline chevron that turns 180 degrees over the hover duration when open.",
+      "html": "<details class=\"wf-disclosure\" open>\n  <summary class=\"wf-disclosure__summary\">What we value<svg class=\"wf-disclosure__chevron\" viewBox=\"0 0 8 8\" width=\"7\" height=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" aria-hidden=\"true\"><path d=\"M1 2.5 4 5.5 7 2.5\"/></svg></summary>\n  <p class=\"wf-disclosure__body\">A letter arrives when it arrives. The site should feel like it was written for one reader, not assembled for an audience.</p>\n</details>",
+      "css": ".wf-disclosure {\n  border-top: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  color: var(--wf-ink, #353431);\n}\n.wf-disclosure__summary {\n  display: flex;\n  align-items: center;\n  gap: var(--wf-space-sm, 8px);\n  padding: 7px 0;\n  font-family: var(--wf-font-serif, Georgia, serif);\n  font-size: 1.25rem;\n  font-style: italic;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.15;\n  cursor: pointer;\n  list-style: none;\n}\n.wf-disclosure__summary::marker {\n  content: \"\";\n}\n.wf-disclosure__summary:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n.wf-disclosure__chevron {\n  flex: none;\n  transition: transform var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-disclosure[open] .wf-disclosure__chevron {\n  transform: rotate(180deg);\n}\n.wf-disclosure__body {\n  margin: 0;\n  padding: 0 0 var(--wf-space-block, 28px);\n  font-family: var(--wf-font-serif, Georgia, serif);\n  font-size: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.6;\n}"
+    },
+    {
+      "name": "Subscribe line",
+      "kind": "input",
+      "refersTo": "email-input",
+      "description": "The only form control: a borderless mono input that autosizes to its content, a return-key affordance revealed once the field is non-empty, and no submit button.",
+      "html": "<form class=\"wf-subscribe\" onsubmit=\"return false\">\n  <input class=\"wf-subscribe__input\" id=\"wf-subscribe-input-1\" type=\"text\" name=\"email\" placeholder=\"your@email.com\" aria-label=\"Email address\" autocomplete=\"off\" spellcheck=\"false\" />\n  <span class=\"wf-subscribe__enter\" aria-hidden=\"true\">&#8629;</span>\n</form>",
+      "css": ".wf-subscribe {\n  display: flex;\n  align-items: baseline;\n  gap: var(--wf-space-xs, 6px);\n  color: var(--wf-ink, #353431);\n}\n.wf-subscribe__input {\n  field-sizing: content;\n  min-width: 17ch;\n  margin: 0;\n  padding: 0;\n  border: 0;\n  border-radius: 0;\n  background: transparent;\n  color: inherit;\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.6;\n  caret-color: var(--wf-ink, #353431);\n}\n.wf-subscribe__input::placeholder {\n  color: var(--wf-muted-ink, rgba(25, 24, 22, 0.6));\n}\n.wf-subscribe__input:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n.wf-subscribe__enter {\n  color: var(--wf-muted-ink, rgba(25, 24, 22, 0.6));\n  opacity: 0;\n  transition: opacity var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-subscribe__input:not(:placeholder-shown) ~ .wf-subscribe__enter {\n  opacity: 1;\n}"
+    },
+    {
+      "name": "Code block",
+      "kind": "custom",
+      "refersTo": "code-block",
+      "description": "A transparent block with hairline rules above and below, mono at 13px on a 1.846 line, no radius and no inline padding.",
+      "html": "<pre class=\"wf-code-block\"><code>hugo --source exampleSite --themesDir ../..</code></pre>",
+      "css": ".wf-code-block {\n  margin: 0;\n  padding: 1.5rem 0;\n  overflow-x: auto;\n  border-top: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  border-bottom: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  background: transparent;\n  color: var(--wf-ink, #353431);\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.8125rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.846;\n  tab-size: 2;\n}\n.wf-code-block code {\n  font: inherit;\n  background: none;\n  padding: 0;\n}"
+    },
+    {
+      "name": "Language menu",
+      "kind": "nav",
+      "refersTo": "lang-menu",
+      "description": "The only floating surface: 160px chrome scrim over a 10px blur, a 4px radius, one menu scrim shadow, and mono rows at 8px 16px with the selected locale in night-bright.",
+      "html": "<div class=\"wf-lang\">\n  <button class=\"wf-lang__trigger\" type=\"button\" aria-expanded=\"true\" aria-controls=\"wf-lang-menu-1\">EN</button>\n  <ul class=\"wf-lang-menu\" id=\"wf-lang-menu-1\" role=\"listbox\" aria-label=\"Language\">\n    <li role=\"presentation\">\n      <button class=\"wf-lang-item\" type=\"button\" role=\"option\" aria-selected=\"true\">\n        <svg class=\"wf-lang-item__check\" viewBox=\"0 0 8 8\" width=\"8\" height=\"8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\" aria-hidden=\"true\"><path d=\"M1 4.2 3 6.2 7 1.8\"/></svg>\n        <span>English</span><span class=\"wf-lang-item__code\">EN</span>\n      </button>\n    </li>\n    <li role=\"presentation\">\n      <button class=\"wf-lang-item\" type=\"button\" role=\"option\" aria-selected=\"false\">\n        <svg class=\"wf-lang-item__check\" viewBox=\"0 0 8 8\" width=\"8\" height=\"8\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\" aria-hidden=\"true\"><path d=\"M1 4.2 3 6.2 7 1.8\"/></svg>\n        <span>Deutsch</span><span class=\"wf-lang-item__code\">DE</span>\n      </button>\n    </li>\n  </ul>\n</div>",
+      "css": ".wf-lang {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: flex-end;\n}\n.wf-lang__trigger {\n  appearance: none;\n  margin: 0;\n  padding: var(--wf-space-xs, 6px) var(--wf-space-md, 10px);\n  border: 0;\n  background: transparent;\n  color: var(--wf-moonlight, rgba(255, 255, 255, 0.95));\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.25;\n  letter-spacing: 0;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: color var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-lang__trigger:hover,\n.wf-lang__trigger[aria-expanded=\"true\"] {\n  color: var(--wf-pure-white, #ffffff);\n}\n.wf-lang__trigger:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n.wf-lang-menu {\n  width: 160px;\n  margin: 0 0 var(--wf-space-sm, 8px);\n  padding: var(--wf-space-xs, 6px) 0;\n  list-style: none;\n  border-radius: 4px;\n  background: var(--wf-chrome-scrim, rgba(30, 30, 30, 0.95));\n  backdrop-filter: blur(10px);\n  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  line-height: 1.4;\n}\n.wf-lang-menu li {\n  margin: 0;\n  padding: 0;\n  list-style: none;\n}\n.wf-lang-item {\n  display: grid;\n  grid-template-columns: 8px minmax(0, 1fr) auto;\n  column-gap: var(--wf-space-sm, 8px);\n  align-items: center;\n  width: 100%;\n  margin: 0;\n  padding: var(--wf-space-sm, 8px) var(--wf-space-lg, 16px);\n  border: 0;\n  background: transparent;\n  color: var(--wf-moonlight, rgba(255, 255, 255, 0.95));\n  font: inherit;\n  font-size: 0.9375rem;\n  line-height: 1.4;\n  text-align: start;\n  cursor: pointer;\n}\n.wf-lang-item:hover {\n  background: color-mix(in srgb, var(--wf-pure-white, #ffffff) 10%, transparent);\n  color: var(--wf-pure-white, #ffffff);\n}\n.wf-lang-item[aria-selected=\"true\"] {\n  color: var(--wf-night-bright, #ffffff);\n}\n.wf-lang-item__check {\n  opacity: 0;\n}\n.wf-lang-item[aria-selected=\"true\"] .wf-lang-item__check {\n  opacity: 1;\n}\n.wf-lang-item__code {\n  font-size: 0.8125rem;\n  text-transform: uppercase;\n  opacity: 0.5;\n}"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Letter Held Above a Drawn Sea",
+    "overview": "waitforit-theme is a correspondence theme, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — held above a live drawn sea: a Canvas 2D line field that drifts slowly at the horizon and fades out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: a star mark, the word MENU, a footer. Nothing scrolls but content. A post is a letter you received — Date, From, To, Subject set in mono above a serif reading column — and the site should read like the inside of an envelope, not the outside of an app.\n\nThe austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme=\"night\"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No card, no chip, no filled button, no accent hue. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.\n\nMotion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, content enters in 300ms, the menu opens in 240ms and closes in 180ms, the theme cross-fades in 900ms while scene, veil, and grain change light together, and the subscribe line confirms in 720ms. Everything respects `prefers-reduced-motion` — every duration token becomes 0ms and the sea freezes on its first frame — and nothing ever moves to attract attention.",
+    "keyCharacteristics": [
+      "Two typefaces only: Newsreader (OFL variable serif, true italic) for display, title, and reading; Commit Mono (OFL) for body, UI, form, label, and code.",
+      "Thirteen color tokens: `paper` and `ink` by day, `night-paper` and `night-ink` by night, plus a muted ink, a hairline, and a `moonlight` that survives both lights.",
+      "One ornament: an original eight-ray four-point star, used as the cursor, the two logos, and a hover reward — never as static decoration and never as a bullet.",
+      "One fixed frame (75px, 40px at ≤800px, 28px at ≤520px) around one centered column of `min(100%, 760px)`.",
+      "Four stacked layers and no page background: scene, then veil, then grain, then frame.",
+      "Letter-shaped content: posts open with a Date, From, To, Subject block in mono above a serif reading column.",
+      "Quiet interaction instead of state chrome: dotted underlines turning solid, a 15px star revealed on hover, a 520ms page fade.",
+      "A declared font deviation: Newsreader and Commit Mono replace the reference's Plantin Now and Departure Mono, and the two `--wf-font-*` variables are the only override point for a site that self-hosts its own pair."
+    ],
+    "rules": [
+      {
+        "name": "The Paper Is Not a Background Rule",
+        "body": "There is no page background color. The surface is a fixed radial ellipse of paper (`--wf-veil-size: 72% 115%`, centered at `50% 48%`, alpha 0.985 at the center falling to 0 at the 96 percent stop), painted over the live scene. Do not replace it with a solid fill: a solid `#faf9f6` body would hide the sea and turn the design back into a white page.",
+        "section": "Colors"
+      },
+      {
+        "name": "The Two Faces Rule",
+        "body": "Newsreader and Commit Mono are the only typefaces this theme may use; every other family in a stack is a glyph fallback, not a design decision. A new role is assigned to one of the two voices and never to a third family. Using Newsreader and Commit Mono instead of Plantin Now and Departure Mono is the only visual deviation this theme permits, and a site that wants the reference's exact color of type overrides `--wf-font-serif` and `--wf-font-mono` with its own self-hosted OFL pair; the font files themselves never enter this repository or its build output.",
+        "section": "Typography"
+      },
+      {
+        "name": "The Fixed Frame Rule",
+        "body": "The frame is chrome, not a container: it stays 75px, 40px, or 28px at the three breakpoints and content never paints over it. Nothing goes in the frame except the star mark, MENU, and the footer marks — no breadcrumbs, no progress bars, no floating buttons.",
+        "section": "Layout"
+      },
+      {
+        "name": "The Stack Is the Depth Rule",
+        "body": "Depth comes from layer order, never from elevation on content: the scene under the veil, the veil under the grain, the grain under the frame. Content never floats, and no shadow may be added to a reading surface; the three functional shadows above are the whole vocabulary.",
+        "section": "Elevation & Depth"
+      },
+      {
+        "name": "The Rounded Corner Is a Signal Rule",
+        "body": "`4px` means this surface floats over the scene; `5px` means this is a key. No other value is allowed, and a rounded button, input, card, or code block is a defect rather than a variation. The star keeps its geometry in every use and is never recolored, cached, or restyled.",
+        "section": "Shapes"
+      },
+      {
+        "name": "The Bare Chrome Rule",
+        "body": "Every action is text: no fill, no border, no card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.",
+        "section": "Components"
+      }
+    ],
+    "dos": [
+      "Keep the reading column at `min(100%, 760px)` and the serif at 18 to 20px; the letter is the product.",
+      "Declare the font substitution in the repository: Newsreader and Commit Mono are the theme's only faces, and `--wf-font-serif` and `--wf-font-mono` are the only override point for a site that self-hosts its own OFL pair.",
+      "Reserve Commit Mono for chrome, meta, forms, and code, and set every human voice in Newsreader.",
+      "Express hierarchy with size, ink opacity between 60 and 80 percent, and hairlines, never with hue, weight, or fills.",
+      "Use the dotted underline — `0.06em` thick at `0.14em` offset, solid on hover — plus a 15px star as the single interaction language for links.",
+      "Let the scene, veil, and grain carry depth, and keep content surfaces flat and shadowless.",
+      "Honour the duration tokens and `prefers-reduced-motion`: at reduce, every motion token is 0ms and the sea freezes on its first frame.",
+      "Ship a skip link and keep every chrome control reachable by keyboard and pointer, even though the reference site does not."
+    ],
+    "donts": [
+      "Don't introduce a third typeface, and never let Plantin Now, Plantin, or Departure Mono into the repository or its build output; the only permitted deviation is the `--wf-font-*` override with self-hosted OFL faces.",
+      "Don't introduce an accent hue, a card, a chip, a filled button, or a shadow beyond the three functional ones.",
+      "Don't fake weight or slant: no `text-shadow` thickening and no synthetic italic; mono stays at its 400 token weight and serif emphasis uses Newsreader's true italic.",
+      "Don't paint a solid page background or stack an opaque panel over the scene; the drawn sea must stay visible outside the veil.",
+      "Don't animate anything to draw attention — no pulses, no autoplay, no scroll-jacking; the only continuous motion is the slow sea.",
+      "Don't use the star as a static ornament, a bullet, or a decoration; lists mark items with the star glyph and the star asset belongs to the pointer and the chrome.",
+      "Don't hardcode a token value in a template or a stylesheet; add the token first and consume it as `var(--wf-*)`, so a theme-wide change stays a one-file change.",
+      "Don't copy the reference's known defects as patterns: the missing skip link, the English flash before client-side i18n, and the light-mode nav overlap are documented gaps, not design decisions."
+    ]
+  }
+}

@@ -205,11 +205,70 @@
 - 澄清 D4 的后果句：`theme.toml` 的 `min_version` 只是主题画廊元数据，构建期版本护栏在主题根 `hugo.toml` 的 `[module.hugoVersion] min`，且只 WARN 不阻断（CFG-15/CFG-16/REL-03）。
 - 编号让位：`design-contract` change 中「参考转译原则与上游 pin 策略」决策顺延为 **D19**（该 change 的 `proposal.md` 与 `tasks.md` 已同步）。
 
+## D19 参考转译原则与上游 pin 策略
+
+**状态：已确认**（2026-10-20，`design-contract` change）。
+
+决定：参考站点（Earendil）的契约与实现按「转译」处理，不照搬：
+
+- 上游 pin 到 commit `31b1b04`，完整证据（commit/取用时间、`DESIGN.md` 23,274B 与 sha256 `ef6ac366…`、`.impeccable/design.json` 43,450B 与 sha256 `d034ff0b…`、许可结论、基线截图）记录在 `docs/design/reference/upstream-pin.md`。
+- 转译判定逐条记录在 `docs/design/transfer-matrix.md`：每个颜色/排版角色/组件键/`ds-` 片段都给出「采纳 / 替换 / 排除 + 理由 + `wf-` 映射」。结构可借鉴，字节与像素不可复制；上游 `styles.css`、WebGL/GLSL、文案、logo、图片、字体一律不进仓库。
+- 上游契约文件（`DESIGN.md`、`.impeccable/design.json`）在该 commit 中是未跟踪的辅助资产，不随上游版本化；升级时人工 diff 上游 → 决定是否跟进 → 重生成 sidecar → 重截基线，不做自动同步。
+- 基线截图只作内部对照：本地静态 serve `_build/` + headless Chrome 采集，存 `docs/design/reference/baseline/`，总大小控制在 2MB 内，发布包排除该目录。
+
+理由：设计语言可以学习，但许可证不允许复制字体与素材；参考契约本身没有版本历史，只能靠 pin + 快照 + 哈希保证可追溯，避免「下次再看已经变了」。
+
+后果：每次上游升级或本仓库契约变更，都要同步 `transfer-matrix.md`、sidecar 与基线截图；这三处与 `tokens.css` 的口径一致性由门禁脚本检查。
+
+## 决策修订（design-contract，2026-10-20）
+
+按维护规则以「追加 + `supersedes`」方式修订既有决策，原始条目正文不改写。
+
+### D7-R 动效时序（supersedes D7）
+
+**状态：已确认**（2026-10-20，`design-contract` change）。
+
+决定：v1 仍是原生 MPA，不引入 htmx；有跨文档 View Transitions 的浏览器获得渐进增强，但时长不再写 150–220ms，而是引用令牌：页面进入 `--wf-motion-page-enter: 520ms`、退出 `--wf-motion-page-exit: 220ms`、主题切换交叉淡化 `--wf-motion-theme: 900ms`、入场 `--wf-motion-entrance: 300ms`、移动菜单开 `240ms` / 关 `180ms`、订阅横线扫过 `720ms`、hover 反馈 `180ms`；统一缓动 `cubic-bezier(0.333333, 0, 0.666667, 1)`（smoothstep 近似）。`prefers-reduced-motion: reduce` 下所有时长归零，并禁用位移、缩放与视差；主题不接管滚动位置与历史状态。
+
+理由：参考站实测时序是 520/220/900/300/240/180/720ms，令牌化后降级与站点覆盖可测；原「150–220ms」是未经验证的估算，且没有把 reduced-motion 写进契约。
+
+后果：P2 实现用 `--wf-motion-*` 变量驱动全部动效；`docs/design/spikes/motion.html` 必须证明改令牌即改时序，不接受硬编码时长。
+
+### D8-R 页面表面：径向纸光覆盖 Canvas 2D 场景（supersedes D8）
+
+**状态：已确认**（2026-10-20，`design-contract` change）。
+
+决定：v1 场景仍用 Canvas 2D 绘制线场，但页面不再直接露出场景，而是固定四层合成：`canvas.scene`（z 0）→ `.veil` 径向纸光（z 1）→ `.grain` 静态平铺颗粒（z 2）→ `.frame` 固定框架（z 3）；`body` 不设背景色。纸光为 `radial-gradient(ellipse 72% 115% at 50% 48%)`，纸色 `.985` 中心 → 96% 处透明，6 档停点；light/night 双通道用 `--wf-veil-rgb` 切换，900ms 交叉淡化；颗粒用原创无缝 PNG（≤16KB，light/dark 各一张）低透明度平铺。`prefers-reduced-motion` 或省电模式冻结为静态首帧。WebGL 移植仍排到 v0.2。
+
+理由：参考站「深度不是 elevation 而是真实层叠」——场景在纸面后面；纯渐变 + 静态小图无 filter/shader 成本，移动端可控，也让无 JS 时正文仍可读。
+
+后果：P2 层序与 z 索引由 `--wf-z-*` 固定；全屏纸光/颗粒的性能假设由 `surface.html` spike 验证；Canvas 2D 代码保持小体积，不引入 shader。
+
+### D9-R 字体角色与子集化（supersedes D9）
+
+**状态：已确认**（2026-10-20，字体 A/B spike 与 `design-contract` change）。
+
+决定：字体最终定为 **Newsreader**（衬线：display / title / reading，latin 子集 + 真斜体）与 **Commit Mono**（等宽：body / ui / form / label / code，400/700），两者均 OFL，随主题自托管 latin 子集 woff2；中文一律系统回退（`Noto Serif SC` / `Noto Sans Mono CJK SC`），不打包 CJK。主题暴露 `--wf-font-serif` / `--wf-font-mono` 供站点用自持字体覆盖（这是唯一允许的字体偏差来源）。Source Serif 4 只作 A/B 对照，不采用、不进入仓库；PlantinNow / Plantin 与 Departure Mono 禁止进入仓库与构建产物。字体文件总量 ≤300KB，发布方式为 `resources.Get` → `fingerprint` → `.RelPermalink` + `<link rel="preload">`（AST-14/AST-02），OFL 文本与字体同目录（AST-15），integrity 时同写 `crossorigin`（AST-04）。
+
+理由：Newsreader 更接近 Plantin 的书卷气质，latin 子集体积约为 Source Serif 4 的 1/2.7；Commit Mono 的 OFL 许可与版权行明确；CJK 打包体积不可接受。
+
+后果：Source Serif 4 从「待定项」移除；字体产物由 `assets/fonts/` 入库并在 `CREDITS.md` 记录版权/许可/来源；站点换字体只能通过 `--wf-font-*`，不许改主题字体文件。
+
+### D16-R 设计契约落点移到仓库根（supersedes D16）
+
+**状态：已确认**（2026-10-20，`design-contract` change）。
+
+决定：设计契约的落点改为：仓库根 `DESIGN.md` 是设计契约的**唯一权威**（8 章 + YAML frontmatter：13 色 / 8 排版角色 / 2 圆角 / 11 间距 / 20 组件键）；`.impeccable/design.json` 是其 machine-readable sidecar（schemaVersion 2，OKLCH 色阶 + 阴影/动效/断点扩展 + 9 个 `wf-` 组件片段），`DESIGN.md` 改动必须重生成 sidecar，漂移由 `scripts/check-assets.mjs` 判失败；`docs/design/tokens.css` 是浏览器实际消费的 `--wf-*` 令牌；`docs/design/transfer-matrix.md`、`docs/design/reference/`、`docs/design/spikes/` 是证据与原型；`docs/handoff/` 放会话交接。原 D16 中「`docs/design/` 放 `DESIGN.md`」的安排废止。
+
+理由：契约文件放在仓库根才能被工具与 CI 默认发现；`docs/` 只留证据、原型与交接，避免「哪个 DESIGN.md 才算数」的歧义。
+
+后果：`AGENTS.md` 的设计文档指针同步改到根 `DESIGN.md` + sidecar；P2 消费 `docs/design/tokens.css` 时移到 `assets/css/tokens.css` 并删除 docs 副本；本文档 D10/D12 中引用设计文档路径的句子按本修订理解。
+
 ## 待定项
 
 | 项 | 需要谁定 | 影响 |
 | --- | --- | --- |
 | 主题最终显示名（沿用 `waitforit` 还是另起） | 用户 | 目录名、`theme` 值、params 命名空间 |
 | 版权行（LICENSE 的 copyright 主体） | 用户 | LICENSE 与发布包 |
-| 正文字体（Newsreader vs Source Serif 4） | P1 排版 spike 结果 | 字体子集、视觉基线 |
+| 正文字体（已定：Newsreader，见 D9-R） | 无需再定 | 字体子集、视觉基线 |
 | 是否投递 themes.gohugo.io | 用户 | 截图规格、`theme.toml` 维护成本 |

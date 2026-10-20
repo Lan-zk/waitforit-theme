@@ -51,12 +51,14 @@
 - 语义角色映射保持参考系统不变：`display|title|reading` → `--wf-font-serif`；`body|ui|form|label|code` → `--wf-font-mono`；同时暴露 `--wf-font-serif` / `--wf-font-mono` 供站点覆盖（站点若自持 Plantin，可 1:1 获得参考观感）。
 - **替代方案与否决**：Departure Mono 虽为 OFL 且许可允许随包，但被 `AGENTS.md` 明令禁止（避免克隆观感），用户选择保持该边界 → 等宽改 Commit Mono；Source Serif 4（OFL，VF 1.15MB）作为衬线备选，但 Newsreader 更接近 Plantin 的书卷感且体积小 2.7 倍；Plantin Now 许可仅限站点，不可分发。
 - **P2 落地约束**：字体必须由模板显式发布——`resources.Get "fonts/*.woff2"` → `fingerprint` → `.RelPermalink` 写进 `<link rel="preload">`，只写在 CSS `url()` 里不会产出文件（AST-01/AST-02/AST-14）；许可文本与字体同目录随包（AST-15）。
+- **Spike 4.1 回填（已实测）**：四组合（Newsreader/Source Serif 4 × Commit Mono/系统 mono）字体加载均 2/2，1440 与 390 均无横向溢出；A/B 字面差异主要在 display/title 尺寸可辨，reading 尺寸行宽与可读性接近，Source Serif 4 需额外 99,008B 临时字体仅作对照；系统 mono（Windows Consolas）在 code 行字面与宽度明显不同且无真 700。结论：维持本决策；证据 `docs/design/spikes/shots/font-ab-*.png` 与 `docs/design/spikes/README.md`。
 
 ### D2 场景层：Canvas 2D 线场，WebGL 延后
 
 - v1 用 Canvas 2D 绘制原创海面线场（正弦波线组 + 稀疏点光 + 视差），完全由令牌参数化（海平线位置、振幅、周期、光点密度、纸光强度），单文件、无依赖，`prefers-reduced-motion` 时冻结为首帧。
 - 参考站点的 WebGL shader 有物理相机与星光层，复刻它不属于 P1 价值；Canvas 2D 能证明「场景层在页下、纸光在场景上」这一结构成立即可。
 - **替代方案**：直接 WebGL（复杂度/移动端性能/无障碍成本过高，v0.2 再评估）；静态 PNG 场景（失去「场景常动、纸面安静」的对比叙事）；不实现场景只留纸光（失去唯一真实深度来源）。
+- **Spike 4.2 回填（已实测）**：Canvas 2D 线场在 1440/390 均无横向溢出；`prefers-reduced-motion: reduce` 下只绘制静态首帧、rAF 循环不启动（实测 0 动画帧持续刷新）。证据 `docs/design/spikes/shots/surface-*.png` 与 `docs/design/spikes/README.md`。
 
 ### D3 表面三层与纸光参数
 
@@ -64,12 +66,14 @@
 - 纸光用 CSS 多重 `radial-gradient`（`ellipse 72% 115% at 50% 48%`，纸色 `.985` 中心 → `0` 于 `96%`），light/night 两套令牌值 + 900ms 交叉淡化；断点移动光心（桌面居中偏下、移动端上移）。
 - 颗粒用**静态原创平铺 PNG**（≤16KB，8-bit 灰度、低对比）而非运行时 `filter`/`feTurbulence`；参考站的 `paper.png`（260px seamless）仅作纹理观感参考，字节不复制。
 - **替代方案**：复制 `paper.png`/`paper-dark.png`（版权；且它们是「chrome 面板纹理」而非页面表面）；CSS 实时噪声（移动端整屏 filter 掉帧）；不设颗粒（纸光过于干净，丢掉「纸」的质感）。
+- **Spike 4.2 回填（已实测）**：日间 `--wf-ink` `#353431`/`--wf-paper` `#faf9f6`/`--wf-veil-rgb` `250 249 246`，夜间 `#2e2d2b`/`46 45 43`，≤520 光心移到 `50% 40%`；主题切换在 6→938ms 内把 veil 通道从 250 249 246 连续插值到 46 45 43（59 帧采样，约 900ms 交叉淡化成立），且纸光/场景/颗粒共用同一时钟；grain light/dark 均为 120px 平铺、透明度 .06/.08。证据 `docs/design/spikes/shots/surface-*.png` 与 `docs/design/spikes/README.md`。
 
 ### D4 动效：令牌时长 + CSS transition，View Transitions 渐进增强
 
 - 时长令牌：页面纵向过渡 520ms/220ms、主题交叉淡化 900ms、入场 300ms、移动菜单 240ms/180ms、订阅确认扫光 720ms；缓动沿用参考系统（ease-out 系）。
 - 实现只用 CSS `transition`，页面切换在支持 `View Transitions API` 时增强，不支持时退化为淡入淡出；`prefers-reduced-motion: reduce` 下位移/缩放/视差一律归零，仅保留即时状态切换。
 - **替代方案**：引入 JS 动效库（新增依赖，违背 KISS 与上游无 bundler 的取向）；纯瞬时切换（失去纵向过渡的「翻信」隐喻）。
+- **Spike 4.3 回填（已实测）**：`transitionend` 实测 入场 300/300、页面进入 520/520、退出 220/220、星形 hover 180/180、菜单开 240/240、关 180/180 ms（声明值 vs 实测 `elapsedTime` 逐项一致，墙钟差 ≤5.3ms）；把 `--wf-motion-entrance` 用 URL 覆盖为 1200ms 后实测同步变为 1200ms（其余五项不变，证明动效读令牌而非硬编码）；`reduce` 下声明与实测均为 0ms、星形 `transform` 为 `none`。证据 `docs/design/spikes/shots/motion-*.png` 与 `docs/design/spikes/README.md`。
 - **P2 落点**：5 类页面分别对应 `home.html`、`page.html`、`section.html`、`posts/page.html`、根 `404.html`（TPL-05、TPL-12）；场景层与纸光在 `baseof.html` 中一次性挂载，不按页面重复实现。
 
 ### D5 令牌文件与最终落点

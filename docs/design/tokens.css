@@ -1,0 +1,213 @@
+/*
+ * waitforit-theme 设计令牌（P1 唯一来源）
+ *
+ * 迁移约定：P2 把本文件原样移入 `assets/css/tokens.css` 并删除 docs 副本（见 docs/decisions.md D16 与
+ * docs/handoff/）。届时两处需要同步改路径：
+ *   - 颗粒图 `url()` 相对路径：docs/design/ → `../../assets/images/`，assets/css/ → `../images/`（AST-08）。
+ *   - 字体由模板显式 `resources.Get` → `fingerprint` → `.RelPermalink` 发布并 `<link rel="preload">`（AST-14/AST-02），
+ *     字体 `@font-face` 不写在本文件里（spike 与 P2 模板各自声明），避免资源管线重写问题。
+ *
+ * 断点（CSS 变量不能用于媒体查询，此处仅作文档常量；模板/样式中直接写字面值）：
+ *   --wf-bp-mobile: 520px   --wf-bp-tablet: 800px   --wf-bp-desktop: 1100px
+ *   框架 ≤800 → 40px，≤520 → 28px；内容列 ≤800 → 680px，801–1100 → min(680px, calc(100vw - 360px))；触控目标 ≥44px。
+ */
+
+:root {
+  /* ---------- 颜色：13 个采纳令牌（参考 DESIGN.md frontmatter 原值） ---------- */
+  --wf-ink: #353431;
+  --wf-muted-ink: rgba(25, 24, 22, 0.6);
+  --wf-hairline: rgba(39, 37, 34, 0.18);
+  --wf-paper: #faf9f6;
+  --wf-pure-white: #ffffff;
+  --wf-night-ink: rgba(240, 240, 240, 0.8);
+  --wf-night-bright: #ffffff;
+  --wf-night-muted: rgba(240, 240, 240, 0.6);
+  --wf-night-hairline: rgba(244, 242, 238, 0.18);
+  --wf-night-paper: #2e2d2b;
+  --wf-moonlight: rgba(255, 255, 255, 0.95);
+  --wf-chrome-scrim: rgba(30, 30, 30, 0.95);
+  --wf-star-dark: #1c1b1a;
+
+  /* 星形与当前主题的映射（light 用 ink 星；night 用 moonlight 星） */
+  --wf-star: var(--wf-star-dark);
+
+  /* ---------- 纸光：径向渐变的形状、光心、透明度与停点 ---------- */
+  --wf-veil-rgb: 250 249 246; /* light 纸色 250 249 246；night 反转 46 45 43 */
+  --wf-veil-size: 72% 115%;
+  --wf-veil-position: 50% 48%;
+  --wf-veil-stop-center: 0%;
+  --wf-veil-stop-solid: 45%;
+  --wf-veil-stop-mid: 54%;
+  --wf-veil-stop-far: 67%;
+  --wf-veil-stop-near: 80%;
+  --wf-veil-stop-end: 96%;
+  --wf-veil-alpha-center: 0.985;
+  --wf-veil-alpha-mid: 0.96;
+  --wf-veil-alpha-far: 0.68;
+  --wf-veil-alpha-near: 0.28;
+  --wf-veil-alpha-end: 0;
+
+  /* ---------- 颗粒：静态平铺 PNG 参数（图由 spike/P2 主题 CSS 指向） ---------- */
+  --wf-grain-image: url("../../assets/images/grain-light.png");
+  --wf-grain-size: 120px;
+  --wf-grain-opacity: 0.06;
+  --wf-grain-blend: normal;
+
+  /* ---------- 层序：场景 → 纸光 → 颗粒 → 框架（D3） ---------- */
+  --wf-z-scene: 0;
+  --wf-z-veil: 1;
+  --wf-z-grain: 2;
+  --wf-z-frame: 3;
+
+  /* ---------- 字体族：只允许两族，`--wf-font-*` 供站点级覆盖 ---------- */
+  --wf-font-serif: "Newsreader", "Noto Serif SC", "Songti SC", "Source Han Serif SC", Georgia,
+    "Times New Roman", serif;
+  --wf-font-mono: "Commit Mono", "Noto Sans Mono CJK SC", "Sarasa Mono SC", ui-monospace,
+    "SFMono-Regular", Menlo, monospace;
+
+  /* ---------- 排版角色：display/title/reading（衬线）+ body/ui/form/label/code（等宽） ---------- */
+  --wf-type-weight: 400;
+  --wf-type-tracking: 0;
+
+  --wf-type-display-family: var(--wf-font-serif);
+  --wf-type-display-size: clamp(1.25rem, 0.875rem + 1.5vw, 2.5rem);
+  --wf-type-display-line: 1.15;
+
+  --wf-type-title-family: var(--wf-font-serif);
+  --wf-type-title-size: 1.25rem;
+  --wf-type-title-line: 1.15;
+
+  --wf-type-reading-family: var(--wf-font-serif);
+  --wf-type-reading-size: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);
+  --wf-type-reading-line: 1.6;
+
+  --wf-type-body-family: var(--wf-font-mono);
+  --wf-type-body-size: 0.9375rem;
+  --wf-type-body-line: 1.6;
+
+  --wf-type-ui-family: var(--wf-font-mono);
+  --wf-type-ui-size: 0.9375rem;
+  --wf-type-ui-line: 1.25;
+
+  --wf-type-form-family: var(--wf-font-mono);
+  --wf-type-form-size: 0.9375rem;
+  --wf-type-form-line: 1.6;
+
+  --wf-type-label-family: var(--wf-font-mono);
+  --wf-type-label-size: 0.8125rem;
+  --wf-type-label-line: 1.25;
+
+  --wf-type-code-family: var(--wf-font-mono);
+  --wf-type-code-size: 0.8125rem;
+  --wf-type-code-line: 1.846;
+
+  /* ---------- 间距：11 个 spacing 条目 = 7 个基础间距 + horizon-gap + 布局三处
+     （frame / page-top / page-bottom 见下节；hair 1px 已并入 hairline 颜色，不单列） ---------- */
+  --wf-space-xs: 6px;
+  --wf-space-sm: 8px;
+  --wf-space-md: 10px;
+  --wf-space-lg: 16px;
+  --wf-space-xl: 20px;
+  --wf-space-section: 24px;
+  --wf-space-block: 28px;
+  --wf-space-horizon-gap: 2.5rem;
+
+  /* ---------- 布局：框架、页边距、内容列、海平线 ---------- */
+  --wf-frame-block: 75px;
+  --wf-page-top: calc(var(--wf-frame-block) + 76px);
+  --wf-page-bottom: calc(var(--wf-frame-block) + 100px);
+  --wf-measure: min(100%, 760px);
+  --wf-horizon: 39.4309vh;
+  --wf-tap-target: 44px;
+
+  /* ---------- 圆角：2 个（menu / key）；其余为 0 ---------- */
+  --wf-radius-menu: 4px;
+  --wf-radius-key: 5px;
+
+  /* ---------- 动效时长与缓动（D4） ---------- */
+  --wf-motion-page-enter: 520ms;
+  --wf-motion-page-exit: 220ms;
+  --wf-motion-theme: 900ms;
+  --wf-motion-entrance: 300ms;
+  --wf-motion-menu-open: 240ms;
+  --wf-motion-menu-close: 180ms;
+  --wf-motion-subscribe: 720ms;
+  --wf-motion-hover: 180ms;
+  --wf-ease: cubic-bezier(0.333333, 0, 0.666667, 1);
+
+  /* ---------- 组件尺寸（对用 DESIGN.md frontmatter 的 components 键） ---------- */
+  --wf-logo-center: 125px;
+  --wf-logo-corner: 32px;
+  --wf-nav-star: 15px;
+  --wf-theme-toggle-padding: 6px 10px;
+  --wf-lang-menu-width: 160px;
+  --wf-lang-item-padding: 8px 16px;
+  --wf-disclosure-chevron: 7px;
+
+  /* ---------- 焦点可见性（a11y 基线） ---------- */
+  --wf-focus-width: 1px;
+  --wf-focus-offset: 3px;
+}
+
+/* ---------- 主题反转：night 只换令牌值，不改结构 ---------- */
+[data-theme="night"] {
+  --wf-ink: var(--wf-night-ink);
+  --wf-muted-ink: var(--wf-night-muted);
+  --wf-hairline: var(--wf-night-hairline);
+  --wf-paper: var(--wf-night-paper);
+  --wf-star: var(--wf-moonlight);
+  --wf-veil-rgb: 46 45 43;
+  --wf-grain-image: url("../../assets/images/grain-dark.png");
+  --wf-grain-opacity: 0.08;
+}
+
+/* auto 模式：无 data-theme 或 data-theme="auto" 时跟随系统；显式 day/night 优先 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="day"]):not([data-theme="night"]),
+  :root[data-theme="auto"] {
+    --wf-ink: var(--wf-night-ink);
+    --wf-muted-ink: var(--wf-night-muted);
+    --wf-hairline: var(--wf-night-hairline);
+    --wf-paper: var(--wf-night-paper);
+    --wf-star: var(--wf-moonlight);
+    --wf-veil-rgb: 46 45 43;
+    --wf-grain-image: url("../../assets/images/grain-dark.png");
+    --wf-grain-opacity: 0.08;
+  }
+}
+
+/* 断点布局：框架与内容列随视口变化（光心在 520 以下上移，见 D3/D7） */
+@media (max-width: 800px) {
+  :root {
+    --wf-frame-block: 40px;
+    --wf-measure: 680px;
+    --wf-type-display-size: clamp(1.25rem, 0.75rem + 3vw, 2rem);
+  }
+}
+
+@media (min-width: 801px) and (max-width: 1100px) {
+  :root {
+    --wf-measure: min(680px, calc(100vw - 360px));
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --wf-frame-block: 28px;
+    --wf-veil-position: 50% 40%;
+  }
+}
+
+/* 减少动效：令牌归零，位移/缩放/视差由消费方禁用（D4 / 规范「动效时序与降级」） */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --wf-motion-page-enter: 0ms;
+    --wf-motion-page-exit: 0ms;
+    --wf-motion-theme: 0ms;
+    --wf-motion-entrance: 0ms;
+    --wf-motion-menu-open: 0ms;
+    --wf-motion-menu-close: 0ms;
+    --wf-motion-subscribe: 0ms;
+    --wf-motion-hover: 0ms;
+  }
+}
