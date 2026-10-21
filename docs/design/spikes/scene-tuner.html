@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="day">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resting Lamb · 场景调参</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/tune/tokens.css">
+<style>
+:root { color-scheme: light; font-family: ui-sans-serif, system-ui, sans-serif; color: var(--wf-ink); background: color-mix(in srgb, var(--wf-paper) 88%, var(--wf-ink)); font-size: 13px; }
+* { box-sizing: border-box; }
+body { margin: 0; height: 100dvh; display: grid; grid-template: 60px minmax(0, 1fr) / minmax(0, 1fr) 340px; }
+header { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: var(--wf-paper); border-bottom: 1px solid var(--wf-hairline); gap: 12px; }
+h1 { margin: 0; font: 500 18px Georgia, serif; }
+h1 span { margin-left: 12px; font: 12px ui-sans-serif, system-ui, sans-serif; color: var(--wf-muted-ink); }
+button, select, textarea, input { font: inherit; color: inherit; }
+button, select { min-height: 36px; border: 1px solid var(--wf-hairline); background: var(--wf-paper); padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+button:hover { background: color-mix(in srgb, var(--wf-paper) 92%, var(--wf-ink)); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--wf-ink); outline-offset: 2px; }
+#stage { position: relative; overflow: hidden; display: grid; place-items: center; min-width: 0; padding: 24px; }
+#frame-box { position: relative; flex: none; box-shadow: 0 5px 26px var(--wf-hairline); background: var(--wf-paper); }
+iframe { border: 0; display: block; position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#viewport-note { position: absolute; bottom: 7px; left: 16px; color: var(--wf-muted-ink); font-size: 11px; }
+aside { overflow-y: auto; padding: 20px 22px 32px; background: var(--wf-paper); border-left: 1px solid var(--wf-hairline); }
+.intro { margin: 0 0 18px; color: var(--wf-muted-ink); line-height: 1.7; font-size: 12px; }
+fieldset { border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+legend { padding: 0 0 8px; margin-bottom: 8px; width: 100%; border-bottom: 1px solid var(--wf-hairline); font-weight: 600; font-size: 13px; }
+.control { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 5px 8px; margin: 0 0 13px; }
+.control label { font-size: 12px; }
+.control output { color: var(--wf-ink); font-variant-numeric: tabular-nums; font-size: 12px; }
+.control input { grid-column: 1 / -1; width: 100%; accent-color: var(--wf-ink); margin: 0; cursor: pointer; min-height: 20px; }
+.row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.row label { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+#status { min-height: 34px; margin: 12px 0 0; line-height: 1.5; color: var(--wf-ink); font-size: 12px; }
+textarea { width: 100%; height: 148px; resize: vertical; border: 1px solid var(--wf-hairline); border-radius: 4px; padding: 9px; background: var(--wf-pure-white); font: 11px/1.5 ui-monospace, monospace; }
+summary { cursor: pointer; padding: 8px 0; }
+.primary { background: var(--wf-ink); border-color: var(--wf-ink); color: var(--wf-paper); }
+.primary:hover { background: var(--wf-star-dark); }
+body.collapsed { grid-template-columns: minmax(0, 1fr) 0; }
+body.collapsed aside { display: none; }
+@media (max-width: 720px) {
+  body { grid-template: 104px minmax(240px, 48dvh) minmax(0, 1fr) / 1fr; overflow: auto; height: auto; min-height: 100dvh; }
+  header { display: grid; padding: 8px 12px; gap: 4px; } header > .row { flex-wrap: nowrap; } header select, header button { font-size: 11px; padding: 6px 8px; } h1 span { display: none; }
+  aside { border-left: 0; border-top: 1px solid var(--wf-hairline); }
+  body.collapsed { grid-template-columns: 1fr; grid-template-rows: 104px calc(100dvh - 104px); }
+}
+</style>
+</head>
+<body>
+<header><h1>Resting Lamb <span>场景微调 · 本地预览</span></h1><div class="row"><select id="viewport" aria-label="预览尺寸"><option value="desktop">桌面 1440 × 900</option><option value="mobile">手机 390 × 844</option></select><select id="theme" aria-label="昼夜"><option value="day">白昼</option><option value="night">夜晚</option></select><button id="collapse" aria-expanded="true" aria-controls="panel">收起面板</button></div></header>
+<main id="stage"><div id="frame-box"><iframe id="preview" title="实际主题场景预览" src="/"></iframe></div><div id="viewport-note"></div></main>
+<aside id="panel">
+<p class="intro">拖动滑块即可实时预览。草与水共享风的方向、强弱和周期。满意后复制参数发给我，即可写入主题默认值。</p>
+<div id="controls"></div>
+<fieldset><legend>预览</legend><div class="row"><label><input id="scene-only" type="checkbox">仅看景物</label><label><input id="still" type="checkbox">暂停观察</label><button id="reset">恢复默认</button></div></fieldset>
+<fieldset><legend>保存与交接</legend><div class="row"><button id="copy" class="primary">复制参数</button><button id="download">下载 JSON</button></div><p id="status" role="status" aria-live="polite">参数自动保存在当前浏览器，可随时恢复默认。</p><details><summary>查看 / 粘贴参数 JSON</summary><textarea id="json" aria-label="参数 JSON" spellcheck="false"></textarea><div class="row"><button id="import">应用 JSON</button><label>或导入文件 <input id="file" type="file" accept=".json,application/json" style="max-width:170px"></label></div></details></fieldset>
+</aside>
+<script>
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  // 数值与单位一并导出；范围限制只属于此本地工具，不改变主题的默认设置。
+  const groups = [
+    ['溪流', [
+      ['stream-width', '前景宽度', 26.5, 4, 48, 0.5, 'vw'],
+      ['stream-origin', '远端横向位置', 66.5, 35, 85, 0.5, '%'],
+      ['stream-drift', '近端横向偏移', 13.5, -25, 30, 0.5, '%'],
+      ['stream-bend', '弯曲幅度', 9.5, 0, 18, 0.5, '%'],
+      ['stream-curve', '弯曲节奏', 5.3, 1, 12, 0.1, ''],
+      ['shore-softness', '岸边融合宽度', 25, 2, 60, 1, 'px'],
+      ['stream-amplitude', '水波起伏', 0.4, 0, 1.5, 0.05, 'vh']
+    ]],
+    ['青草地', [
+      ['grass-density', '草簇密度', 1.45, 0, 3, 0.05, ''],
+      ['grass-height', '草高', 1.3, 0.2, 3, 0.05, ''],
+      ['grass-sway', '草梢摆幅', 12, 0, 24, 0.5, 'px']
+    ]],
+    ['共同的风', [
+      ['wind-strength', '风力', 1, 0, 2.5, 0.05, ''],
+      ['motion-wind-cycle', '风的基础周期 · 越长越慢', 12, 4, 40, 0.5, 's']
+    ]],
+    ['构图与浓淡', [
+      ['horizon', '地平线高度 · 距顶部', 55, 40, 78, 1, 'vh'],
+      ['scene-opacity-far', '远景浓度', 0.13, 0, 0.35, 0.01, ''],
+      ['scene-opacity-near', '近景浓度', 0.3, 0.05, 0.7, 0.01, '']
+    ]]
+  ];
+  const defs = groups.flatMap(g => g[1]);
+  const defaults = Object.fromEntries(defs.map(d => ['--wf-' + d[0], d[2] + d[6]]));
+  defaults['--wf-wind-direction'] = '1';
+  const storageKey = 'wf-scene-tuner-v1';
+  let css = { ...defaults }, ready = false, scheduled = false;
+  const frame = $('preview');
+  function report(message) { $('status').textContent = message; }
+  function payload() { return { version: 1, css: { ...css }, theme: $('theme').value, viewport: $('viewport').value }; }
+  function save() {
+    const json = JSON.stringify(payload(), null, 2);
+    $('json').value = json;
+    try { localStorage.setItem(storageKey, json); } catch { /* 禁用存储时仍能复制与下载。 */ }
+    return json;
+  }
+  function fit() {
+    const mobile = $('viewport').value === 'mobile';
+    const width = mobile ? 390 : 1440, height = mobile ? 844 : 900;
+    const stage = $('stage');
+    const scale = Math.min(1, Math.max(0.1, (stage.clientWidth - 48) / width), Math.max(0.1, (stage.clientHeight - 48) / height));
+    frame.style.width = width + 'px'; frame.style.height = height + 'px';
+    frame.style.transform = 'scale(' + scale + ')';
+    $('frame-box').style.width = width * scale + 'px'; $('frame-box').style.height = height * scale + 'px';
+    $('viewport-note').textContent = width + ' × ' + height + ' · ' + Math.round(scale * 100) + '% 缩放';
+  }
+  function apply() {
+    if (!ready) { return; }
+    const root = frame.contentDocument.documentElement;
+    for (const [key, value] of Object.entries(css)) { root.style.setProperty(key, value); }
+    root.style.setProperty('--wf-motion-wind-cycle', $('still').checked ? '0ms' : css['--wf-motion-wind-cycle']);
+    root.dataset.theme = $('theme').value;
+    root.classList.toggle('tuner-scene-only', $('scene-only').checked);
+    frame.contentWindow.dispatchEvent(new Event('wf:scene-update'));
+    const reduce = frame.contentWindow.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { report('系统开启了减少动态效果，预览遵循系统偏好并保持静态。'); }
+  }
+  function schedule() {
+    save();
+    if (scheduled) { return; }
+    scheduled = true;
+    requestAnimationFrame(() => { scheduled = false; apply(); });
+  }
+  function display(d, value) {
+    return value + (d[6] || (d[0] === 'stream-curve' ? ' rad' : d[0].startsWith('scene-opacity') ? '' : ' ×'));
+  }
+  function syncControls() {
+    for (const d of defs) {
+      const value = parseFloat(css['--wf-' + d[0]]);
+      $(d[0]).value = value; $(d[0] + '-value').textContent = display(d, value);
+    }
+    $('direction').value = css['--wf-wind-direction'];
+  }
+  function validate(data) {
+    if (!data || data.version !== 1 || !data.css || typeof data.css !== 'object' || Array.isArray(data.css)) { throw new Error('需要 version: 1 与 css 参数对象。'); }
+    const next = { ...defaults };
+    for (const [key, value] of Object.entries(data.css)) {
+      if (!Object.hasOwn(defaults, key) || typeof value !== 'string') { throw new Error('未知参数或格式错误：' + key); }
+      if (key === '--wf-wind-direction') {
+        if (value !== '1' && value !== '-1') { throw new Error('风向必须为 1 或 -1。'); }
+      } else {
+        const d = defs.find(d => key === '--wf-' + d[0]);
+        const n = Number(d[6] ? value.slice(0, -d[6].length) : value);
+        if (!value.trim() || (d[6] && !value.endsWith(d[6])) || !Number.isFinite(n) || n < d[3] || n > d[4]) { throw new Error(d[1] + ' 的数值或单位超出范围。'); }
+      }
+      next[key] = value;
+    }
+    return next;
+  }
+  function importJSON(json) {
+    const data = JSON.parse(json), next = validate(data);
+    if (data.theme && !['day', 'night'].includes(data.theme)) { throw new Error('未知昼夜模式。'); }
+    if (data.viewport && !['desktop', 'mobile'].includes(data.viewport)) { throw new Error('未知预览尺寸。'); }
+    css = next;
+    $('theme').value = data.theme || 'day'; $('viewport').value = data.viewport || 'desktop';
+    syncControls(); fit(); schedule(); report('参数已应用，可继续微调。');
+  }
+  for (const [name, items] of groups) {
+    const group = document.createElement('fieldset');
+    const legend = document.createElement('legend'); legend.textContent = name; group.append(legend);
+    for (const d of items) {
+      const wrap = document.createElement('div'); wrap.className = 'control';
+      const label = document.createElement('label'); label.htmlFor = d[0]; label.textContent = d[1];
+      const output = document.createElement('output'); output.id = d[0] + '-value'; output.htmlFor = d[0];
+      const input = document.createElement('input'); input.type = 'range'; input.id = d[0]; input.min = d[3]; input.max = d[4]; input.step = d[5]; input.value = d[2];
+      input.addEventListener('input', () => { css['--wf-' + d[0]] = input.value + d[6]; output.textContent = display(d, input.value); schedule(); });
+      wrap.append(label, output, input); group.append(wrap);
+    }
+    if (name === '共同的风') {
+      const label = document.createElement('label'); label.textContent = '风向 '; label.htmlFor = 'direction';
+      const select = document.createElement('select'); select.id = 'direction';
+      for (const [value, text] of [['1', '向右 →'], ['-1', '向左 ←']]) { const option = document.createElement('option'); option.value = value; option.textContent = text; select.append(option); }
+      select.addEventListener('change', () => { css['--wf-wind-direction'] = select.value; schedule(); });
+      label.append(select); group.append(label);
+    }
+    $('controls').append(group);
+  }
+  $('theme').addEventListener('change', schedule);
+  $('viewport').addEventListener('change', () => { fit(); schedule(); });
+  $('scene-only').addEventListener('change', apply); $('still').addEventListener('change', apply);
+  $('collapse').addEventListener('click', () => {
+    const collapsed = document.body.classList.toggle('collapsed');
+    $('collapse').textContent = collapsed ? '展开面板' : '收起面板'; $('collapse').setAttribute('aria-expanded', String(!collapsed)); fit();
+  });
+  $('reset').addEventListener('click', () => { css = { ...defaults }; $('still').checked = false; syncControls(); schedule(); report('已恢复主题默认参数。'); });
+  $('copy').addEventListener('click', async () => {
+    const json = save();
+    try { await navigator.clipboard.writeText(json); report('已复制。直接粘贴到聊天中即可。'); }
+    catch { $('json').closest('details').open = true; $('json').focus(); $('json').select(); report('浏览器未允许复制，请复制已选中的 JSON。'); }
+  });
+  $('download').addEventListener('click', () => {
+    const url = URL.createObjectURL(new Blob([save()], { type: 'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'resting-lamb-scene.json'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000); report('已导出 JSON，也可以直接复制参数发给我。');
+  });
+  $('import').addEventListener('click', () => { try { importJSON($('json').value); } catch (error) { report('未应用：' + error.message); } });
+  $('file').addEventListener('change', async () => {
+    const file = $('file').files[0]; if (!file) { return; }
+    try { importJSON(await file.text()); } catch (error) { report('未应用：' + error.message); }
+    $('file').value = '';
+  });
+  frame.addEventListener('load', () => {
+    ready = true;
+    const style = frame.contentDocument.createElement('style');
+    style.textContent = '.tuner-scene-only body > :not(.wf-surface):not(script) { visibility:hidden !important; }';
+    frame.contentDocument.head.append(style);
+    apply();
+  });
+  try { const stored = localStorage.getItem(storageKey); if (stored) { importJSON(stored); } } catch { report('无法读取之前的参数，已使用主题默认值。'); }
+  syncControls(); fit(); save();
+  new ResizeObserver(fit).observe($('stage'));
+})();
+</script>
+</body>
+</html>

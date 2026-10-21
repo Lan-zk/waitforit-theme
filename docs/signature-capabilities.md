@@ -1,16 +1,18 @@
 # P3 签名能力
 
-本轮能力已同步至 `openspec/specs/signature-experience/`，变更归档于 `openspec/changes/archive/2026-10-21-signature-capabilities/`。构建最低支持 Hugo 0.146.0，基线 0.168.0；主题构建不需要 Node、Chrome、extended 或网络。
+P3能力已同步至 `openspec/specs/signature-experience/`，变更归档于 `openspec/changes/archive/2026-10-21-signature-capabilities/`。Resting Lamb 场景替换已实现并同步主规范，活动变更为 `openspec/changes/resting-lamb-scene/`，新证据见 `docs/design/evidence/resting-lamb-scene/`。构建最低支持 Hugo 0.146.0，基线 0.168.0；主题构建不需要 Node、Chrome、extended 或网络。
 
 ## 配置与内容
 
 ```toml
 [params.waitforit.features]
-sea = true           # 默认开启；false 不加载 Canvas 或海面脚本
+scene = true           # 默认开启；false 不加载 Canvas 或场景脚本
 transitions = true   # 默认 false；exampleSite 开启，供审核
 ```
 
-海面为原创Canvas 2D透视高度场，远密近疏的波面带连续明暗；24秒漂移周期、近景幅度2.4vh、内部采样宽度最多640像素，最多24fps；减少动效、省流、后台与离页时静止，恢复时继续。省流检测以浏览器暴露的 `navigator.connection.saveData` 为准；没有标准电池省电状态检测，不能承诺自动识别所有 OS 省电模式。
+背景为原创 Canvas 2D 单色低伏草地与溪流。固定地形、岸线与草根，中近景草簇随同一空间风场成片弯曲、压低与回弹；共享12秒基础相位、标称草摆12 CSS px。水面复用原海面的三向交叉波/解析坡度，降低纹理频率、平衡三组受光贡献并错开相位，避免单向平行条带；同一风力控制水波偏移与强弱，不再独立计时。前景溪流约26.5vw、虚拟细波高度0.4vh；标称25px的浅水过渡随远近收窄，草根密度渐退、疏密贴岸草伸入水面，让两种材质交叠。静态地形缓存、共用昼夜几何，内部宽度最多640像素，最多24个逻辑帧/秒；小屏重新定位溪流。首页地面基准55vh、veil48–68vh渐退，阅读页保留完整径向纸光。
+
+减少动效、省流、后台与离页时停止循环；reduce/saveData呈现确定性首帧，偏好恢复后继续。省流检测以浏览器暴露的 `navigator.connection.saveData` 为准；不能承诺自动识别全部 OS 省电模式。`features.scene=false` 不输出画布与场景脚本；旧 `features.sea` 已移除。无 JS、Canvas 不可用或场景脚本失败时，正文/导航和纸光颗粒底面仍可用，不承诺静态景观。
 
 Markdown 围栏自动使用单色高亮和文字复制按钮。语言缺失或不支持时显示纯文本。行号选项被关闭，长行在代码内横滚。复制保留缩进、符号和尾换行；安全上下文/权限不允许 Clipboard 时，选中代码并显示本地化提示。禁用或加载不到代码脚本时按钮保持隐藏。
 
@@ -36,13 +38,13 @@ params:
 ```bash
 node scripts/check-assets.mjs
 node test/fidelity.mjs --url http://127.0.0.1:8798/ --build-root /path/to/public --out /tmp/wf-fidelity
-node test/sea-visibility.mjs --url http://127.0.0.1:8798/ --out /tmp/wf-sea-visibility
+node test/scene-visibility.mjs --url http://127.0.0.1:8798/ --out /tmp/wf-scene-visibility
 node test/probe.mjs --url http://127.0.0.1:8798/signature-check/ --width 390
 node test/signature.mjs --url http://127.0.0.1:8798/ --out /tmp/wf-signature-evidence
 ```
 
-可选 `--disabled-url` 指向 sea/transitions 均关闭的同一 fixture 构建，补查关闭路径。验收页面为 `/signature-check/`、`/zh/signature-check/` 和 `/og-check/`，均不出现在文章列表中。
+可选 `--disabled-url` 指向 scene/transitions 均关闭的同一 fixture 构建，补查关闭路径。验收页面为 `/signature-check/`、`/zh/signature-check/` 和 `/og-check/`，均不出现在文章列表中。
 
 实现依据：[Hugo code hook](https://gohugo.io/render-hooks/code-blocks/)、[HighlightCodeBlock](https://gohugo.io/functions/transform/highlightcodeblock/)、[原生跨文档转场](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document)。版本边界与实测见 Hugo 技能 TPL-22 及 P3 证据目录。
 
-首页首屏现在保留给居中主句和海面；文章列表与附加正文通过原生滚动继续访问，不删除内容。最新验收与实站差距见docs/design/evidence/p3-fidelity/README.md。
+首页首屏保留给居中主句和低伏草地/窄溪；文章列表与附加正文通过原生滚动继续访问，不删除内容。当前场景验收见 `docs/design/evidence/resting-lamb-scene/README.md`；P3海面与OG历史见 `docs/design/evidence/p3-fidelity/README.md`。

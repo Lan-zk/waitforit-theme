@@ -2,7 +2,7 @@
 # 键集合必须与 i18n/en.toml 完全一致；站点同名键覆盖主题值。
 
 [waitforit]
-  hero = "一封悬于手绘海面之上的信。"
+  hero = "一封安放在静水旁的信。"
   skip = "跳到正文"
 
   [waitforit.nav]

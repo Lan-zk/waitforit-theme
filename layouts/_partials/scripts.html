@@ -3,7 +3,7 @@
 {{- $ui := resources.Get "js/ui.js" | minify | fingerprint }}
   <script src="{{ $theme.RelPermalink }}" integrity="{{ $theme.Data.Integrity }}" crossorigin="anonymous" defer></script>
   <script src="{{ $ui.RelPermalink }}" integrity="{{ $ui.Data.Integrity }}" crossorigin="anonymous" data-wf-ui defer></script>
-{{- if site.Params.waitforit.features.sea }}
+{{- if site.Params.waitforit.features.scene }}
 {{- $scene := resources.Get "js/scene.js" | minify | fingerprint }}
   <script src="{{ $scene.RelPermalink }}" integrity="{{ $scene.Data.Integrity }}" crossorigin="anonymous" defer></script>
 {{- end }}

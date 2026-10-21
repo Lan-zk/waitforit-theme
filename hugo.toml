@@ -19,5 +19,5 @@
     # 页脚文案；空则取 i18n waitforit.footer.note
     footer = ""
     [params.waitforit.features]
-      sea = true
+      scene = true
       transitions = false

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "css": {
+    "--wf-stream-width": "26.5vw",
+    "--wf-stream-origin": "66.5%",
+    "--wf-stream-drift": "13.5%",
+    "--wf-stream-bend": "9.5%",
+    "--wf-stream-curve": "5.3",
+    "--wf-shore-softness": "25px",
+    "--wf-stream-amplitude": "0.4vh",
+    "--wf-grass-density": "1.45",
+    "--wf-grass-height": "1.3",
+    "--wf-grass-sway": "12px",
+    "--wf-wind-strength": "1",
+    "--wf-motion-wind-cycle": "12s",
+    "--wf-horizon": "55vh",
+    "--wf-scene-opacity-far": "0.13",
+    "--wf-scene-opacity-near": "0.3",
+    "--wf-wind-direction": "1"
+  },
+  "theme": "day",
+  "viewport": "desktop"
+}

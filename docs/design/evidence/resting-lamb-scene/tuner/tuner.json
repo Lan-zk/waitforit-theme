@@ -1,0 +1,73 @@
+[
+  {
+    "name": "actual-theme-preview",
+    "ok": true,
+    "detail": {
+      "sliders": 15,
+      "canvas": 640,
+      "viewport": 1440
+    }
+  },
+  {
+    "name": "live-canvas-change",
+    "ok": true,
+    "detail": {
+      "changed": true,
+      "width": "36vw"
+    }
+  },
+  {
+    "name": "mobile-night",
+    "ok": true,
+    "detail": {
+      "width": 390,
+      "height": 844,
+      "theme": "night"
+    }
+  },
+  {
+    "name": "reset",
+    "ok": true
+  },
+  {
+    "name": "json-roundtrip",
+    "ok": true
+  },
+  {
+    "name": "json-download",
+    "ok": true
+  },
+  {
+    "name": "invalid-import-preserves-parameters",
+    "ok": true
+  },
+  {
+    "name": "local-persistence",
+    "ok": true
+  },
+  {
+    "name": "clipboard-export",
+    "ok": true
+  },
+  {
+    "name": "reduced-motion-with-inline-cycle",
+    "ok": true
+  },
+  {
+    "name": "narrow-workbench",
+    "ok": true
+  },
+  {
+    "name": "collapse-panel",
+    "ok": true
+  },
+  {
+    "name": "ordinary-page-has-no-panel",
+    "ok": true
+  },
+  {
+    "name": "no-console-errors",
+    "ok": true,
+    "detail": []
+  }
+]

@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+// 本地调参工具：真实 iframe 重绘、参数往返、校验、下载及静态偏好。
+import fs from 'node:fs';
+import path from 'node:path';
+import { CdpSession, findBrowser, launchBrowser, shutdownBrowser, navigateAndWait, evaluateInPage, sleep, attachPageState } from './probe.mjs';
+const arg = (key, fallback) => process.argv.includes(key) ? process.argv[process.argv.indexOf(key) + 1] : fallback;
+const url = arg('--url', 'http://127.0.0.1:8821/tune/');
+const out = path.resolve(arg('--out', '/tmp/wf-scene-tuner'));
+fs.mkdirSync(out, { recursive: true });
+const browser = await launchBrowser({ browserPath: findBrowser().path, width: 1440, height: 1000 });
+const cdp = new CdpSession(browser.pageWs), checks = [];
+const check = (name, ok, detail) => { checks.push({ name, ok, detail }); };
+const ev = code => evaluateInPage(cdp, code);
+try {
+  await cdp.connect();
+  for (const domain of ['Page', 'Runtime', 'Network', 'Log']) { await cdp.send(domain + '.enable'); }
+  const state = attachPageState(cdp);
+  cdp.on('Log.entryAdded', p => { if (p.entry.level === 'error') { state.consoleErrors.push(p.entry.text + " " + (p.entry.url || "")); } });
+  await cdp.send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
+  await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await cdp.send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: out });
+  await navigateAndWait(cdp, url);
+  await sleep(500);
+  const initial = await ev(`({sliders:document.querySelectorAll('input[type=range]').length,canvas:document.querySelector('iframe').contentDocument.querySelector('canvas').width,viewport:document.querySelector('iframe').contentWindow.innerWidth})`);
+  check('actual-theme-preview', initial.sliders === 15 && initial.canvas === 640 && initial.viewport === 1440, initial);
+  check('defaults-match-theme-tokens', await ev(`Object.entries(JSON.parse(document.getElementById('json').value).css).every(([key,value])=>getComputedStyle(document.documentElement).getPropertyValue(key).trim()===value)`));
+  await ev(`document.getElementById('still').click();true`); await sleep(200);
+  const before = await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`);
+  await ev(`for(const [id,value] of [['stream-width','36'],['grass-density','1.8'],['stream-bend','12']]){const el=document.getElementById(id);el.value=value;el.dispatchEvent(new Event('input'));}true`); await sleep(300);
+  const changed = await ev(`({image:document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL(),width:document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--wf-stream-width')})`);
+  check('live-canvas-change', before !== changed.image && changed.width === '36vw', { changed: before !== changed.image, width: changed.width });
+  await ev(`document.getElementById('viewport').value='mobile';document.getElementById('viewport').dispatchEvent(new Event('change'));document.getElementById('theme').value='night';document.getElementById('theme').dispatchEvent(new Event('change'));true`); await sleep(1100);
+  const mode = await ev(`({width:document.querySelector('iframe').contentWindow.innerWidth,height:document.querySelector('iframe').contentWindow.innerHeight,theme:document.querySelector('iframe').contentDocument.documentElement.dataset.theme})`);
+  check('mobile-night', mode.width === 390 && mode.height === 844 && mode.theme === 'night', mode);
+  const exported = await ev(`document.getElementById('json').value`);
+  await ev(`document.getElementById('reset').click();true`); await sleep(200);
+  check('reset', await ev(`document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--wf-stream-width')==='26.5vw'`));
+  await ev(`document.getElementById('json').value=${JSON.stringify(exported)};document.getElementById('import').click();true`); await sleep(250);
+  check('json-roundtrip', await ev(`document.getElementById('json').value`) === exported);
+  await ev(`document.getElementById('download').click();true`); await sleep(300);
+  const downloaded = path.join(out, 'resting-lamb-scene.json');
+  check('json-download', fs.existsSync(downloaded) && fs.readFileSync(downloaded, 'utf8') === exported);
+  const invalid = JSON.parse(exported); invalid.css['--wf-stream-width'] = 'url(secret)';
+  await ev(`document.getElementById('json').value=${JSON.stringify(JSON.stringify(invalid))};document.getElementById('import').click();true`);
+  check('invalid-import-preserves-parameters', await ev(`document.getElementById('status').textContent.startsWith('未应用')&&document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--wf-stream-width')==='36vw'`));
+  await navigateAndWait(cdp, url); await sleep(300);
+  check('local-persistence', await ev(`document.getElementById('json').value`) === exported);
+  await cdp.send('Browser.grantPermissions', { permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'], origin: new URL(url).origin });
+  await cdp.send('Page.bringToFront');
+  await ev(`document.getElementById('copy').focus();document.getElementById('copy').click();true`); await sleep(200);
+  check('clipboard-export', await ev(`navigator.clipboard.readText()`) === exported);
+  await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }); await sleep(400);
+  const frozen = await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`); await sleep(400);
+  check('reduced-motion-with-inline-cycle', frozen === await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`));
+  await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await ev(`document.getElementById('viewport').value='desktop';document.getElementById('viewport').dispatchEvent(new Event('change'));document.getElementById('theme').value='day';document.getElementById('theme').dispatchEvent(new Event('change'));document.getElementById('reset').click();document.querySelector('aside').scrollTop=0;true`); await sleep(1200);
+  const shot = await cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+  fs.writeFileSync(path.join(out, 'tuner-1440.png'), Buffer.from(shot.data, 'base64'));
+  await cdp.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+  await ev(`document.getElementById('viewport').value='mobile';document.getElementById('viewport').dispatchEvent(new Event('change'));true`); await sleep(400);
+  check('narrow-workbench', await ev(`document.documentElement.scrollWidth===390&&document.querySelector('iframe').contentWindow.innerWidth===390`));
+  const narrow = await cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+  fs.writeFileSync(path.join(out, 'tuner-390.png'), Buffer.from(narrow.data, 'base64'));
+  await ev(`document.getElementById('collapse').click();true`); await sleep(100);
+  check('collapse-panel', await ev(`document.body.classList.contains('collapsed')&&document.documentElement.scrollWidth===390&&document.getElementById('collapse').getAttribute('aria-expanded')==='false'`));
+  await navigateAndWait(cdp, new URL('/', url).href);
+  check('ordinary-page-has-no-panel', await ev(`!document.getElementById('panel')&&!document.querySelector('iframe')&&!!document.querySelector('.wf-scene')`));
+  check('no-console-errors', state.consoleErrors.length === 0, state.consoleErrors);
+} finally {
+  cdp.close(); await shutdownBrowser(browser);
+  fs.writeFileSync(path.join(out, 'tuner.json'), JSON.stringify(checks, null, 2) + '\n');
+}
+console.log(JSON.stringify(checks, null, 2));
+process.exitCode = checks.some(c => !c.ok) ? 1 : 0;

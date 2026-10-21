@@ -19,10 +19,10 @@ defaultContentLanguageInSubdir = false
   [params.waitforit]
     brand = "The Night Post"
     defaultTheme = "auto"
-    hero = "Letters arrive when the tide does, and not before."
-    footer = "The Night Post · correspondence from a fictional coast"
+    hero = "Letters find us in quiet places."
+    footer = "The Night Post · correspondence from a quiet meadow"
     [params.waitforit.features]
-      sea = true
+      scene = true
       transitions = true
 
 [languages]
@@ -65,8 +65,8 @@ defaultContentLanguageInSubdir = false
       description = "一束虚构的通信，以铅字排出。"
     [languages.zh.params.waitforit]
       brand = "夜邮"
-      hero = "信随潮水抵达，不早于潮水。"
-      footer = "夜邮 · 来自虚构海岸的通信"
+      hero = "信，在安静处抵达。"
+      footer = "夜邮 · 来自虚构草地的通信"
     [[languages.zh.menus.main]]
       name = "信件"
       pageRef = "/posts"

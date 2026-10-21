@@ -6,7 +6,7 @@ import { CdpSession, attachPageState, evaluateInPage, findBrowser, launchBrowser
 const arg = (key, fallback) => process.argv.includes(key) ? process.argv[process.argv.indexOf(key) + 1] : fallback;
 const base = arg('--url', 'http://127.0.0.1:8798/');
 const disabled = arg('--disabled-url', null);
-const out = path.resolve(arg('--out', 'docs/design/evidence/p3-signature'));
+const out = path.resolve(arg('--out', '/tmp/wf-signature'));
 fs.mkdirSync(out, { recursive: true });
 const results = [];
 const check = (name, ok, detail) => { results.push({ name, ok: Boolean(ok), detail }); if (!ok) { console.error('FAIL', name, detail); } };
@@ -21,8 +21,9 @@ try {
   const go = (p) => navigateAndWait(cdp, url(p), { state });
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
     window.wfDraws=0;
-    const clear=CanvasRenderingContext2D.prototype.putImageData;
-    CanvasRenderingContext2D.prototype.putImageData=function(...args){window.wfDraws++;return clear.apply(this,args);};
+    // 每次 day 画布复合静态缓存即一逻辑帧；不统计 night 或草叶 path。
+    const draw=CanvasRenderingContext2D.prototype.drawImage;
+    CanvasRenderingContext2D.prototype.drawImage=function(...args){if(this.canvas.matches('[data-wf-canvas="day"]')&&args[0].width===this.canvas.width&&args[0].height===this.canvas.height){window.wfDraws++;}return draw.apply(this,args);};
     window.wfTransition=null;
     addEventListener('pagereveal',event=>{
       window.wfTransition={active:!!event.viewTransition};
@@ -31,11 +32,12 @@ try {
       }).catch(()=>{});}
     });
   ` });
+  await cdp.send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
   await go('signature-check/');
-  const before = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL()})`);
+  const before = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),hidden:document.hidden,reduce:matchMedia('(prefers-reduced-motion: reduce)').matches,cycle:getComputedStyle(document.documentElement).getPropertyValue('--wf-motion-wind-cycle'),size:[document.querySelector('canvas').width,document.querySelector('canvas').height],context:!!document.querySelector('canvas').getContext('2d')})`);
   await sleep(1100);
-  const after = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL()})`);
-  check('sea-time-and-budget', before.image !== after.image && after.draws > before.draws && after.draws - before.draws <= 54, { drawsIn1100ms: after.draws - before.draws, changed: before.image !== after.image });
+  const after = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),hidden:document.hidden,reduce:matchMedia('(prefers-reduced-motion: reduce)').matches,cycle:getComputedStyle(document.documentElement).getPropertyValue('--wf-motion-wind-cycle'),size:[document.querySelector('canvas').width,document.querySelector('canvas').height],context:!!document.querySelector('canvas').getContext('2d')})`);
+  check('scene-time-and-budget', before.image !== after.image && after.draws > before.draws && after.draws - before.draws <= 28, { drawsIn1100ms: after.draws - before.draws, changed: before.image !== after.image, initial: {hidden:before.hidden,reduce:before.reduce,cycle:before.cycle,size:before.size,context:before.context} });
   await ev(`Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));true`);
   const paused = await ev('wfDraws'); await sleep(250);
   check('hidden-pause', await ev('wfDraws') === paused, { draws: paused, mechanism: 'visibilitychange with deterministic hidden state' });
@@ -46,10 +48,15 @@ try {
   check('pagehide-pause', await ev('wfDraws') === away, away);
   await ev(`dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));true`); await sleep(220);
   check('pageshow-resume', await ev('wfDraws') > away, await ev('wfDraws'));
+  await ev(`window.wfReduced=new Promise(resolve=>matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',()=>requestAnimationFrame(()=>resolve(true)),{once:true}));true`);
   await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
-  await sleep(100); const reduce = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),name:getComputedStyle(document.querySelector('main')).viewTransitionName})`); await sleep(250);
+  await ev('wfReduced');
+  await ev(`new Promise((resolve,reject)=>{let last=wfDraws,quiet=0;const start=performance.now();const timer=setInterval(()=>{quiet=wfDraws===last?quiet+50:0;last=wfDraws;if(quiet>=300){clearInterval(timer);resolve(true);}else if(performance.now()-start>3000){clearInterval(timer);reject(new Error('scene did not settle after reduce'));}},50);})`);
+  const reduce = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),name:getComputedStyle(document.querySelector('main')).viewTransitionName})`); await sleep(250);
   check('live-reduce-freeze', await ev('wfDraws') === reduce.draws && reduce.name === 'none', reduce.name);
-  await cdp.send('Emulation.setEmulatedMedia', { features: [] });
+  await cdp.send('Emulation.setEmulatedMedia', { features: [{name:'prefers-reduced-motion',value:'no-preference'}] });
+  await sleep(250);
+  check('live-reduce-resume', await ev('wfDraws') > reduce.draws, await ev('wfDraws'));
   const saveData = await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `Object.defineProperty(navigator,'connection',{value:{saveData:true,addEventListener(){}}});` });
   await reloadAndWait(cdp, { state }); const save = await ev('wfDraws'); await sleep(250);
   check('save-data-freeze', await ev('wfDraws') === save, { initialDraws: save });
@@ -112,11 +119,22 @@ try {
   await go('signature-check/');
   check('no-js-code', await ev(`document.querySelector('code').textContent.includes('const letter') && Array.from(document.querySelectorAll('[data-wf-copy]')).every(b=>getComputedStyle(b).display==='none')`), 'Readable code; copy controls hidden');
   await cdp.send('Emulation.setScriptExecutionDisabled', { value: false });
+  const noCanvas = await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
+    const context=HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext=function(...args){return this.matches('[data-wf-canvas]')?null:context.apply(this,args);};
+    window.wfRafs=0;const raf=requestAnimationFrame;
+    window.requestAnimationFrame=function(callback){wfRafs++;return raf.call(window,callback);};
+  ` });
+  await go('signature-check/');await sleep(250);
+  const unsupported=await ev(`({rafs:wfRafs,readable:document.querySelector('main').textContent.includes('const letter')})`);
+  await sleep(250);
+  check('canvas-unavailable-readable-and-idle', unsupported.readable && await ev('wfRafs')===unsupported.rafs, unsupported);
+  await cdp.send('Page.removeScriptToEvaluateOnNewDocument', {identifier:noCanvas.identifier});
   if (disabled) {
     await navigateAndWait(cdp, new URL('signature-check/', disabled).href, { state });
-    check('features-off', await ev(`!document.querySelector('canvas') && !Array.from(document.scripts).some(s=>s.src.includes('scene.')) && !Array.from(document.styleSheets).some(s=>s.href?.includes('transitions.')) && getComputedStyle(document.querySelector('main')).viewTransitionName==='none'`), 'No sea markup/script or transition stylesheet');
+    check('features-off', await ev(`!document.querySelector('canvas') && !Array.from(document.scripts).some(s=>s.src.includes('scene.')) && !Array.from(document.styleSheets).some(s=>s.href?.includes('transitions.')) && getComputedStyle(document.querySelector('main')).viewTransitionName==='none'`), 'No scene markup/script or transition stylesheet');
   }
-  check('runtime-errors', state.consoleErrors.length === 0, state.exceptions);
+  check('runtime-errors', state.consoleErrors.length === 0, state.consoleErrors);
 } catch (error) {
   check('execution', false, error.stack);
 } finally {

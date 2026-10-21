@@ -3,7 +3,7 @@
 # 模板缺键时渲染空串（CNT-18），所以每个键在中英文两边的集合必须一致。
 
 [waitforit]
-  hero = "A letter held above a drawn sea."
+  hero = "A letter at rest beside still waters."
   skip = "Skip to content"
 
   [waitforit.nav]

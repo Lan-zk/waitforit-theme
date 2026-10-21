@@ -1,5 +1,8 @@
 # 保真矩阵：参考系统 → waitforit-theme（P1 契约 + P2 实测）
 
+> 当前场景已按 D26 改为 Resting Lamb 的单色低伏草地与窄溪，地形/岸线静止，仅草梢与水纹缓动；不再追求 Earendil 波面保真。当前契约见根 DESIGN.md，新证据见 [resting-lamb-scene](evidence/resting-lamb-scene/README.md)。下文 P1–P3 海面参数与对照作为历史保留；“字体为唯一观感偏差”等旧表述已由 D26 的场景语义调整补充。
+
+
 本矩阵是 `design-contract` 的 L2 保真判定记录，也是 P2 `theme-skeleton` 的验收基线。它回答一个问题：哪些东西必须像参考站点，哪些东西是我们声明的偏差，偏差对应哪条 Risk。
 
 - **参考侧**：上游 pin `31b1b0429425f7d5af914afa4d29165688d71a3f`（earendil-works/website，取用于 2026-10-20），证据与哈希见 [`docs/design/reference/upstream-pin.md`](reference/upstream-pin.md)；基线截图 12 张在 [`docs/design/reference/baseline/`](reference/baseline/)（1440×900 与 390×844，light 模式）。

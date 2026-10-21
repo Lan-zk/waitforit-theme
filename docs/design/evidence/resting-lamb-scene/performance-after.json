@@ -1,0 +1,16 @@
+{
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+  "viewport": [
+    1440,
+    813
+  ],
+  "durationMs": 10000,
+  "hidden": false,
+  "reduced": false,
+  "cycle": "12s",
+  "errors": [],
+  "logicalFrames": 200,
+  "medianMs": 3.0999999046325684,
+  "p95Ms": 3.5,
+  "samples": 200
+}

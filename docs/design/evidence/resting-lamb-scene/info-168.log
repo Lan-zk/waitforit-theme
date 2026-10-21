@@ -1,0 +1,27 @@
+Start building sites … 
+hugo v0.168.0 darwin/arm64 BuildDate=unknown
+
+INFO  static: syncing static files to / duration 2.875µs
+INFO  build:  step process substep collect files 24 files_total 24 pagesources_total 23 resourcesources_total 1 duration 702.75µs
+INFO  build:  step process duration 907.042µs
+INFO  build:  step assemble duration 6.165666ms
+INFO  build:  step render substep pages site en outputFormat html duration 30.692917ms
+INFO  build:  step render substep pages site en outputFormat rss duration 529.833µs
+INFO  build:  step render substep pages site zh outputFormat html duration 4.98675ms
+INFO  build:  step render substep pages site zh outputFormat rss duration 423.209µs
+INFO  build:  step render pages 44 content 28 duration 36.806ms
+INFO  build:  step render deferred count 0 duration 1.208µs
+INFO  build:  step postProcess duration 9.583µs
+INFO  build:  duration 44.365125ms
+
+                  │ EN │ ZH 
+──────────────────┼────┼────
+ Pages            │ 26 │ 18 
+ Paginator pages  │  0 │  0 
+ Non-page files   │  1 │  0 
+ Static files     │  0 │  0 
+ Processed images │ 28 │  0 
+ Aliases          │  1 │  0 
+ Cleaned          │  0 │  0 
+
+Total in 67 ms

@@ -128,13 +128,24 @@
   --wf-page-top: calc(var(--wf-frame-block) + 76px);
   --wf-page-bottom: calc(var(--wf-frame-block) + 100px);
   --wf-measure: min(100%, 760px);
-  --wf-horizon: 60vh;
+  --wf-horizon: 55vh;
   --wf-home-veil-start: 48vh;
   --wf-home-veil-end: 68vh;
-  --wf-sea-ink: var(--wf-ink);
-  --wf-sea-amplitude: 2.4vh;
-  --wf-sea-opacity-far: 0.10;
-  --wf-sea-opacity-near: 0.28;
+  --wf-scene-ink: var(--wf-ink);
+  --wf-grass-sway: 12px;
+  --wf-grass-density: 1.45;
+  --wf-grass-height: 1.3;
+  --wf-wind-strength: 1;
+  --wf-wind-direction: 1;
+  --wf-shore-softness: 25px;
+  --wf-stream-width: 26.5vw;
+  --wf-stream-origin: 66.5%;
+  --wf-stream-drift: 13.5%;
+  --wf-stream-bend: 9.5%;
+  --wf-stream-curve: 5.3;
+  --wf-stream-amplitude: 0.4vh;
+  --wf-scene-opacity-far: 0.13;
+  --wf-scene-opacity-near: 0.3;
   --wf-tap-target: 44px;
 
   /* ---------- 圆角：2 个（menu / key）；其余为 0 ---------- */
@@ -142,7 +153,7 @@
   --wf-radius-key: 5px;
 
   /* ---------- 动效时长与缓动（D4） ---------- */
-  --wf-motion-sea-cycle: 24s;
+  --wf-motion-wind-cycle: 12s;
   --wf-motion-page-enter: 520ms;
   --wf-motion-page-exit: 220ms;
   --wf-motion-theme: 900ms;
@@ -221,7 +232,7 @@
 /* 减少动效：令牌归零，位移/缩放/视差由消费方禁用（D4 / 规范「动效时序与降级」） */
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --wf-motion-sea-cycle: 0ms;
+    --wf-motion-wind-cycle: 0ms;
     --wf-motion-page-enter: 0ms;
     --wf-motion-page-exit: 0ms;
     --wf-motion-theme: 0ms;

@@ -1,0 +1,420 @@
+{
+  "base": "http://127.0.0.1:8823/",
+  "date": "2026-10-21T05:05:29.910Z",
+  "passed": 38,
+  "total": 38,
+  "results": [
+    {
+      "name": "scene-time-and-budget",
+      "ok": true,
+      "detail": {
+        "drawsIn1100ms": 22,
+        "changed": true,
+        "initial": {
+          "hidden": false,
+          "reduce": false,
+          "cycle": "12s",
+          "size": [
+            640,
+            361
+          ],
+          "context": true
+        }
+      }
+    },
+    {
+      "name": "hidden-pause",
+      "ok": true,
+      "detail": {
+        "draws": 34,
+        "mechanism": "visibilitychange with deterministic hidden state"
+      }
+    },
+    {
+      "name": "visible-resume",
+      "ok": true,
+      "detail": 39
+    },
+    {
+      "name": "pagehide-pause",
+      "ok": true,
+      "detail": 39
+    },
+    {
+      "name": "pageshow-resume",
+      "ok": true,
+      "detail": 43
+    },
+    {
+      "name": "live-reduce-freeze",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "name": "live-reduce-resume",
+      "ok": true,
+      "detail": 48
+    },
+    {
+      "name": "save-data-freeze",
+      "ok": true,
+      "detail": {
+        "initialDraws": 1
+      }
+    },
+    {
+      "name": "copy-source-whitespace",
+      "ok": true,
+      "detail": {
+        "length": 137,
+        "expected": 137,
+        "finalNewline": true
+      }
+    },
+    {
+      "name": "real-clipboard-pointer-copy",
+      "ok": true,
+      "detail": {
+        "length": 137,
+        "exact": true
+      }
+    },
+    {
+      "name": "keyboard-copy-success",
+      "ok": true,
+      "detail": {
+        "copiedLength": 137
+      }
+    },
+    {
+      "name": "copy-denial-selection",
+      "ok": true,
+      "detail": "Copy unavailable. Code selected; use your system copy command."
+    },
+    {
+      "name": "unknown-empty-and-no-inline-colors",
+      "ok": true,
+      "detail": [
+        {
+          "length": 137,
+          "button": true,
+          "styles": false
+        },
+        {
+          "length": 222,
+          "button": true,
+          "styles": false
+        },
+        {
+          "length": 48,
+          "button": true,
+          "styles": false
+        },
+        {
+          "length": 1,
+          "button": false,
+          "styles": false
+        }
+      ]
+    },
+    {
+      "name": "layout-1440-day-home",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": false,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#faf9f6"
+      }
+    },
+    {
+      "name": "layout-1440-day-signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#faf9f6"
+      }
+    },
+    {
+      "name": "layout-1440-day-zh/signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#faf9f6"
+      }
+    },
+    {
+      "name": "layout-1440-night-home",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": false,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#2e2d2b"
+      }
+    },
+    {
+      "name": "layout-1440-night-signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#2e2d2b"
+      }
+    },
+    {
+      "name": "layout-1440-night-zh/signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#2e2d2b"
+      }
+    },
+    {
+      "name": "layout-390-day-home",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": false,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#faf9f6"
+      }
+    },
+    {
+      "name": "layout-390-day-signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#faf9f6"
+      }
+    },
+    {
+      "name": "layout-390-day-zh/signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#faf9f6"
+      }
+    },
+    {
+      "name": "layout-390-night-home",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": false,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#2e2d2b"
+      }
+    },
+    {
+      "name": "layout-390-night-signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#2e2d2b"
+      }
+    },
+    {
+      "name": "layout-390-night-zh/signature-check/",
+      "ok": true,
+      "detail": {
+        "overflow": false,
+        "longScroll": true,
+        "logoRatio": 1.4883720930232558,
+        "buttons": true,
+        "paper": "#2e2d2b"
+      }
+    },
+    {
+      "name": "cross-document-transition",
+      "ok": true,
+      "detail": {
+        "active": true,
+        "animations": [
+          {
+            "name": "-ua-view-transition-group-anim-wf-reading",
+            "pseudo": "::view-transition-group(wf-reading)",
+            "duration": 520
+          },
+          {
+            "name": "wf-page-in",
+            "pseudo": "::view-transition-new(wf-reading)",
+            "duration": 520
+          },
+          {
+            "name": "wf-page-out",
+            "pseudo": "::view-transition-old(wf-reading)",
+            "duration": 220
+          }
+        ],
+        "name": "wf-reading"
+      }
+    },
+    {
+      "name": "history-scroll-restoration",
+      "ok": true,
+      "detail": {
+        "path": "/signature-check/",
+        "scroll": 200
+      }
+    },
+    {
+      "name": "fragment-navigation",
+      "ok": true,
+      "detail": {
+        "hash": "#a-small-program",
+        "scroll": 48
+      }
+    },
+    {
+      "name": "social-home",
+      "ok": true,
+      "detail": {
+        "title": "The Night Post",
+        "description": "A small correspondence project about lamps, quiet meadows, and the letters we never send.",
+        "url": "https://example.com/",
+        "image": "https://example.com/images/og-default_hu_e6e09b410e808e4.96a60023a2ddec3501760155ce43fbdf62e2efe6bd581ba73810283417d1bf8f.png",
+        "width": "1200",
+        "height": "630",
+        "alt": "The Night Post — The Night Post",
+        "locale": "en",
+        "type": "website",
+        "twitter": "summary_large_image",
+        "sameImage": true
+      }
+    },
+    {
+      "name": "social-posts/first-letter/",
+      "ok": true,
+      "detail": {
+        "title": "The Lamp Left On",
+        "description": "On the third floor of a house I have never entered, there is a lamp that stays lit long after the harbour goes quiet.",
+        "url": "https://example.com/posts/first-letter/",
+        "image": "https://example.com/images/og-default_hu_220ec7156a8f72e4.7b4c4e9ac459d125e9754a021e3ebda7af49aae02fb2864926517dae7baf36a4.png",
+        "width": "1200",
+        "height": "630",
+        "alt": "The Night Post — The Lamp Left On",
+        "locale": "en",
+        "type": "article",
+        "date": "2026-03-14T00:00:00Z",
+        "twitter": "summary_large_image",
+        "sameImage": true
+      }
+    },
+    {
+      "name": "social-signature-check/",
+      "ok": true,
+      "detail": {
+        "title": "Notes from the tide desk",
+        "description": "A fictional field note about small programs and a moving sea.",
+        "url": "https://example.com/signature-check/",
+        "image": "https://example.com/images/og-default_hu_9fe768de293cec92.d3dcaab0647af6e1b2cadf2ecd17730a971f3c2a9aa3b0f64ffbe5b92c71b38e.png",
+        "width": "1200",
+        "height": "630",
+        "alt": "The Night Post — Notes from the tide desk",
+        "locale": "en",
+        "type": "website",
+        "twitter": "summary_large_image",
+        "sameImage": true
+      }
+    },
+    {
+      "name": "social-zh/signature-check/",
+      "ok": true,
+      "detail": {
+        "title": "潮汐桌旁的几行代码",
+        "description": "虚构的潮汐记录，用来检验代码、复制和分享图片。",
+        "url": "https://example.com/zh/signature-check/",
+        "image": "https://example.com/images/og-default.e93698b19c5745583befe721a885c23f80769a30238ca5b22595612dc938446b.png",
+        "width": "1200",
+        "height": "630",
+        "alt": "纸面海浪与主题标志",
+        "locale": "zh",
+        "type": "website",
+        "twitter": "summary_large_image",
+        "sameImage": true
+      }
+    },
+    {
+      "name": "social-og-check/",
+      "ok": true,
+      "detail": {
+        "title": "A cover from the fictional tide desk",
+        "description": "A local bundle cover takes precedence over the shared social image.",
+        "url": "https://example.com/og-check/",
+        "image": "https://example.com/og-check/cover.04de8a4bc38bb27423f1b7d708f37240a15bf36cbc93f9a4e3a1469471473228.png",
+        "width": "1200",
+        "height": "630",
+        "alt": "Fictional tide-desk cover with the theme emblem above a drawn sea",
+        "locale": "en",
+        "type": "website",
+        "twitter": "summary_large_image",
+        "sameImage": true
+      }
+    },
+    {
+      "name": "social-404.html",
+      "ok": true,
+      "detail": {
+        "title": "404 Page not found",
+        "description": "A fictional correspondence, set in type.",
+        "url": "https://example.com/404.html",
+        "image": "https://example.com/images/og-default_hu_febaa9b1497e4d32.bddb702f66ae8bfa42e5f368d02d4a79a47e1030d57eedafbf28a2c409631ab9.png",
+        "width": "1200",
+        "height": "630",
+        "alt": "The Night Post — 404 Page not found",
+        "locale": "en",
+        "type": "website",
+        "twitter": "summary_large_image",
+        "sameImage": true
+      }
+    },
+    {
+      "name": "no-js-code",
+      "ok": true,
+      "detail": "Readable code; copy controls hidden"
+    },
+    {
+      "name": "canvas-unavailable-readable-and-idle",
+      "ok": true,
+      "detail": {
+        "rafs": 2,
+        "readable": true
+      }
+    },
+    {
+      "name": "features-off",
+      "ok": true,
+      "detail": "No scene markup/script or transition stylesheet"
+    },
+    {
+      "name": "runtime-errors",
+      "ok": true,
+      "detail": []
+    }
+  ]
+}

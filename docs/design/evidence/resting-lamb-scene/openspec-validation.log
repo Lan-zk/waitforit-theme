@@ -1,0 +1,8 @@
+- Validating...
+✓ spec/asset-licensing
+✓ spec/design-system
+✓ change/resting-lamb-scene
+✓ spec/signature-experience
+✓ spec/theme-distribution
+✓ spec/theme-shell
+Totals: 6 passed, 0 failed (6 items)
