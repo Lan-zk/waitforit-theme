@@ -573,23 +573,8 @@ html.js .wf-theme-toggle {
   line-height: var(--wf-type-body-line);
 }
 
-/* ---------- 7. 组件：信纸元信息、列表行、正文、动作链接、404 ---------- */
-.wf-letter-meta {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  column-gap: 1ch;
-  row-gap: var(--wf-space-xs);
-  margin: 0;
-  padding: 0 0 var(--wf-space-section);
-  border-bottom: 1px solid var(--wf-hairline);
-  color: var(--wf-ink);
-  font-family: var(--wf-type-body-family);
-  font-size: var(--wf-type-body-size);
-  font-weight: var(--wf-type-weight);
-  line-height: var(--wf-type-body-line);
-}
-
-.wf-letter-title {
+/* ---------- 7. 组件：文章标题与元信息、列表行、作品卡片、正文、动作链接、404 ---------- */
+.wf-entry-title {
   margin: 0 0 var(--wf-space-section);
   font-family: var(--wf-type-title-family);
   font-size: var(--wf-type-title-size);
@@ -599,27 +584,117 @@ html.js .wf-theme-toggle {
   overflow-wrap: anywhere;
 }
 
-.wf-letter-meta + .wf-prose {
+.wf-entry-meta {
+  margin: 0;
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-body-line);
+}
+
+.wf-entry-meta + .wf-prose,
+.wf-entry-links + .wf-prose {
   margin-block-start: var(--wf-space-section);
 }
 
-.wf-letter-meta__key {
+.wf-entry-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wf-space-lg);
+  margin: var(--wf-space-sm) 0 0;
+}
+
+.wf-project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--wf-space-block);
+}
+
+.wf-project-card {
+  display: grid;
+  gap: var(--wf-space-xs);
+  padding: var(--wf-space-lg) 0;
+  border-top: 1px solid var(--wf-hairline);
+  color: var(--wf-ink);
+  text-decoration: none;
+}
+
+.wf-project-card__title {
+  font-family: var(--wf-type-title-family);
+  font-size: var(--wf-type-title-size);
+  font-style: italic;
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-title-line);
+  overflow-wrap: break-word;
+}
+
+.wf-project-card__meta {
   color: var(--wf-muted-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  line-height: var(--wf-type-body-line);
 }
 
-.wf-letter-meta__value {
-  margin: 0;
-  overflow-wrap: anywhere;
+.wf-project-card__summary {
+  font-family: var(--wf-type-reading-family);
+  font-size: var(--wf-type-reading-size);
+  line-height: var(--wf-type-reading-line);
 }
 
-@media (max-width: 520px) {
-  .wf-letter-meta {
+.wf-project-card:hover .wf-project-card__title,
+.wf-project-card:focus-visible .wf-project-card__title {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+.wf-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--wf-space-sm);
+  margin-block-start: var(--wf-space-block);
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-type-body-family);
+  font-size: var(--wf-type-body-size);
+  line-height: var(--wf-type-body-line);
+}
+
+.wf-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--wf-tap-target);
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+.wf-pagination__link:hover,
+.wf-pagination__link:focus-visible {
+  color: var(--wf-ink);
+  text-decoration-style: solid;
+}
+
+.wf-project-card:focus-visible,
+.wf-pagination__link:focus-visible {
+  outline: var(--wf-focus-width) solid currentColor;
+  outline-offset: var(--wf-focus-offset);
+}
+
+[data-theme="night"] .wf-project-card:hover .wf-project-card__title,
+[data-theme="night"] .wf-project-card:focus-visible .wf-project-card__title,
+[data-theme="night"] .wf-pagination__link:hover,
+[data-theme="night"] .wf-pagination__link:focus-visible {
+  color: var(--wf-night-bright);
+}
+
+@media (max-width: 800px) {
+  .wf-project-grid {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 0;
-  }
-
-  .wf-letter-meta__key {
-    margin-block-start: var(--wf-space-sm);
   }
 }
 

@@ -1,0 +1,8 @@
+{{- /* 随笔详情：与 blog 共用同一阅读列，只写 define（TPL-16）。 */}}
+{{ define "main" }}
+<article class="wf-column wf-entry">
+  <h1 class="wf-entry-title">{{ .Title }}</h1>
+  {{- with .Date }}<p class="wf-entry-meta">{{ . | time.Format ":date_long" }}</p>{{ end }}
+  <div class="wf-prose">{{ .Content }}</div>
+</article>
+{{ end }}

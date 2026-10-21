@@ -1,5 +1,5 @@
-{{- /* 导航：一个 MENU 触发按钮 + 面板。站点声明 menus.main 时整体替换内置默认四项（CFG-11）；
-   没有站点菜单时用 relLangURL 生成站内链接、标签取 i18n，避免主题菜单把英文名带进中文站点（D3）。 */}}
+{{- /* 导航：一个 MENU 触发按钮 + 面板。站点声明 menus.main 时整体替换内置六类型清单（CFG-11）；
+   没有站点菜单时按固定顺序列出 blog/essays/projects/fiction/photography/about，标签取 i18n（D33）。 */}}
 <nav class="wf-menu" aria-label="{{ T "waitforit.nav.menu" }}">
   <button class="wf-menu-trigger" id="wf-menu-trigger" type="button" aria-expanded="false" aria-controls="wf-menu-panel" data-wf-menu-trigger>
     {{- T "waitforit.nav.menu" }}

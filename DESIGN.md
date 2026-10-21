@@ -1,6 +1,6 @@
 ---
 name: "waitforit-theme"
-description: "A letter-shaped Hugo theme. Paper light over a resting meadow, two OFL typefaces, one fixed frame, and a star that belongs to the pointer."
+description: "A personal-site Hugo theme. Paper light over a resting meadow, two OFL typefaces, one fixed frame, and a star that belongs to the pointer."
 colors:
   ink: "#353431"
   muted-ink: "rgba(25, 24, 22, 0.6)"
@@ -111,10 +111,10 @@ components:
   footer-mark:
     typography: "{typography.ui}"
     textColor: "{colors.moonlight}"
-  letter-meta:
-    typography: "{typography.body}"
+  project-card:
+    typography: "{typography.title}"
     textColor: "{colors.ink}"
-    padding: "0 0 24px"
+    padding: "16px 0"
   reading-body:
     typography: "{typography.reading}"
     textColor: "{colors.ink}"
@@ -153,11 +153,11 @@ components:
 
 ## Overview
 
-**Creative North Star: "A Letter at Rest Beside Still Waters"**
+**Creative North Star: "Words at Rest Beside Still Waters"**
 
-waitforit-theme is a correspondence theme, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — at rest beside a low meadow and a narrow stream: an original WebGL2 landscape with fixed ground, wind-shaped grass and softly blended stream ripples, fading out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: the brand emblem, the word MENU, a footer. Nothing scrolls but content. A post is a letter you received — Date, From, To, Subject set in mono above a serif reading column — and the site should read like the inside of an envelope, not the outside of an app.
+waitforit-theme is a personal-site theme for six kinds of content, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — at rest beside a low meadow and a narrow stream: an original WebGL2 landscape with fixed ground, wind-shaped grass and softly blended stream ripples, fading out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: the brand emblem, the word MENU, a footer. Nothing scrolls but content. A blog post or an essay is a mono date above a serif reading column; a project is a flat hairline card with no fill, radius, or shadow. The site should read like a printed page, not the outside of an app.
 
-The austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme="night"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No card, no chip, no filled button, no accent hue. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.
+The austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme="night"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No raised card, no chip, no filled button, no accent hue; the only card form is the flat project grid, which never lifts. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.
 
 Motion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, content enters in 300ms, the menu opens in 240ms and closes in 180ms, the theme cross-fades in 900ms while scene, veil, and grain change light together, and the subscribe line confirms in 720ms. Everything respects `prefers-reduced-motion` — every duration token becomes 0ms and the landscape freezes on its first frame — and nothing ever moves to attract attention.
 
@@ -167,7 +167,7 @@ Motion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, co
 - One brand emblem: the user-supplied silhouette. One interaction ornament: an original eight-ray four-point star, used as the cursor and a hover reward — never as static decoration and never as a bullet.
 - One fixed frame (75px, 40px at ≤800px, 28px at ≤520px) around one centered column of `min(100%, 760px)`.
 - Four stacked layers and no page background: scene, then veil, then grain, then frame.
-- Letter-shaped content: posts open with a Date, From, To, Subject block in mono above a serif reading column.
+- Three shipped page types: blog and essays share one serif reading column under a mono date; projects are a flat hairline card grid linking out to a repository.
 - Quiet interaction instead of state chrome: dotted underlines turning solid, a 15px star revealed on hover, a 520ms page fade.
 - A declared font deviation: Newsreader and Commit Mono replace the reference's Plantin Now and Departure Mono, and the two `--wf-font-*` variables are the only override point for a site that self-hosts its own pair.
 
@@ -180,8 +180,8 @@ The palette is paper and ink under two lights: thirteen tokens, one moonlight, n
 - **Ink** (`#353431`, `--wf-ink`): body and heading text on paper, the day chrome, and the day star and cursor.
 
 ### Secondary
-- **Muted ink** (`rgba(25, 24, 22, 0.6)`): dates, letter-meta keys, placeholders, and secondary chrome — ink at 60 percent.
-- **Hairline** (`rgba(39, 37, 34, 0.18)`): the rule under a letter's meta block, the rules above and below code, and dividers.
+- **Muted ink** (`rgba(25, 24, 22, 0.6)`): dates, meta keys, placeholders, and secondary chrome — ink at 60 percent.
+- **Hairline** (`rgba(39, 37, 34, 0.18)`): the rule under a post's meta line, project card separators, the rules above and below code, and dividers.
 - **Pure white** (`#ffffff`): the one-step brightening of chrome text on hover over the scene.
 - **Chrome scrim** (`rgba(30, 30, 30, 0.95)`): the language menu surface over a 10px backdrop blur — the only floating surface in the system.
 
@@ -210,7 +210,7 @@ Day and night are the same token roles under two lights, not two themes. Night s
 - **Display** (Newsreader 400 italic, `clamp(1.25rem, 0.875rem + 1.5vw, 2.5rem)`, 20 to 40px and frozen to `clamp(1.25rem, 0.75rem + 3vw, 2rem)` at ≤800px, line-height 1.15, centered, two lines maximum): the home hero sentence, and nothing else. Its first viewport is reserved for the sentence and meadow; article links remain reachable by native scrolling.
 - **Title** (Newsreader 400 italic, `1.25rem`, line-height 1.15): page titles, post titles, and disclosure headings.
 - **Reading** (Newsreader 400, `clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem)`, 18 to 20px, line-height 1.6, measure 760px): post bodies and every long-form surface.
-- **Body** (Commit Mono 400, `0.9375rem`, line-height 1.6): letter meta, post dates, captions, and letter footers.
+- **Body** (Commit Mono 400, `0.9375rem`, line-height 1.6): post dates, project meta, captions, and footers.
 - **UI** (Commit Mono 400, `0.9375rem`, line-height 1.25, uppercase): nav, footer, theme and language controls.
 - **Form** (Commit Mono 400, `0.9375rem`, line-height 1.6): the subscribe input, the only form control on the site.
 - **Label** (Commit Mono 400, `0.8125rem`, line-height 1.25, uppercase): action links such as APPLY, ATOM, and RSS, plus language codes and keycaps.
@@ -221,20 +221,20 @@ Day and night are the same token roles under two lights, not two themes. Night s
 
 ## Layout
 
-The frame is fixed chrome and the content is a letter inside it. A 75px frame (`--wf-frame-block`) surrounds every page and does not move with the content; at ≤800px it drops to 40px and at ≤520px to 28px. Content begins `--wf-page-top` (151px, the frame plus 76px) from the top of the viewport and ends `--wf-page-bottom` (175px, the frame plus 100px) from the bottom, so the letter always has air above it and more air below.
+The frame is fixed chrome and the content is a page inside it. A 75px frame (`--wf-frame-block`) surrounds every page and does not move with the content; at ≤800px it drops to 40px and at ≤520px to 28px. Content begins `--wf-page-top` (151px, the frame plus 76px) from the top of the viewport and ends `--wf-page-bottom` (175px, the frame plus 100px) from the bottom, so the page always has air above it and more air below.
 
 The reading column is `min(100%, 760px)` (`--wf-measure`), 680px at ≤800px, and `min(680px, calc(100vw - 360px))` between 801px and 1100px. Three breakpoints carry the whole adaptation: **520px**, **800px**, and **1100px** (`--wf-bp-mobile`, `--wf-bp-tablet`, `--wf-bp-desktop` in the token file). Chrome is one row, not a nav bar: brand emblem at the start, MENU at the end, the locale and theme switches in the footer. Below 800px the menu becomes a full-screen paper panel, and every interactive target is at least 44px (`--wf-tap-target`).
 
 Depth lives in the order of four layers, never in the content: the drawn scene at `--wf-z-scene` (0), the radial paper veil above it at `--wf-z-veil` (1), the 120px grain tile above that at `--wf-z-grain` (2), and the frame above everything at `--wf-z-frame` (3). On the home page the veil fades vertically below the hero to reveal the meadow; reading pages retain the radial protection. The veil's light center drops from `50% 48%` to `50% 40%` at ≤520px so small screens keep more meadow in view. The meadow's far edge is fixed at `--wf-horizon` (55vh), and the home hero is centered in the first reading viewport, with recent posts and extra content in the next scroll section.
 
-Content keeps two structural sub-grids. A letter's meta block is `max-content 1fr` with a `1ch` column gap and a 6px (`--wf-space-xs`) row gap; a post row is the same two-column shape with the date in the first column. Both unwind to a single column at ≤520px. Interactive chrome uses logical properties (`padding-inline`, `margin-block`) so the frame survives a right-to-left locale without a second layout.
+Content keeps one structural sub-grid: a post row is `max-content 1fr` with a 0.6em column gap and a 6px (`--wf-space-xs`) row gap, the mono date in the first column and the serif title in the second; it unwinds to a single column at ≤520px. Project cards keep a two-column grid above 800px and one column below, separated by hairlines rather than boxes. Interactive chrome uses logical properties (`padding-inline`, `margin-block`) so the frame survives a right-to-left locale without a second layout.
 
 ### Named Rules
 **The Fixed Frame Rule.** The frame is chrome, not a container: it stays 75px, 40px, or 28px at the three breakpoints and content never paints over it. Nothing goes in the frame except the brand emblem, MENU, and the footer marks — no breadcrumbs, no progress bars, no floating buttons.
 
 ## Elevation & Depth
 
-This system has no elevation. Nothing in content rises, floats, or casts a shadow: cards, dropdowns, and chips do not exist, and the only depth signal is the stack itself — meadow behind paper, paper behind grain, grain behind frame. If an element appears above another, it is because it belongs to a later layer, not because it has a larger shadow.
+This system has no elevation. Nothing in content rises, floats, or casts a shadow: raised cards, dropdowns, and chips do not exist, and the only depth signal is the stack itself — meadow behind paper, paper behind grain, grain behind frame. If an element appears above another, it is because it belongs to a later layer, not because it has a larger shadow.
 
 Three functional shadows exist in the whole theme, and none of them sits on a content surface. **Menu scrim** (`0 8px 32px rgba(0, 0, 0, 0.4)`) separates the language menu — the only true drop shadow in the system — from whatever it covers. **Sky-legibility** (`0 2px 8px rgba(0, 0, 0, 0.5)`) keeps the 404 line readable where it sits directly on the drawn scene instead of on the veil. **Keycap ring** (`0 0 0 1px rgb(28 27 26 / 10%), 0 3px 0 rgb(28 27 26 / 10%)`) is the only two-part shadow, and it draws `kbd` keycaps in prose. The sidecar's `extensions.shadows` records these three values because the frontmatter's component schema has no shadow property; they are still tokens, not one-off styling.
 
@@ -247,7 +247,7 @@ The theme change is the one animation that touches depth: over 900ms (`--wf-moti
 
 ## Shapes
 
-Everything is a right angle. The page, the veil's edge (a gradient with no border), the frame, hairlines, code blocks, and inputs are square by default, and zero is the assumed radius. The system rounds exactly two things: the language menu surface takes `4px` (`--wf-radius-menu`) because it floats over the scene and a hard corner would read as a cut in the page, and `kbd` takes `5px` (`--wf-radius-key`) because it is a physical key. Nothing else rounds — not buttons, not inputs, not code, not the letter.
+Everything is a right angle. The page, the veil's edge (a gradient with no border), the frame, hairlines, code blocks, and inputs are square by default, and zero is the assumed radius. The system rounds exactly two things: the language menu surface takes `4px` (`--wf-radius-menu`) because it floats over the scene and a hard corner would read as a cut in the page, and `kbd` takes `5px` (`--wf-radius-key`) because it is a physical key. Nothing else rounds — not buttons, not inputs, not code, not project cards, not the page.
 
 The brand emblem is the user-supplied curled silhouette, with its three dark regions and curved negative spaces preserved in `assets/images/emblem.svg`. It inherits `currentColor`, keeps its 558:375 aspect ratio, and appears in the header, 404, favicon and default social image. The star remains the only interaction ornament: eight fixed rays on a 32-unit grid, a diamond core and a center point in `assets/images/star-*.svg`; it appears at 15px on links and as the day/night cursor. Neither mark rotates, gains a shadow or changes geometry.
 
@@ -258,7 +258,7 @@ The third shape language is the dotted underline. Links are underlined dotted at
 
 ## Components
 
-There are no cards, no chips, no filled buttons, and no accent. An action is text; hierarchy comes from position, from size, and from serif against mono. The sections below describe what may exist and how it looks; the nine `wf-` snippets with self-contained HTML and CSS live in `.impeccable/design.json`.
+There are no raised cards, no chips, no filled buttons, and no accent; projects use a flat card grid of hairlines and whitespace, which is the only card form in the system. An action is text; hierarchy comes from position, from size, and from serif against mono. The sections below describe what may exist and how it looks; the nine `wf-` snippets with self-contained HTML and CSS live in `.impeccable/design.json`.
 
 ### Text and action links
 A text link keeps the dotted underline of its paragraph and brightens to ink on hover, or to night-bright at night. An action link is the same gesture in mono label casing: uppercase, no fill, no border, followed by a 15px star that is revealed on hover or keyboard focus and marked `aria-hidden`.
@@ -266,8 +266,8 @@ A text link keeps the dotted underline of its paragraph and brightens to ink on 
 ### Chrome
 The menu trigger is bare mono text — MENU — with `aria-expanded` and `aria-controls`; the panel is a right-aligned column of mono links that open in 240ms and close in 180ms, and below 800px it becomes a full-screen paper panel with 44px rows. The language menu is the only floating surface: 160px wide, chrome-scrim background over a 10px blur, `4px` radius, one menu-scrim shadow, mono rows at `8px 16px`, with the selected locale in night-bright. The theme switch is the same bare mono text with `6px 10px` of padding.
 
-### The letter meta block
-The signature of the post template: a mono definition list of Date, From, To, and Subject above the reading column. Keys are muted ink and values are ink, the grid is `max-content 1fr` with a `1ch` gap, and the block closes with a hairline 24px (`--wf-space-section`) below. It is the only place where keys and values sit side by side, and it reads as the inside of an envelope rather than as a form.
+### Project card
+A project card is one link in a flat grid: a serif italic title, an optional mono meta line for the year and link kind, and a one-line serif summary. Cards are separated by a hairline at the top, never by fill, radius, or shadow, and they never lift on hover — the title gains the dotted underline and the whole card stays the click target. Two columns above 800px, one column below; a card links to its repository, or to the site's own project page when there is more to say.
 
 ### Post row
 A post row is one link with a date and a title. The date is mono body text in muted ink; the title is Newsreader italic at `1.25rem` in ink, with a 15px star revealed at its end on hover or focus. The row has two columns above 520px and one below, and the whole row is the click target.
@@ -290,15 +290,15 @@ Scene tokens: `--wf-horizon: 55vh`, `--wf-scene-opacity-far: 0.13`, `--wf-scene-
 Default social images use the brand emblem and current page title, set in a centered serif composition on a textured paper base at 1200×630. Titles wrap by character-aware line budgets and shrink for long text; the full title remains in metadata. English uses Newsreader and Chinese uses Noto Serif SC. TrueType copies are build-only assets and are never web font downloads. A local per-page image override takes precedence.
 
 ### Snippet inventory
-Nine `wf-` snippets ship in the sidecar, each self-contained HTML and CSS with `wf-` classes, unique ids, and no reset; every interactive snippet carries its own inline hover and focus-visible states, the four snippets that bear an icon inline their SVG so no icon font or sprite is needed, and Letter meta deliberately carries neither state nor graphic; Code block includes a localized text Copy action: Text link, Action link, Menu trigger + panel, Letter meta, Post row, Values disclosure, Subscribe line, Code block, Language menu. Three reference components are excluded on purpose. The Pi replay terminal is excluded because `pi-*` colors and a terminal card are a product UI outside this theme's scope. The keycap is excluded because it is documentation chrome for the reference's keyboard and this theme has no `kbd` surface in chrome, so keycaps remain a prose style only. The brand emblem and interaction star are excluded because they are assets — `assets/images/emblem.svg`, `assets/images/star-*.svg`, the cursors, and the favicon — governed by the color and shape rules rather than a component that can be pasted into a page.
+Nine `wf-` snippets ship in the sidecar, each self-contained HTML and CSS with `wf-` classes, unique ids, and no reset; every interactive snippet carries its own inline hover and focus-visible states, the four snippets that bear an icon inline their SVG so no icon font or sprite is needed, and Project card carries no lift and no graphic — its only state is the title underline; Code block includes a localized text Copy action: Text link, Action link, Menu trigger + panel, Project card, Post row, Values disclosure, Subscribe line, Code block, Language menu. Three reference components are excluded on purpose. The Pi replay terminal is excluded because `pi-*` colors and a terminal card are a product UI outside this theme's scope. The keycap is excluded because it is documentation chrome for the reference's keyboard and this theme has no `kbd` surface in chrome, so keycaps remain a prose style only. The brand emblem and interaction star are excluded because they are assets — `assets/images/emblem.svg`, `assets/images/star-*.svg`, the cursors, and the favicon — governed by the color and shape rules rather than a component that can be pasted into a page.
 
 ### Named Rules
-**The Bare Chrome Rule.** Every action is text: no fill, no border, no card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, or the brand emblem, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.
+**The Bare Chrome Rule.** Every action is text: no fill, no border, no raised card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, or the brand emblem, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.
 
 ## Do's and Don'ts
 
 ### Do:
-- Keep the reading column at `min(100%, 760px)` and the serif at 18 to 20px; the letter is the product.
+- Keep the reading column at `min(100%, 760px)` and the serif at 18 to 20px; the reading column is the product.
 - Declare the font substitution in the repository: Newsreader and Commit Mono are the theme's only faces, and `--wf-font-serif` and `--wf-font-mono` are the only override point for a site that self-hosts its own OFL pair.
 - Reserve Commit Mono for chrome, meta, forms, and code, and set every human voice in Newsreader.
 - Express hierarchy with size, ink opacity between 60 and 80 percent, and hairlines, never with hue, weight, or fills.
@@ -309,7 +309,7 @@ Nine `wf-` snippets ship in the sidecar, each self-contained HTML and CSS with `
 
 ### Don't:
 - Don't introduce a third typeface, and never let Plantin Now, Plantin, or Departure Mono into the repository or its build output; the only permitted deviation is the `--wf-font-*` override with self-hosted OFL faces.
-- Don't introduce an accent hue, a card, a chip, a filled button, or a shadow beyond the three functional ones.
+- Don't introduce an accent hue, a raised card, a chip, a filled button, or a shadow beyond the three functional ones; flat hairline project cards are the only card form.
 - Don't fake weight or slant: no `text-shadow` thickening and no synthetic italic; mono stays at its 400 token weight and serif emphasis uses Newsreader's true italic.
 - Don't paint a solid page background or stack an opaque panel over the scene; the drawn landscape must stay visible outside the veil.
 - Don't animate anything to draw attention — no pulses, no autoplay, no scroll-jacking; the only continuous motion is the grass tips and stream textures.

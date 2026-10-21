@@ -7,7 +7,7 @@
     {{- range $pages }}{{ partial "post-row.html" . }}{{ end }}
   </div>
   {{- else }}
-  <p class="wf-empty">{{ T "waitforit.posts.empty" }}</p>
+  <p class="wf-empty">{{ T "waitforit.list.empty" }}</p>
   {{- end }}
   {{- with .Content }}<div class="wf-prose wf-index__intro">{{ . }}</div>{{ end }}
 </section>

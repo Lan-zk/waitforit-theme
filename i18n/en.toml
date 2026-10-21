@@ -3,16 +3,18 @@
 # 模板缺键时渲染空串（CNT-18），所以每个键在中英文两边的集合必须一致。
 
 [waitforit]
-  hero = "A letter at rest beside still waters."
+  hero = "Words at rest beside still waters."
   skip = "Skip to content"
 
   [waitforit.nav]
     menu = "Menu"
     close = "Close"
-    posts = "Letters"
-    purpose = "Purpose"
-    values = "Values"
-    join = "Join"
+    blog = "Blog"
+    essays = "Essays"
+    projects = "Projects"
+    fiction = "Fiction"
+    photography = "Photography"
+    about = "About"
 
   [waitforit.theme]
     auto = "Auto"
@@ -23,25 +25,28 @@
   [waitforit.lang]
     label = "Language"
 
-  [waitforit.posts]
-    empty = "No letters have arrived yet."
-    read = "Read"
+  [waitforit.list]
+    empty = "Nothing here yet."
+    read = "Read all"
 
   [waitforit.home]
-    posts = "Recent letters"
+    recent = "Recent"
 
-  [waitforit.letter]
-    date = "Date"
-    from = "From"
-    to = "To"
-    subject = "Subject"
+  [waitforit.projects]
+    repo = "Repository"
+    demo = "Demo"
+
+  [waitforit.pagination]
+    label = "Pagination"
+    previous = "Previous page"
+    next = "Next page"
 
   [waitforit.footer]
-    note = "Correspondence, set in type."
+    note = "Set in type, kept in quiet."
 
   [waitforit.404]
     title = "404"
-    body = "This is not a letter we sent."
+    body = "This page has not been written."
     home = "Back to the start"
 
   [waitforit.code]

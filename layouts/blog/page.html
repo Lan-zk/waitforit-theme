@@ -1,0 +1,8 @@
+{{- /* 文章详情：mono 日期在上、衬线阅读列在下；只写 define，骨架在 baseof（TPL-16）。 */}}
+{{ define "main" }}
+<article class="wf-column wf-entry">
+  <h1 class="wf-entry-title">{{ .Title }}</h1>
+  {{- with .Date }}<p class="wf-entry-meta">{{ . | time.Format ":date_long" }}</p>{{ end }}
+  <div class="wf-prose">{{ .Content }}</div>
+</article>
+{{ end }}

@@ -429,3 +429,20 @@ signature-capabilities 的13项任务已完成。先同步 asset-licensing 的�
 决定：`assets/js/scene.js` 改为单文件、零依赖的 WebGL2 渲染器；day/night 各一个上下文，保留双画布与 CSS 900ms 交叉淡化。静态地形、固定星点与远端草叶在尺寸/令牌/主题变化时以 4x MSAA 烘焙为纹理，解析后释放 MSAA 缓冲；水面在 289×254 FBO 用片元着色器复刻原公式，按线性过滤 + 预乘 alpha 放大；中近景草叶实例化，风在顶点着色器求值，先画入 2× 离屏层再线性降采样。抗锯齿选型来自 P1 spike：MSAA 4x 草层约损失 3% 墨量，不采用；2× 超采样层墨量与 Canvas 2D 基线差 0.19%，采用。默认帧缓冲关闭 MSAA。GLSL 内联在 `scene.js`，不新增 shader 文件、不引入渲染库或远程资源（AST-16）；shader 为原创，asset-licensing 继续禁止复制上游 GLSL。内部栅格仍为 CSS 像素且上限 1440，不引入 DPR；24 逻辑帧上限、时间步长封顶、hidden/pagehide/pageshow、reduce/saveData 确定性静帧、`wf:scene-update`、`features.scene` 与无 JS 行为保持不变。WebGL2 不可用、初始化失败或上下文丢失时静默退回纸面 + 纸光 + 颗粒，不启动 RAF、不产生 console error；`webglcontextrestored` 重建资源后继续。
 
 测试与契约：Canvas 2D 内部探针（path/clip/toDataURL）替换为只读 `?wf-scene-probe=1` 探针（phase/frames/staticBuilds/tips/staticImage）、默认帧缓冲 clear 计帧与截图对比。T2 视觉等价基线：确定性静态首帧 1440/390 × 昼夜与迁移前差异 mean 0.23–0.37/255、p99 5–6、>2 比例 3.1–5.4%，静态底色层 near-identical（mean ≤0.007、p99 0）；4× 草/水/星点对照与 9 秒昼夜录像见证据目录。`scene-visibility` 四组 + 上下文丢失恢复通过，`signature` 38/38，调参 15/15，资产门禁 5/5；Windows 工作区的 CRLF 与异步下载测试可移植性修正不属于渲染行为变更。性能：同机 headless 软件后端下主线程每逻辑帧提交中位 0.2ms（迁移前 Canvas 2D 中位 39.6ms），逻辑帧 18.6fps（迁移前 11.2fps）；headless/软件渲染不代表真机，真实设备与跨引擎验收仍属 P4。本机网络受限，Hugo 0.146.0 未能在本机复核（0.168.0 严格构建与弃用审计通过）；模板与配置未改动，风险留待 CI 或用户环境复核。
+
+## D33 · 六类内容模型、首版三型与最新版 Hugo（2026-10-21）
+
+日期：2026-10-21。状态：已确认（用户逐条拍板）。supersedes D4（最低 Hugo 0.146 与双版本矩阵）、D5 与 D5-R（信件内容模型与字段位置）、D14（v1 范围中与信件绑定的描述）、D20（内置四个默认导航入口）、D21（信件元信息相关条目）；D22/D24 的品牌、OG、复制与转场机制继续有效。活动变更：`openspec/changes/content-types/`。
+
+决定：
+
+1. **产品定位**：主题是六类内容的个人站点主题。类型与目录名固定为 `blog`（博客）、`essays`（随笔）、`projects`（作品，以 GitHub 开源项目为主）、`fiction`（小说）、`photography`（摄影）、`about`（个人介绍；取代原"简历"定位，不是标准简历）。
+2. **首版范围**：只实现 blog、essays、projects 三类；fiction、photography、about 只记录，不设计、不实现。
+3. **移除信件模型（破坏性）**：删除 `params.from`、`params.to`、`params.subject` 契约，删除信件元信息组件与样式，删除 `letter` 文案与 i18n 键。用户从未要求信件模型；当前没有外部消费者，不保留兼容层。
+4. **目录更名（破坏性）**：`posts` → `blog`，`notes` → `essays`，新增 `projects`；旧目录名不保留别名。
+5. **导航**：默认导航是固定顺序的六类型清单，顺序即第 1 条列举顺序，六项全部渲染；尚未实现的 fiction、photography、about 链接到占位页，不隐藏入口、不生成死链；站点声明 `menus.main` 时整体替换（CFG-11）。
+6. **Hugo 版本（破坏性）**：只支持当前最新稳定版（本次 0.168.0），`[module.hugoVersion] min = "0.168.0"`；删除最低版 0.146 声明与双版本 CI 矩阵，改为固定版本构建加每周对最新稳定版的校验；弃用审计保留（REL-05/08）。知识库 REL-07 的双版本矩阵对本仓库失效，`release-ci.md` 与 `sources.md` 随实现更新。
+7. **设计契约**：移除 letter meta 组件，新增 project card——无填充、无圆角、无阴影的平铺卡片，只允许细线分隔与文字级链接；`DESIGN.md`、sidecar 与 `scripts/check-assets.mjs` 的组件计数同步。
+8. **分页**：blog 与 essays 列表分页，页大小由站点 `pagination.pagerSize` 控制（Hugo 默认 10），路径 `page/N`（TPL-20/21）。
+
+后果：`docs/signature-capabilities.md`、`exampleSite`、测试与主规范随活动变更更新；README 与发布仍在后续。主题显示名建议沿用 `waitforit`（Module 路径与参数命名空间已固定，D17），「待定项」表中字体行已由 D9-R 关闭、版权行已由 D20 关闭，仅显示名与是否投递 themes.gohugo.io 仍待用户确认。

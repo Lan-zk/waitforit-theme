@@ -6,12 +6,20 @@
 
 真实站点内容不在本仓库。本仓库只允许 `exampleSite/` 下的虚构 fixture；真实个人数据、文章、图片、品牌素材不进入。
 
-当前阶段：P3 签名能力已实现并通过本地验收，`signature-capabilities` 已同步主规范并于 2026-10-21 归档；P2 `theme-skeleton` 已同步规范并归档。Resting Lamb 场景的渲染器已迁移到 WebGL2 并同步主规范，变更 `webgl-scene` 已归档于 `openspec/changes/archive/2026-10-21-webgl-scene/`，证据见 `docs/design/evidence/webgl-scene/`，最新交接见 `docs/handoff/2026-10-21-webgl-scene.md`；`resting-lamb-scene` 已归档于 `openspec/changes/archive/2026-10-21-resting-lamb-scene/`。品牌轮廓、草地窄溪场景、代码复制、OG 与原生页面转场的契约见 `docs/signature-capabilities.md`，P3 海面与 Canvas 2D 场景证据保留为历史。下一步 P4 跨引擎/真实设备/辅助技术、CI 浏览器门禁与发布文档；`README.md` 安装段仍未写，主题不声称可安装。
+当前阶段（2026-10-21 起）：产品定位已改为**六类内容的个人站点主题**，类型与目录名固定为 `blog`（博客）、`essays`（随笔）、`projects`（作品，以 GitHub 开源项目为主）、`fiction`（小说）、`photography`（摄影）、`about`（个人介绍，取代原先的"简历"）。首版只实现 blog、essays、projects；fiction、photography、about 只记录、不设计、不实现，但默认导航六项全部显示，后三类指向占位页（`exampleSite` 提供占位页 fixture）。契约与实施顺序在活动变更 `openspec/changes/content-types/`；实现已落地并通过本地验收，交接与复跑命令见 `docs/handoff/2026-10-21-content-types.md`，证据见 `docs/design/evidence/content-types/`，变更保留活动状态等待用户审核后归档。信件内容模型与旧 Hugo 版本兼容已在该变更中移除。
+
+历史阶段：P3 签名能力已实现并通过本地验收，`signature-capabilities` 已同步主规范并于 2026-10-21 归档；P2 `theme-skeleton` 已同步规范并归档。Resting Lamb 场景的渲染器已迁移到 WebGL2 并同步主规范，变更 `webgl-scene` 已归档于 `openspec/changes/archive/2026-10-21-webgl-scene/`，证据见 `docs/design/evidence/webgl-scene/`，最新交接见 `docs/handoff/2026-10-21-webgl-scene.md`；`resting-lamb-scene` 已归档于 `openspec/changes/archive/2026-10-21-resting-lamb-scene/`。品牌轮廓、草地窄溪场景、代码复制、OG 与原生页面转场的契约见 `docs/signature-capabilities.md`，P3 海面与 Canvas 2D 场景证据保留为历史。下一步 P4 跨引擎/真实设备/辅助技术、CI 浏览器门禁与发布文档；`README.md` 安装段仍未写，主题不声称可安装。
+
+## 回应方式
+
+- 不自行评估工作量：回复里不出现人日、天数、工期、发布日期或成本估算。
+- 需要说明"怎么推进"时，只给顺序、依赖关系、风险与可验收条件；这些才是可验证的部分。
+- 用户要求排期时，说明缺少哪些决定或数据，不编造时间数字。
 
 ## 硬边界
 
 - 主题不带 `content/`：内容归站点仓库。这是本仓库约定（Hugo 对主题 `content/` 的实际挂载行为未核实，见 `.agents/skills/hugo-theme-dev/references/sources.md` 的 U3），不是 Hugo 的强制规则。主题只交付 `layouts/`、`assets/`、`i18n/`、`archetypes/`、默认 `params`/`outputFormats`，以及 `exampleSite/` fixture；默认导航由模板提供（站点声明 `menus.main` 即整体替换），主题配置不写 `menus`。
-- 用新模板系统路径（Hugo ≥ 0.146）：`layouts/home.html`、`layouts/page.html`、`layouts/section.html`、`layouts/posts/…`、`layouts/_partials/`、`layouts/_shortcodes/`。`layouts/list.html`、`layouts/all.html` 只作回退，不作主模板。不使用 `layouts/_default/`、`layouts/partials/`。
+- 用新模板系统路径（Hugo ≥ 0.146）：`layouts/home.html`、`layouts/page.html`、`layouts/section.html`、`layouts/<section>/…`（当前 `blog`、`essays`、`projects`）、`layouts/_partials/`、`layouts/_shortcodes/`。`layouts/list.html`、`layouts/all.html` 只作回退，不作主模板。不使用 `layouts/_default/`、`layouts/partials/`。
 - 字体只用可再分发的 OFL 字体：衬线 Newsreader、等宽 Commit Mono，中文回退 Noto Serif SC / Noto Sans Mono CJK SC；逐篇OG允许 `assets/fonts/og/` 中两个明确白名单的OFL TrueType，仅供构建、不发布为网页字体（D24）。PlantinNow / Plantin、Departure Mono 不进入仓库与构建产物。
 - 不复制 Earendil 的 `styles.css`、WebGL/GLSL shader、文案、logo、图片。设计对照截图只放 `docs/design/reference/` 并标注来源，不进入发布产物。
 - 代码许可 MIT；`CREDITS.md` 记录灵感来源、第三方许可与引用 commit。Earendil 仓库的 Apache-2.0 没有 NOTICE 与版权行，引用其结构时也必须注明来源。
@@ -36,7 +44,7 @@ hugo --source exampleSite --themesDir ../.. \
   --panicOnWarning --printPathWarnings --printUnusedTemplates --printI18nWarnings
 ```
 
-`WARN` 视为失败。CI 同时测当前稳定版与最低支持版（完整命令见知识库 REL-07）。
+`WARN` 视为失败。CI 固定当前稳定版 Hugo（0.168.0）并每周对最新稳定版校验；最低版本只声明、不维护旧版兼容（见 D33）。
 
 - 视觉改动截 1440 与 390 两档；动效验证 `prefers-reduced-motion` 降级；无 JS 时正文可读。
 - 改 `DESIGN.md` 必须重生成 `.impeccable/design.json`：frontmatter 与 sidecar 漂移视为缺陷；改动后跑 `node scripts/check-assets.mjs`（5 项门禁：令牌字面值、字体白名单、组件形态、装饰 SVG 白名单、sidecar 与 frontmatter 一致），必须退出 0。
@@ -57,14 +65,14 @@ assets/css/{tokens,style,transitions}.css
 assets/js/{scene,theme,ui,code}.js
 assets/{fonts,images,cursors,favicon}/
 layouts/{baseof,home,page,section,404}.html
-layouts/posts/{section,page}.html
+layouts/{blog,essays,projects}/{section,page}.html
 layouts/{taxonomy,term}.html # fallback 列表，避免带 tags 的站点 WARN
 layouts/_partials/
 i18n/{en,zh}.toml
-archetypes/posts.md
+archetypes/{blog,projects}.md
 exampleSite/{hugo.toml,content/}
 test/{probe,signature,fidelity,scene-visibility,scene-performance,scene-tuner,scene-capture,scene-diff,shoot}.mjs # 零依赖 CDP 验收与截图（Node ≥ 22）
-.github/workflows/ci.yml     # Hugo 0.146.0 / 0.168.0 矩阵 + 资产门禁 + 弃用审计
+.github/workflows/ci.yml     # 固定 Hugo 0.168.0 + 每周 latest 校验 + 资产门禁 + 弃用审计
 docs/{decisions.md,handoff/,design/}
 docs/design/{transfer-matrix.md,fidelity-matrix.md,spikes/,reference/,evidence/}
 docs/design/reference/{upstream-pin.md,baseline/}

@@ -2,16 +2,18 @@
 # 键集合必须与 i18n/en.toml 完全一致；站点同名键覆盖主题值。
 
 [waitforit]
-  hero = "一封安放在静水旁的信。"
+  hero = "词句安放在静水旁。"
   skip = "跳到正文"
 
   [waitforit.nav]
     menu = "菜单"
     close = "关闭"
-    posts = "信件"
-    purpose = "目的"
-    values = "价值"
-    join = "加入"
+    blog = "博客"
+    essays = "随笔"
+    projects = "作品"
+    fiction = "小说"
+    photography = "摄影"
+    about = "关于"
 
   [waitforit.theme]
     auto = "自动"
@@ -22,25 +24,28 @@
   [waitforit.lang]
     label = "语言"
 
-  [waitforit.posts]
-    empty = "还没有信件抵达。"
-    read = "阅读"
+  [waitforit.list]
+    empty = "这里还没有内容。"
+    read = "全部阅读"
 
   [waitforit.home]
-    posts = "近期信件"
+    recent = "最近"
 
-  [waitforit.letter]
-    date = "日期"
-    from = "发件人"
-    to = "收件人"
-    subject = "主题"
+  [waitforit.projects]
+    repo = "仓库"
+    demo = "演示"
+
+  [waitforit.pagination]
+    label = "分页"
+    previous = "上一页"
+    next = "下一页"
 
   [waitforit.footer]
-    note = "以铅字排出的通信。"
+    note = "以铅字排出，安静收存。"
 
   [waitforit.404]
     title = "404"
-    body = "这不是我们寄出的信。"
+    body = "这一页还没有写。"
     home = "回到开头"
 
   [waitforit.code]

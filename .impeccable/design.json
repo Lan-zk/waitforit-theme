@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-21T03:18:08.250Z",
+  "generatedAt": "2026-10-21T09:19:05.173Z",
   "title": "waitforit-theme Design System",
   "extensions": {
     "colorMeta": {
@@ -215,7 +215,7 @@
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Letter meta, post dates, captions, and letter footers"
+        "purpose": "Post dates, project meta, captions, and footers"
       },
       "ui": {
         "displayName": "UI",
@@ -371,7 +371,7 @@
       "kind": "custom",
       "refersTo": null,
       "description": "Body links carry a dotted underline that turns solid and brightens one ink step on hover or focus; at night the link brightens to night-bright.",
-      "html": "<p class=\"wf-text-paragraph\">Read <a class=\"wf-text-link\" href=\"#\">the announcement</a> before the letter is sealed.</p>",
+      "html": "<p class=\"wf-text-paragraph\">Read <a class=\"wf-text-link\" href=\"#\">the announcement</a> before the page is printed.</p>",
       "css": ".wf-text-paragraph {\n  font-family: var(--wf-font-serif, Georgia, serif);\n  font-size: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);\n  line-height: 1.6;\n  color: var(--wf-ink, #353431);\n}\n.wf-text-link {\n  color: inherit;\n  text-decoration-line: underline;\n  text-decoration-style: dotted;\n  text-decoration-thickness: 0.06em;\n  text-underline-offset: 0.14em;\n  transition: color var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-text-link:hover,\n.wf-text-link:focus-visible {\n  color: var(--wf-ink, #353431);\n  text-decoration-style: solid;\n}\n.wf-text-link:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n[data-theme=\"night\"] .wf-text-link:hover,\n[data-theme=\"night\"] .wf-text-link:focus-visible {\n  color: var(--wf-night-bright, #ffffff);\n}"
     },
     {
@@ -391,12 +391,12 @@
       "css": ".wf-menu-trigger {\n  appearance: none;\n  margin: 0;\n  padding: 0;\n  border: 0;\n  background: transparent;\n  color: var(--wf-moonlight, rgba(255, 255, 255, 0.95));\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.25;\n  letter-spacing: 0;\n  text-transform: uppercase;\n  cursor: pointer;\n  transition: color var(--wf-motion-hover, 180ms) var(--wf-ease, cubic-bezier(0.333333, 0, 0.666667, 1));\n}\n.wf-menu-trigger:hover,\n.wf-menu-trigger[aria-expanded=\"true\"] {\n  color: var(--wf-pure-white, #ffffff);\n}\n.wf-menu-trigger:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}\n.wf-menu-panel {\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n  gap: var(--wf-space-sm, 8px);\n  margin: 0;\n  padding: var(--wf-space-md, 10px) 0 0;\n  list-style: none;\n}\n.wf-menu-panel[hidden] {\n  display: none;\n}\n.wf-menu-link {\n  color: inherit;\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.25;\n  letter-spacing: 0;\n  text-transform: uppercase;\n  text-decoration: none;\n}\n.wf-menu-link:hover,\n.wf-menu-link:focus-visible {\n  color: var(--wf-pure-white, #ffffff);\n  text-decoration-line: underline;\n  text-decoration-style: dotted;\n  text-decoration-thickness: 0.06em;\n  text-underline-offset: 0.14em;\n}\n@media (max-width: 800px) {\n  .wf-menu-panel:not([hidden]) {\n    position: fixed;\n    inset: 0;\n    align-items: flex-start;\n    justify-content: center;\n    gap: var(--wf-space-lg, 16px);\n    padding: var(--wf-frame-block, 40px) var(--wf-space-block, 28px);\n    background: var(--wf-paper, #faf9f6);\n    color: var(--wf-ink, #353431);\n    z-index: var(--wf-z-frame, 3);\n  }\n  .wf-menu-link {\n    display: flex;\n    align-items: center;\n    min-height: var(--wf-tap-target, 44px);\n  }\n}"
     },
     {
-      "name": "Letter meta",
+      "name": "Project card",
       "kind": "custom",
-      "refersTo": "letter-meta",
-      "description": "The post signature: a mono Date, From, To, Subject block in two grid columns with muted keys, closed by a hairline 24px below.",
-      "html": "<dl class=\"wf-letter-meta\">\n  <dt class=\"wf-letter-meta__key\">Date</dt><dd class=\"wf-letter-meta__value\">20 October 2026</dd>\n  <dt class=\"wf-letter-meta__key\">From</dt><dd class=\"wf-letter-meta__value\">W. Forth</dd>\n  <dt class=\"wf-letter-meta__key\">To</dt><dd class=\"wf-letter-meta__value\">You</dd>\n  <dt class=\"wf-letter-meta__key\">Subject</dt><dd class=\"wf-letter-meta__value\">A page held above the sea</dd>\n</dl>",
-      "css": ".wf-letter-meta {\n  display: grid;\n  grid-template-columns: max-content 1fr;\n  column-gap: 1ch;\n  row-gap: var(--wf-space-xs, 6px);\n  margin: 0;\n  padding: 0 0 var(--wf-space-section, 24px);\n  border-bottom: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  color: var(--wf-ink, #353431);\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.9375rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.6;\n}\n.wf-letter-meta__key {\n  color: var(--wf-muted-ink, rgba(25, 24, 22, 0.6));\n}\n.wf-letter-meta__value {\n  margin: 0;\n}"
+      "refersTo": "project-card",
+      "description": "One link in a flat hairline grid: a serif italic title, an optional mono meta line for year and link kind, and a one-line summary. No fill, no radius, no shadow, and no hover lift; only the title underline changes state.",
+      "html": "<a class=\"wf-project-card\" href=\"#\">\n  <span class=\"wf-project-card__title\">Night Post</span>\n  <span class=\"wf-project-card__meta\">2026 · GitHub</span>\n  <span class=\"wf-project-card__summary\">A static-site theme that sets the site in paper and ink.</span>\n</a>",
+      "css": ".wf-project-card {\n  display: grid;\n  gap: var(--wf-space-xs, 6px);\n  padding: var(--wf-space-lg, 16px) 0;\n  border-top: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  color: var(--wf-ink, #353431);\n  font-family: var(--wf-font-serif, Georgia, serif);\n  text-decoration: none;\n}\n.wf-project-card__title {\n  font-size: 1.25rem;\n  font-style: italic;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.15;\n}\n.wf-project-card__meta {\n  color: var(--wf-muted-ink, rgba(25, 24, 22, 0.6));\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.8125rem;\n  letter-spacing: 0;\n  text-transform: uppercase;\n}\n.wf-project-card__summary {\n  font-size: 1rem;\n  line-height: 1.6;\n}\n.wf-project-card:hover .wf-project-card__title,\n.wf-project-card:focus-visible .wf-project-card__title {\n  text-decoration-line: underline;\n  text-decoration-style: dotted;\n  text-decoration-thickness: 0.06em;\n  text-underline-offset: 0.14em;\n}\n.wf-project-card:focus-visible {\n  outline: var(--wf-focus-width, 1px) solid currentColor;\n  outline-offset: var(--wf-focus-offset, 3px);\n}"
     },
     {
       "name": "Post row",
@@ -440,15 +440,15 @@
     }
   ],
   "narrative": {
-    "northStar": "A Letter at Rest Beside Still Waters",
-    "overview": "waitforit-theme is a correspondence theme, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — at rest beside a low meadow and a narrow stream: an original WebGL2 landscape with fixed ground, wind-shaped grass and softly blended stream ripples, fading out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: the brand emblem, the word MENU, a footer. Nothing scrolls but content. A post is a letter you received — Date, From, To, Subject set in mono above a serif reading column — and the site should read like the inside of an envelope, not the outside of an app.\n\nThe austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme=\"night\"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No card, no chip, no filled button, no accent hue. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.\n\nMotion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, content enters in 300ms, the menu opens in 240ms and closes in 180ms, the theme cross-fades in 900ms while scene, veil, and grain change light together, and the subscribe line confirms in 720ms. Everything respects `prefers-reduced-motion` — every duration token becomes 0ms and the landscape freezes on its first frame — and nothing ever moves to attract attention.",
+    "northStar": "Words at Rest Beside Still Waters",
+    "overview": "waitforit-theme is a personal-site theme for six kinds of content, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — at rest beside a low meadow and a narrow stream: an original WebGL2 landscape with fixed ground, wind-shaped grass and softly blended stream ripples, fading out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: the brand emblem, the word MENU, a footer. Nothing scrolls but content. A blog post or an essay is a mono date above a serif reading column; a project is a flat hairline card with no fill, radius, or shadow. The site should read like a printed page, not the outside of an app.\n\nThe austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme=\"night\"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No raised card, no chip, no filled button, no accent hue; the only card form is the flat project grid, which never lifts. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.\n\nMotion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, content enters in 300ms, the menu opens in 240ms and closes in 180ms, the theme cross-fades in 900ms while scene, veil, and grain change light together, and the subscribe line confirms in 720ms. Everything respects `prefers-reduced-motion` — every duration token becomes 0ms and the landscape freezes on its first frame — and nothing ever moves to attract attention.",
     "keyCharacteristics": [
       "Two typefaces only: Newsreader (OFL variable serif, true italic) for display, title, and reading; Commit Mono (OFL) for body, UI, form, label, and code.",
       "Thirteen color tokens: `paper` and `ink` by day, `night-paper` and `night-ink` by night, plus a muted ink, a hairline, and a `moonlight` that survives both lights.",
       "One brand emblem: the user-supplied silhouette. One interaction ornament: an original eight-ray four-point star, used as the cursor and a hover reward — never as static decoration and never as a bullet.",
       "One fixed frame (75px, 40px at ≤800px, 28px at ≤520px) around one centered column of `min(100%, 760px)`.",
       "Four stacked layers and no page background: scene, then veil, then grain, then frame.",
-      "Letter-shaped content: posts open with a Date, From, To, Subject block in mono above a serif reading column.",
+      "Three shipped page types: blog and essays share one serif reading column under a mono date; projects are a flat hairline card grid linking out to a repository.",
       "Quiet interaction instead of state chrome: dotted underlines turning solid, a 15px star revealed on hover, a 520ms page fade.",
       "A declared font deviation: Newsreader and Commit Mono replace the reference's Plantin Now and Departure Mono, and the two `--wf-font-*` variables are the only override point for a site that self-hosts its own pair."
     ],
@@ -480,12 +480,12 @@
       },
       {
         "name": "The Bare Chrome Rule",
-        "body": "Every action is text: no fill, no border, no card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, or the brand emblem, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.",
+        "body": "Every action is text: no fill, no border, no raised card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, or the brand emblem, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.",
         "section": "Components"
       }
     ],
     "dos": [
-      "Keep the reading column at `min(100%, 760px)` and the serif at 18 to 20px; the letter is the product.",
+      "Keep the reading column at `min(100%, 760px)` and the serif at 18 to 20px; the reading column is the product.",
       "Declare the font substitution in the repository: Newsreader and Commit Mono are the theme's only faces, and `--wf-font-serif` and `--wf-font-mono` are the only override point for a site that self-hosts its own OFL pair.",
       "Reserve Commit Mono for chrome, meta, forms, and code, and set every human voice in Newsreader.",
       "Express hierarchy with size, ink opacity between 60 and 80 percent, and hairlines, never with hue, weight, or fills.",
@@ -496,7 +496,7 @@
     ],
     "donts": [
       "Don't introduce a third typeface, and never let Plantin Now, Plantin, or Departure Mono into the repository or its build output; the only permitted deviation is the `--wf-font-*` override with self-hosted OFL faces.",
-      "Don't introduce an accent hue, a card, a chip, a filled button, or a shadow beyond the three functional ones.",
+      "Don't introduce an accent hue, a raised card, a chip, a filled button, or a shadow beyond the three functional ones; flat hairline project cards are the only card form.",
       "Don't fake weight or slant: no `text-shadow` thickening and no synthetic italic; mono stays at its 400 token weight and serif emphasis uses Newsreader's true italic.",
       "Don't paint a solid page background or stack an opaque panel over the scene; the drawn landscape must stay visible outside the veil.",
       "Don't animate anything to draw attention — no pulses, no autoplay, no scroll-jacking; the only continuous motion is the grass tips and stream textures.",

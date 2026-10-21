@@ -1,0 +1,8 @@
+{{- /* 分页（TPL-20/21）：仅在多于一个 pager 时渲染；原生链接，URL 自带语言前缀。 */}}
+{{- if gt .TotalPages 1 }}
+<nav class="wf-pagination" aria-label="{{ T "waitforit.pagination.label" }}">
+  {{- with .Prev }}<a class="wf-pagination__link" href="{{ .URL }}" rel="prev">{{ T "waitforit.pagination.previous" }}</a>{{ end }}
+  <span class="wf-pagination__status">{{ .PageNumber }} / {{ .TotalPages }}</span>
+  {{- with .Next }}<a class="wf-pagination__link" href="{{ .URL }}" rel="next">{{ T "waitforit.pagination.next" }}</a>{{ end }}
+</nav>
+{{- end }}

@@ -1,6 +1,6 @@
 # P3 签名能力
 
-P3能力已同步至 `openspec/specs/signature-experience/`，变更归档于 `openspec/changes/archive/2026-10-21-signature-capabilities/`。Resting Lamb 场景替换已实现并同步主规范，变更已归档至 `openspec/changes/archive/2026-10-21-resting-lamb-scene/`，新证据见 `docs/design/evidence/resting-lamb-scene/`。场景渲染器已迁移到 WebGL2（已归档变更 `openspec/changes/archive/2026-10-21-webgl-scene/`，决策 D32），证据见 `docs/design/evidence/webgl-scene/`。构建最低支持 Hugo 0.146.0，基线 0.168.0；主题构建不需要 Node、Chrome、extended 或网络。
+P3能力已同步至 `openspec/specs/signature-experience/`，变更归档于 `openspec/changes/archive/2026-10-21-signature-capabilities/`。Resting Lamb 场景替换已实现并同步主规范，变更已归档至 `openspec/changes/archive/2026-10-21-resting-lamb-scene/`，新证据见 `docs/design/evidence/resting-lamb-scene/`。场景渲染器已迁移到 WebGL2（已归档变更 `openspec/changes/archive/2026-10-21-webgl-scene/`，决策 D32），证据见 `docs/design/evidence/webgl-scene/`。构建只支持当前最新稳定版 Hugo 0.168.0（D33）；主题构建不需要 Node、Chrome、extended 或网络。
 
 ## 配置与内容
 

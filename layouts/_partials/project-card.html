@@ -1,0 +1,9 @@
+{{- /* 作品卡片（DESIGN.md Project card）：整卡是链接，优先链到仓库；无填充、圆角与阴影。 */}}
+{{- $repo := .Params.repo }}
+{{- $href := .RelPermalink }}
+{{- with $repo }}{{ $href = . }}{{ end }}
+<a class="wf-project-card" href="{{ $href }}">
+  <span class="wf-project-card__title">{{ .Title }}</span>
+  {{- with .Date }}<span class="wf-project-card__meta">{{ . | time.Format "2006" }}</span>{{ end }}
+  {{- with .Description }}<span class="wf-project-card__summary">{{ . }}</span>{{ end }}
+</a>

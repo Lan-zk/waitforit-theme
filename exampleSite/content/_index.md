@@ -1,6 +1,6 @@
 ---
 title: "The Night Post"
-description: "A small correspondence project about lamps, quiet meadows, and the letters we never send."
+description: "A fictional personal site for writing, notes, and projects."
 ---
 
-A small correspondence project about lamps, quiet meadows, and the letters we never send. New letters arrive slowly, whenever they are ready.
+A fictional personal site used as the theme fixture: longer entries, short notes, and open-source projects, set in paper and ink.

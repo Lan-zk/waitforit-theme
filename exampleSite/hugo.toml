@@ -1,10 +1,10 @@
-# exampleSite：waitforit-theme 的可构建 fixture（虚构站点，D9/D11）
-# 同时演示站点侧契约：theme 名、双语、站点菜单（整体替换主题默认导航，CFG-11）、params 覆盖。
+# exampleSite：waitforit-theme 的可构建 fixture（虚构站点，D11）
+# 同时演示站点侧契约：theme 名、双语、params 覆盖；刻意不声明 menus.main，
+# 让主题内置的六类型导航与 placeholder 页在 fixture 中被实际构建（D33）。
 #
 # 语言展示名/代码走 [languages.<lang>.params]（label/locale），不写 languageName/languageCode/
-# languageDirection：后三者在 Hugo 0.168 是弃用键（WARN → --panicOnWarning 失败），
-# 而对应的新字段在最低支持版 0.146.0 里不存在；params 两版都可用（CNT-20 / CNT-19 的版本约束）。
-# locale 取 en / zh（不是 en-US / zh-CN），让 <html lang> 与 hreflang 与 spec 场景的字面值一致。
+# languageDirection：后三者在 Hugo 0.168 是弃用键（WARN → --panicOnWarning 失败）。
+# locale 取 en / zh，让 <html lang> 与 hreflang 与 spec 场景的字面值一致。
 
 baseURL = "https://example.com/"
 title = "The Night Post"
@@ -13,14 +13,18 @@ theme = "waitforit-theme"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
+# 分页（TPL-20/21）：blog 文章多于 2 篇时生成 page/2，用于验收分页路径与上一页/下一页。
+[pagination]
+  pagerSize = 2
+
 [params]
-  description = "A fictional correspondence, set in type."
+  description = "A fictional personal site for writing, notes, and projects."
 
   [params.waitforit]
     brand = "The Night Post"
     defaultTheme = "auto"
-    hero = "Letters find us in quiet places."
-    footer = "The Night Post · correspondence from a quiet meadow"
+    hero = "Words at rest beside still waters."
+    footer = "The Night Post · a fictional personal site"
     [params.waitforit.features]
       scene = true
       transitions = true
@@ -32,29 +36,7 @@ defaultContentLanguageInSubdir = false
     [languages.en.params]
       label = "English"
       locale = "en"
-      description = "A fictional correspondence, set in type."
-    # 站点声明 menus.main 即整体替换主题内置的四个默认入口（CFG-11）。
-    # 多一项 Notes 让“站点菜单”与“内置默认导航”在产物里可区分。
-    [[languages.en.menus.main]]
-      name = "Letters"
-      pageRef = "/posts"
-      weight = 1
-    [[languages.en.menus.main]]
-      name = "Purpose"
-      pageRef = "/purpose"
-      weight = 2
-    [[languages.en.menus.main]]
-      name = "Values"
-      pageRef = "/values"
-      weight = 3
-    [[languages.en.menus.main]]
-      name = "Join"
-      pageRef = "/join"
-      weight = 4
-    [[languages.en.menus.main]]
-      name = "Notes"
-      pageRef = "/notes"
-      weight = 5
+      description = "A fictional personal site for writing, notes, and projects."
 
   [languages.zh]
     weight = 2
@@ -62,28 +44,8 @@ defaultContentLanguageInSubdir = false
     [languages.zh.params]
       label = "中文"
       locale = "zh"
-      description = "一束虚构的通信，以铅字排出。"
+      description = "一个虚构的个人站点，收长文、短记与作品。"
     [languages.zh.params.waitforit]
       brand = "夜邮"
-      hero = "信，在安静处抵达。"
-      footer = "夜邮 · 来自虚构草地的通信"
-    [[languages.zh.menus.main]]
-      name = "信件"
-      pageRef = "/posts"
-      weight = 1
-    [[languages.zh.menus.main]]
-      name = "目的"
-      pageRef = "/purpose"
-      weight = 2
-    [[languages.zh.menus.main]]
-      name = "价值"
-      pageRef = "/values"
-      weight = 3
-    [[languages.zh.menus.main]]
-      name = "加入"
-      pageRef = "/join"
-      weight = 4
-    [[languages.zh.menus.main]]
-      name = "短笺"
-      pageRef = "/notes"
-      weight = 5
+      hero = "词句安放在静水旁。"
+      footer = "夜邮 · 一个虚构的个人站点"

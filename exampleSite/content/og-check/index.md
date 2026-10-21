@@ -7,7 +7,7 @@ build:
 params:
   waitforit:
     image: "cover.png"
-    imageAlt: "Fictional tide-desk cover with the theme emblem above a drawn sea"
+    imageAlt: "Fictional tide-desk cover with the theme emblem above a drawn meadow"
 ---
 
 This fictional page verifies the page-bundle image override. [Return to the code notes]({{< relref "signature-check" >}}).

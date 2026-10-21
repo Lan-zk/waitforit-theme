@@ -89,7 +89,7 @@ try {
   await sleep(100);
   check('keyboard-copy-success', await ev('wfCopied') === original && await ev(`document.querySelector('[role=status]').textContent`) === 'Copied.', { copiedLength: await ev('wfCopied?.length') });
   await ev(`navigator.clipboard.writeText=async()=>{throw new DOMException('Denied','NotAllowedError');};document.querySelector('[data-wf-copy]').click();true`); await sleep(100);
-  check('copy-denial-selection', await ev(`document.querySelector('[role=status]').textContent.includes('Code selected') && getSelection().toString().includes('const letter')`), await ev(`document.querySelector('[role=status]').textContent`));
+  check('copy-denial-selection', await ev(`document.querySelector('[role=status]').textContent.includes('Code selected') && getSelection().toString().includes('const note')`), await ev(`document.querySelector('[role=status]').textContent`));
   const blocks = await ev(`Array.from(document.querySelectorAll('[data-wf-code]')).map(b=>({source:b.querySelector('textarea').value,text:b.querySelector('code').textContent,button:!!b.querySelector('button'),styles:!!b.querySelector('[style]')}))`);
   check('unknown-empty-and-no-inline-colors', blocks.length === 4 && blocks[2].source.trimEnd() === blocks[2].text.trimEnd() && !blocks[3].button && blocks.every(b => !b.styles), blocks.map(b => ({ length: b.source.length, button: b.button, styles: b.styles })));
   for (const width of [1440, 390]) {
@@ -112,23 +112,23 @@ try {
   check('cross-document-transition', nav.active && nav.name === 'wf-reading' && nav.animations.some(a => a.name === 'wf-page-in' && a.duration === 520) && nav.animations.some(a => a.name === 'wf-page-out' && a.duration === 220), nav);
   await go('signature-check/');
   await ev(`document.querySelector('main').scrollTop=200;true`); await sleep(100);
-  await go('purpose/');
+  await go('essays/');
   const hist = await cdp.send('Page.getNavigationHistory');
   await cdp.send('Page.navigateToHistoryEntry', { entryId: hist.entries[hist.currentIndex - 1].id });
   await sleep(900);
   check('history-scroll-restoration', await ev(`location.pathname.endsWith('/signature-check/') && document.querySelector('main').scrollTop===200`), await ev(`({path:location.pathname,scroll:document.querySelector('main').scrollTop})`));
   await ev(`document.querySelector('a[href$="#a-small-program"]').click();true`); await sleep(100);
   check('fragment-navigation', await ev(`location.hash==='#a-small-program' && document.querySelector('main').scrollTop<100`), await ev(`({hash:location.hash,scroll:document.querySelector('main').scrollTop})`));
-  for (const route of ['', 'posts/first-letter/', 'signature-check/', 'zh/signature-check/', 'og-check/', '404.html']) {
+  for (const route of ['', 'blog/first-post/', 'signature-check/', 'zh/signature-check/', 'og-check/', '404.html']) {
     await go(route);
     const meta = await ev(`(()=>{const p=k=>document.querySelector('meta[property="'+k+'"]')?.content,n=k=>document.querySelector('meta[name="'+k+'"]')?.content;return {title:p('og:title'),description:p('og:description'),url:p('og:url'),image:p('og:image'),width:p('og:image:width'),height:p('og:image:height'),alt:p('og:image:alt'),locale:p('og:locale'),type:p('og:type'),date:p('article:published_time'),twitter:n('twitter:card'),sameImage:n('twitter:image')===p('og:image')};})()`);
     // OG uses configured production baseURL, so request its pathname from the local build.
     const image = await fetch(new URL(new URL(meta.image).pathname, base));
-    check(`social-${route || 'home'}`, meta.title && meta.description && /^https?:/.test(meta.url) && meta.width === '1200' && meta.height === '630' && meta.alt && image.ok && meta.twitter === 'summary_large_image' && meta.sameImage && (!route.startsWith('posts') || (meta.type === 'article' && meta.date)) && (route !== 'og-check/' || (meta.image.includes('/og-check/cover.') && meta.alt.includes('Fictional tide-desk'))), meta);
+    check(`social-${route || 'home'}`, meta.title && meta.description && /^https?:/.test(meta.url) && meta.width === '1200' && meta.height === '630' && meta.alt && image.ok && meta.twitter === 'summary_large_image' && meta.sameImage && (!route.startsWith('blog') || (meta.type === 'article' && meta.date)) && (route !== 'og-check/' || (meta.image.includes('/og-check/cover.') && meta.alt.includes('Fictional tide-desk'))), meta);
   }
   await cdp.send('Emulation.setScriptExecutionDisabled', { value: true });
   await go('signature-check/');
-  check('no-js-code', await ev(`document.querySelector('code').textContent.includes('const letter') && Array.from(document.querySelectorAll('[data-wf-copy]')).every(b=>getComputedStyle(b).display==='none')`), 'Readable code; copy controls hidden');
+  check('no-js-code', await ev(`document.querySelector('code').textContent.includes('const note') && Array.from(document.querySelectorAll('[data-wf-copy]')).every(b=>getComputedStyle(b).display==='none')`), 'Readable code; copy controls hidden');
   await cdp.send('Emulation.setScriptExecutionDisabled', { value: false });
   const noCanvas = await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
     const context=HTMLCanvasElement.prototype.getContext;
@@ -137,7 +137,7 @@ try {
     window.requestAnimationFrame=function(callback){wfRafs++;return raf.call(window,callback);};
   ` });
   await go('signature-check/');await sleep(250);
-  const unsupported=await ev(`({rafs:wfRafs,readable:document.querySelector('main').textContent.includes('const letter')})`);
+  const unsupported=await ev(`({rafs:wfRafs,readable:document.querySelector('main').textContent.includes('const note')})`);
   await sleep(250);
   check('canvas-unavailable-readable-and-idle', unsupported.readable && await ev('wfRafs')===unsupported.rafs, unsupported);
   await cdp.send('Page.removeScriptToEvaluateOnNewDocument', {identifier:noCanvas.identifier});

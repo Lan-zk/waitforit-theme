@@ -2,11 +2,12 @@
 #
 # 主题根配置只有 Hugo 参与合并的四段会生效（CFG-01）；本站只写 params 与 module 版本护栏。
 # 站点配置始终优先，`params` 嵌套键深合并（CFG-07），自定义参数统一命名空间 `params.waitforit.*`（CFG-05）。
-# 默认导航由模板提供（不在这里声明 menus）：站点声明 `menus.main` 即整体替换（CFG-11，见 docs/decisions.md D20）。
+# 默认导航由模板提供（不在这里声明 menus）：站点声明 `menus.main` 即整体替换（CFG-11，见 docs/decisions.md D20/D33）。
+# 版本策略：只支持当前最新稳定版，不维护旧版兼容（D33）；升级先复跑实测再改这里。
 
 [module]
   [module.hugoVersion]
-    min = "0.146.0"
+    min = "0.168.0"
 
 [params]
   [params.waitforit]

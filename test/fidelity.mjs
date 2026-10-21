@@ -28,7 +28,7 @@ try {
     }
   }
   const seen=[];
-  for(const route of ['signature-check/','posts/first-letter/','og-long-check/','zh/og-long-check/','og-edge-check/','og-check/']) {
+  for(const route of ['signature-check/','blog/first-post/','og-long-check/','zh/og-long-check/','og-edge-check/','og-check/']) {
     await navigateAndWait(cdp,new URL(route,base).href);
     const meta=await ev(`({title:document.querySelector('meta[property="og:title"]').content,image:document.querySelector('meta[property="og:image"]').content,width:document.querySelector('meta[property="og:image:width"]').content,height:document.querySelector('meta[property="og:image:height"]').content})`);
     const local=new URL(new URL(meta.image).pathname,base).href;

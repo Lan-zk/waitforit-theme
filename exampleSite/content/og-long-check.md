@@ -1,5 +1,5 @@
 ---
-title: "An extraordinarily long fictional dispatch about the harbour, the lamps, the changing tide, and the patient correspondence that continues across the far edge of the sea"
+title: "An extraordinarily long fictional dispatch about the harbour, the lamps, the changing tide, and the patient notes that continue across the far edge of the sea"
 description: "A fictional long-title fixture for generated social images."
 build:
   list: never

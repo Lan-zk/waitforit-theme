@@ -1,24 +1,27 @@
-# waitforit-theme CI（OpenSpec theme-skeleton D10 / tasks 7.2）
-# 双 Hugo 矩阵（最低支持 0.146.0 + 当前稳定 0.168.0）→ 门禁 → 零 WARN 构建 → 弃用审计。
-# 依据：REL-01（不需要 extended）、REL-07（双版本矩阵）、REL-08（--panicOnWarning 抓不到 INFO 弃用）、REL-09（离线构建）。
+# waitforit-theme CI
+# 版本策略（D33）：固定当前稳定版 0.168.0 执行验收，另设每周对 latest 的构建与弃用审计；
+# 只支持最新稳定版，不再维护 0.146.0 旧版矩阵。
+# 依据：REL-01（不需要 extended）、REL-05/REL-08（INFO 级弃用需单独审计）、REL-09（离线构建）。
 name: CI
 
 on:
   push:
   pull_request:
   workflow_dispatch:
+  schedule:
+    # 每周一 03:00 UTC 对最新稳定版复跑，早于用户发现弃用或破坏性变更。
+    - cron: "0 3 * * 1"
 
 permissions:
   contents: read
 
+env:
+  HUGO_VERSION: "0.168.0"
+
 jobs:
   build:
-    name: build (Hugo ${{ matrix.hugo }})
+    name: build (Hugo 0.168.0)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        hugo: ["0.146.0", "0.168.0"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +35,7 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: ${{ matrix.hugo }}
+          hugo-version: ${{ env.HUGO_VERSION }}
           extended: false
 
       - name: Show Hugo version
@@ -41,7 +44,7 @@ jobs:
       - name: Asset and design-contract gates
         run: node scripts/check-assets.mjs
 
-      # 构建命令与 design.md D10 逐字一致：WARN 即 panic（exit 2）。
+      # 构建命令与 REL-07 一致：WARN 即 panic（exit 2）。
       - name: Build exampleSite (warnings are fatal)
         run: |
           hugo --source exampleSite --themesDir ../.. \
@@ -49,6 +52,42 @@ jobs:
             --gc --cleanDestinationDir
 
       # INFO 级弃用不受 --panicOnWarning 管控，必须单独跑 --logLevel info 再 grep（REL-05/REL-08）。
+      - name: Deprecation audit
+        run: |
+          hugo --source exampleSite --themesDir ../.. --logLevel info 2>&1 | tee /tmp/hugo-info.log
+          ! grep -qi deprecat /tmp/hugo-info.log
+
+  latest:
+    name: build (Hugo latest)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Hugo (latest)
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: latest
+          extended: false
+
+      - name: Show Hugo version
+        run: hugo version
+
+      - name: Asset and design-contract gates
+        run: node scripts/check-assets.mjs
+
+      - name: Build exampleSite (warnings are fatal)
+        run: |
+          hugo --source exampleSite --themesDir ../.. \
+            --panicOnWarning --printPathWarnings --printUnusedTemplates --printI18nWarnings \
+            --gc --cleanDestinationDir
+
       - name: Deprecation audit
         run: |
           hugo --source exampleSite --themesDir ../.. --logLevel info 2>&1 | tee /tmp/hugo-info.log

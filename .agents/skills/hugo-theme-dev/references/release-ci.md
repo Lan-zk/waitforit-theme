@@ -90,7 +90,7 @@ hugo --source exampleSite --themesDir ../..
 Select-String -Path public\*.html,public\**\*.html -Pattern "raw HTML omitted|ZgotmplZ|i18n|&lt;nil&gt;|\(<nil>\)"
 ```
 
-- **REL-07** CI 矩阵 = 最低支持版（0.146.0）+ 最新稳定版（0.168.0）各跑一遍完整命令；WARN 一律视为失败（AGENTS.md 已有此约定，这里是可执行版本）。⟦D⟧ `docs/decisions.md` D4；⟦I⟧ 落地命令
+- **REL-07** CI 矩阵 = 最低支持版（0.146.0）+ 最新稳定版（0.168.0）各跑一遍完整命令；WARN 一律视为失败（AGENTS.md 已有此约定，这里是可执行版本）。⟦D⟧ `docs/decisions.md` D4；⟦I⟧ 落地命令。**2026-10-21 起按 D33 修订：本仓库只支持最新稳定版（0.168.0），取消双版本矩阵，改为固定版本 + 每周 latest 校验；双版本条款仅作历史与通用说明。**
 - **REL-08** `--panicOnWarning` 只升级 WARNING；INFO 级弃用必须另跑 `--logLevel info` + 关键字检查。⟦D⟧ SRC-101
 - **REL-09** 离线可构建是硬要求：不引入 `resources.GetRemote`，需要模块依赖时先 `hugo mod vendor` 并提交 `_vendor/`。⟦D⟧ SRC-77, SRC-100；⟦I⟧ 本仓库原则
 
@@ -132,7 +132,7 @@ Select-String -Path public\*.html,public\**\*.html -Pattern "raw HTML omitted|Zg
 ## 8. 本仓库发版决策（沿用 D12/D15）
 
 - 版本号语义化：`v0.x.y`；`module.hugoVersion.min` 只随实际用到的特性提升（`templates.md` §9 表）。
-- 发布前必过：`--panicOnWarning` 双版本矩阵 + 弃用审计 + `exampleSite` 视觉基线（1440/390 两档截图）。
+- 发布前必过：`--panicOnWarning` 单版本严格构建（固定当前稳定版，D33）+ 弃用审计 + `exampleSite` 视觉基线（1440/390 两档截图）。
 - 是否投递 themes.gohugo.io 仍是待定项（`docs/decisions.md` 待定表），投递则需额外维护截图规格与 `theme.toml` 字段。
 
 ## 9. 来源

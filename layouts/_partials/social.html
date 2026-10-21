@@ -33,8 +33,8 @@
 <meta property="og:url" content="{{ .Permalink }}">
 <meta property="og:site_name" content="{{ site.Title }}">
 <meta property="og:locale" content="{{ replace (site.Language.Params.locale | default site.Language.Lang) "-" "_" }}">
-<meta property="og:type" content="{{ if and .IsPage (eq .Section "posts") }}article{{ else }}website{{ end }}">
-{{- if and .IsPage (eq .Section "posts") }}
+<meta property="og:type" content="{{ if and .IsPage (in (slice "blog" "essays" "projects") .Section) }}article{{ else }}website{{ end }}">
+{{- if and .IsPage (in (slice "blog" "essays" "projects") .Section) }}
 <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
 {{- end }}
 <meta property="og:image" content="{{ $image.Permalink }}">

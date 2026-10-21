@@ -1,6 +1,6 @@
 ---
 title: "Notes from the tide desk"
-description: "A fictional field note about small programs and a moving sea."
+description: "A fictional field note about small programs and a moving stream."
 date: 2026-10-20T10:00:00+08:00
 build:
   list: never
@@ -9,15 +9,15 @@ build:
 
 ## A small program
 
-This fictional desk keeps a few lines of code beside each letter. Copy preserves the indentation, symbols and final newline.
+This fictional desk keeps a few lines of code beside each entry. Copy preserves the indentation, symbols and final newline.
 
 ```js {id="sample-code" lineNos=true}
 // A fictional tide desk.
-const letter = "<sea> & sky";
+const note = "<meadow> & sky";
 function send(message) {
   return `  ${message}\n`;
 }
-console.log(send(letter));
+console.log(send(note));
 ```
 
 ## A long horizon
@@ -25,19 +25,19 @@ console.log(send(letter));
 The line below scrolls inside the code block. The reading column stays still.
 
 ```text
-A fictional instrument records: north 021 / south 034 / east 055 / west 089 / tide 144 / paper 233 / lamp 377 / shore 610 / sea 987 / horizon 1597 / correspondence continues beyond the edge of this deliberately long line.
+A fictional instrument records: north 021 / south 034 / east 055 / west 089 / tide 144 / paper 233 / lamp 377 / shore 610 / meadow 987 / horizon 1597 / typography continues beyond the edge of this deliberately long line.
 ```
 
 ```unknown-language
-<letter subject="The tide"> & keep this exactly
+<note subject="The tide"> & keep this exactly
 ```
 
 ```
 ```
 
-## Back to the letter
+## Back to the note
 
-[Read the first letter]({{< relref "posts/first-letter" >}}) or [return to this heading](#a-small-program).
+[Read the first entry]({{< relref "blog/first-post" >}}) or [return to this heading](#a-small-program).
 
 ## A quiet sky
 

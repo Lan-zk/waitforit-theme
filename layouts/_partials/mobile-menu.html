@@ -10,7 +10,7 @@
     <li class="wf-menu-item"><a class="wf-menu-link" href="{{ with .Page }}{{ .RelPermalink }}{{ else }}{{ .URL }}{{ end }}">{{ .Name }}</a></li>
       {{- end }}
     {{- else }}
-      {{- range $item := slice (dict "key" "posts" "path" "posts/") (dict "key" "purpose" "path" "purpose/") (dict "key" "values" "path" "values/") (dict "key" "join" "path" "join/") }}
+      {{- range $item := slice (dict "key" "blog" "path" "blog/") (dict "key" "essays" "path" "essays/") (dict "key" "projects" "path" "projects/") (dict "key" "fiction" "path" "fiction/") (dict "key" "photography" "path" "photography/") (dict "key" "about" "path" "about/") }}
     <li class="wf-menu-item"><a class="wf-menu-link" href="{{ relLangURL $item.path }}">{{ T (printf "waitforit.nav.%s" $item.key) }}</a></li>
       {{- end }}
     {{- end }}
