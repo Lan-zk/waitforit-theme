@@ -1,0 +1,272 @@
+[
+  {
+    "results": [
+      {
+        "worker": 0,
+        "round": 0,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 0,
+        "round": 1,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 0,
+        "round": 2,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 0,
+        "round": 3,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      }
+    ],
+    "loadErrors": [],
+    "consoleErrors": []
+  },
+  {
+    "results": [
+      {
+        "worker": 1,
+        "round": 0,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 1,
+        "round": 1,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 1,
+        "round": 2,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 1,
+        "round": 3,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      }
+    ],
+    "loadErrors": [
+      {
+        "resourceType": "Script",
+        "error": "net::ERR_CONNECTION_RESET"
+      },
+      "Failed to load resource: net::ERR_CONNECTION_RESET"
+    ],
+    "consoleErrors": []
+  },
+  {
+    "results": [
+      {
+        "worker": 2,
+        "round": 0,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 2,
+        "round": 1,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 2,
+        "round": 2,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 2,
+        "round": 3,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      }
+    ],
+    "loadErrors": [],
+    "consoleErrors": []
+  },
+  {
+    "results": [
+      {
+        "worker": 3,
+        "round": 0,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 3,
+        "round": 1,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 3,
+        "round": 2,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      },
+      {
+        "worker": 3,
+        "round": 3,
+        "clickListeners": 1,
+        "open": "true",
+        "inert": false,
+        "width": 1440,
+        "debug": [
+          {
+            "kind": "data-open",
+            "old": null,
+            "current": ""
+          }
+        ]
+      }
+    ],
+    "loadErrors": [],
+    "consoleErrors": []
+  }
+]

@@ -1,7 +1,8 @@
 {{- /* 三态主题切换（D6）：按钮循环 auto → day → night；可见标签与 aria-label 都来自 i18n。
-   无 JS 时按钮由 CSS 隐藏，页面按系统偏好显示；JS 负责写 localStorage 与改 data-theme。 */}}
+   无 JS 时按钮隐藏并保留站点默认模式；JS 负责保存用户选择与更新 data-theme。 */}}
 <button class="wf-theme-toggle" type="button" data-wf-theme-toggle
   aria-label="{{ T "waitforit.theme.label" }}"
+  data-label-theme="{{ T "waitforit.theme.label" }}"
   data-label-auto="{{ T "waitforit.theme.auto" }}"
   data-label-day="{{ T "waitforit.theme.day" }}"
   data-label-night="{{ T "waitforit.theme.night" }}">

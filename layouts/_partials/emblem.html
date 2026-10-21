@@ -1,0 +1,4 @@
+{{- /* 用户提供的品牌轮廓；几何与负形来自 assets/images/emblem.svg，颜色继承主题。 */ -}}
+{{- $asset := resources.Get "images/emblem.svg" -}}
+{{- $svg := replace $asset.Content "<svg " (printf `<svg class="%s" aria-hidden="true" focusable="false" ` (.class | default "wf-emblem")) -}}
+{{ $svg | safeHTML }}

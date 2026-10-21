@@ -23,7 +23,7 @@ defaultContentLanguageInSubdir = false
     footer = "The Night Post · correspondence from a fictional coast"
     [params.waitforit.features]
       sea = true
-      transitions = false
+      transitions = true
 
 [languages]
   [languages.en]

@@ -6,6 +6,8 @@
 - **主题侧**：契约 [`DESIGN.md`](../../DESIGN.md)、令牌 [`tokens.css`](../../assets/css/tokens.css)、sidecar [`.impeccable/design.json`](../../.impeccable/design.json)。P1 实测来自三个 spike（[`docs/design/spikes/`](spikes/)，命令与结果见其 README）；P2 实测来自 [`docs/design/evidence/theme-skeleton/`](evidence/theme-skeleton/README.md)（10 张证据截图 + 逐图观察）与 `test/probe.mjs`（Hugo 0.146.0/0.168.0 × 1440×900/390×844 四组断言，全部 7/7 PASS；数字取自 post-veil-fix 构建，产物 CSS 指纹 `main.min.3fa64f33…css`）。
 - **判定口径**：形态、层级、节奏一致；字体族与海面实现是声明偏差；不把像素一致性当验收目标。参考站点已知缺陷（缺 skip link、英文闪烁、light 模式导航重叠）是缺陷，不是保真对象。P2 偏差编号 **A–G** 见各行的「偏差声明」列与证据 README。
 
+- **P2 审查修订**：当前实现与证据见 [p2-review](evidence/p2-review/README.md) 和决策 D21。早期表中 7/7 探针与截图是历史测量；现有探针扩为 9/9，加入正文阅读区域、真实跳过链接焦点、模态隔离、双向 Tab 循环、无 JS 不叠印与 UI 脚本下载失败时的导航降级检查。正文与固定栏叠印已作为缺陷修复，不再按参考行为保留。
+
 | 保真面 | 参考值（pin 31b1b04 / 12 张基线截图） | 主题值（契约 + P2 实测） | 偏差声明（对应 design.md Risks） | 证据 |
 | --- | --- | --- | --- | --- |
 | **字体 A/B** | Plantin Now VF（upright/italic 83,136/94,676B，专属许可不可分发）+ Departure Mono（22,496B，OFL 但按仓库边界禁入）；衬线角色 display/title/reading、等宽角色 body/ui/form/label/code；8 组字号/行高（display `clamp(1.25rem, .875rem + 1.5vw, 2.5rem)`/1.15、title 1.25rem/1.15、reading `clamp(1.125rem, 1.05rem + .375vw, 1.25rem)`/1.6、body .9375rem/1.6、ui .9375rem/1.25、form .9375rem/1.6、label .8125rem/1.25、code .8125rem/1.846，weight 400）。 | Newsreader VF latin 子集 125,812 + 140,676B（含真斜体、wght 200–800）+ Commit Mono latin 400/700 15,100 + 15,080B，合计 296,668B ≤ 300KB；角色映射与 8 组字号/行高逐项保持（`--wf-type-*`）；`--wf-font-serif` / `--wf-font-mono` 是唯一允许的覆盖点。P1 A/B 实测：四组合字体加载均 2/2，1440 与 390 均无横向溢出；A/B 字面差异主要在 display/title 尺寸可辨、reading 尺寸行宽与可读性接近，系统 mono 在 code 行字面与宽度明显不同，Commit Mono 有真 700。P2 实测（post-veil-fix 构建）：`home-1440x900.png`、`post-1440x900.png` 的 display/title/reading/body/ui 五个可见角色按契约字族渲染，中文回退随平台；390 下 `home-390x844.png`、`post-long-title-390x844.png` 无横向滚动（scrollWidth=clientWidth=390）。 | **声明偏差 C（字体替换）**：字族替换是唯一允许的观感偏差来源（Departure Mono 的像素感放弃）；字号、行高、字重、角色映射不变；CJK 走系统回退，形态随平台变化。→ Risks：观感偏差（字体）、字体自托管体积、CJK 回退不可控、子集化工具链。 | `upstream-pin.md` 字体表、`CREDITS.md`、`spikes/shots/font-ab-*.png`；P2 证据 [evidence/theme-skeleton](evidence/theme-skeleton/README.md)：`home-1440x900.png`、`post-1440x900.png`、`list-1440x900.png`、`home-390x844.png`、`post-long-title-390x844.png` |
@@ -35,5 +37,11 @@
 
 1. 先按本矩阵的「主题值」列核对 `assets/css/tokens.css`（P1 原在 `docs/design/`，P2 迁至此处并删除 docs 副本）。
 2. 在 1440 与 390 两档截图对照基线：P2 证据在 [`docs/design/evidence/theme-skeleton/`](evidence/theme-skeleton/README.md)（home/post/list/404 × 1440×900 与 390×844 + home night + 144 字符长标题的 390 档），与 [`docs/design/reference/baseline/`](reference/baseline/) 并排评估；偏差只允许出现在「偏差声明」列列出的 A–G 项。
-3. 行为断言用 `test/probe.mjs` 对构建产物跑 1440×900 与 390×844（必要时对两个 Hugo 版本各跑一遍），期望 7/7 PASS、exit 0；`--json` 供回归消费。
+3. 行为断言用 `test/probe.mjs` 对构建产物跑 1440×900 与 390×844（必要时对两个 Hugo 版本各跑一遍），期望 9/9 PASS、exit 0；`--json` 供回归消费。
 4. 每次新增保真面或修改偏差，先改本矩阵再改实现；`node scripts/check-assets.mjs` 必须退出 0。
+
+P3（2026-10-21）：用户轮廓品牌替代 chrome/404/favicon 的星形，星形保留交互；海面时间驱动、单色代码复制、OG/Twitter 与原生跨文档转场已实现。当前截图与复跑结果见 `evidence/p3-signature/`，契约更新见 D22 与根 DESIGN.md。
+
+2026-10-21 实站复核：当前线场与参考的透视、明暗波面存在显著差距，不能以Canvas数据变化证明保真。已修复边缘运动难以察觉的问题；完整对照、OG和首页构图差距见 [earendil-comparison](evidence/p3-signature/earendil-comparison.md)，实时参考图独立保存在 reference/live-2026-10-21/。
+
+2026-10-21 后续优化：用户授权后，二维线场已替换为原创透视高度场波面，首页首屏居中、列表下移，默认OG改为Hugo原生中英文逐篇标题图。当前结果以 [p3-fidelity](evidence/p3-fidelity/README.md) 为准，前轮差距说明作为历史保留。

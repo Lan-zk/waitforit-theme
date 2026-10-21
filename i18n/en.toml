@@ -43,3 +43,9 @@
     title = "404"
     body = "This is not a letter we sent."
     home = "Back to the start"
+
+  [waitforit.code]
+    text = "Text"
+    copy = "Copy"
+    success = "Copied."
+    error = "Copy unavailable. Code selected; use your system copy command."

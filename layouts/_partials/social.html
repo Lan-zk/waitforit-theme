@@ -1,0 +1,48 @@
+{{- /* AST-01/02/10/17：本地图覆盖优先，其余由Hugo原生生成标题图；无远程构建。 */ -}}
+{{- $wf := .Params.waitforit | default dict -}}
+{{- $image := resources.Get "images/og-default.png" -}}
+{{- $custom := false -}}
+{{- with $wf.image -}}
+  {{- $override := $.Resources.GetMatch . -}}
+  {{- if not $override }}{{ $override = resources.Get . }}{{ end -}}
+  {{- if $override -}}
+    {{- if and (eq $override.ResourceType "image") (in (slice "png" "jpeg" "webp") $override.MediaType.SubType) }}
+      {{- $image = $override -}}{{- $custom = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $custom -}}
+  {{- $layout := partial "og-title.html" (.Title | default site.Title) -}}
+  {{- $font := resources.Get $layout.font -}}
+  {{- $brandLayout := partial "og-title.html" site.Title -}}
+  {{- $brandFont := resources.Get $brandLayout.font -}}
+  {{- $tokens := (resources.Get "css/tokens.css").Content -}}
+  {{- $ink := index (findRE `--wf-ink:[^;]+` $tokens) 0 | replaceRE `.*:\s*` "" | strings.TrimSpace -}}
+  {{- $lineHeight := add (math.Ceil (mul $layout.size $layout.ascent)) 8 -}}
+  {{- $y := sub 390 (div (mul $layout.lines $lineHeight) 2) -}}
+  {{- $brand := images.Text (printf "%s" (site.Title | strings.Truncate 36)) (dict "font" $brandFont "size" 22 "color" $ink "alignx" "center" "x" 600 "y" 136) -}}
+  {{- $titleFilter := images.Text $layout.text (dict "font" $font "size" $layout.size "color" $ink "alignx" "center" "x" 600 "y" $y "linespacing" 8) -}}
+  {{- $image = $image.Filter $brand $titleFilter -}}
+{{- end -}}
+{{- $image = $image | fingerprint -}}
+{{- $title := .Title | default site.Title -}}
+{{- $description := .Description | default site.Params.description | default site.Title -}}
+{{- $alt := $wf.imageAlt | default (printf "%s — %s" site.Title $title) -}}
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="{{ replace (site.Language.Params.locale | default site.Language.Lang) "-" "_" }}">
+<meta property="og:type" content="{{ if and .IsPage (eq .Section "posts") }}article{{ else }}website{{ end }}">
+{{- if and .IsPage (eq .Section "posts") }}
+<meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+<meta property="og:image" content="{{ $image.Permalink }}">
+<meta property="og:image:width" content="{{ $image.Width }}">
+<meta property="og:image:height" content="{{ $image.Height }}">
+<meta property="og:image:alt" content="{{ $alt }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+<meta name="twitter:image" content="{{ $image.Permalink }}">
+<meta name="twitter:image:alt" content="{{ $alt }}">

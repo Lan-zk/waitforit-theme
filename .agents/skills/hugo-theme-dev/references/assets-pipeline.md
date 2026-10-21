@@ -43,7 +43,7 @@
 - **AST-11** EXIF 方向**不会**自动修正：`images.AutoOrient` 必须显式调用，且通常放在 filter 链首位。⟦D⟧ SRC-81
 - **AST-12** 变换后的图像**不保留元数据**（EXIF/IPTC/XMP 丢失）。⟦D⟧ SRC-78
 - `imaging` 段（站点配置）控制默认质量、锚点、处理格式；主题不能设置。⟦D⟧ SRC-82
-- 构造成本高：主题只对 `exampleSite` 的 fixture 图片做处理，源图控制在小尺寸，CI 缓存 `resources/` 目录。⟦D⟧ SRC-78；⟦I⟧ 工程建议
+- 构造成本高：主题处理本地标题OG与 `exampleSite` fixture 图片（D24），避免远程或无边界图像管线，源图控制在小尺寸，CI 缓存 `resources/` 目录。⟦D⟧ SRC-78；⟦I⟧ 工程建议
 
 ## 6. 字体（本仓库关键决策）
 
@@ -71,7 +71,7 @@
 | `css.Sass` + dartsass | 外部 `sass` 二进制 | 任意 edition（需装 sass） | 不用 |
 | PostCSS / TailwindCSS / Babel | Node + npm 依赖 | 需站点装工具链 | 不用 |
 | `resources.GetRemote` | 构建期网络 | 受 security 限制 | 不用（离线可构建是硬要求） |
-| 图像处理 | CPU/内存 | 任意 edition | 只用于 exampleSite |
+| 图像处理 | CPU/内存 | 任意 edition | 本地标题OG与fixture |
 
 - **AST-16** 主题必须做到"克隆即构建"：不要求 extended、不要求 Node、不要求网络。⟦D⟧ SRC-91, SRC-67, SRC-69；⟦I⟧ 本仓库工程原则（D12）
 
@@ -95,8 +95,12 @@
 - `assets/js/`：渐进增强（海面 Canvas、主题切换、View Transitions），用 `js.Build` 或直接 `resources.Get | minify | fingerprint`；无 JS 时正文可读。
 - `assets/fonts/`：OFL 字体子集（Newsreader/Source Serif 4 + Commit Mono + Noto Serif SC 子集），每个字体配 license 文本；在 `head.html` preload 首屏字重。
 - 不交付：`static/` 下的大文件（除非 `favicon` 这类不需要哈希的）、任何 WebGL shader、任何 Plantin/Departure Mono 字体（D9 硬边界）。
-- 图片只出现在 `exampleSite/` 的 fixture 与 `docs/design/reference/`，不进发布产物。
+- 内容图片只出现在 `exampleSite/` fixture 与 `docs/design/reference/`，参考图不进发布产物。D22 的品牌标志/默认 OG 与既有颗粒属于主题资产，放在 `assets/` 并按 AST-02 显式发布。
 
 ## 10. 来源
 
 `SRC-39`、`SRC-65`–`SRC-83`、`SRC-201`；实测部分依赖 `sources.md` 的 U8/U15 待补。URL 与未核实项见 `sources.md`。
+
+### P3 标题OG（2026-10-21）
+
+- **AST-17** `images.Text` 支持本地字体资源，内置解析器为opentype；构建专用TrueType可被Filter读取但不调用Permalink/Publish，故不会作为网页字体发布。跨0.146/0.168使用alignx，不使用0.147新增aligny。0.146实现按空白单词折行，中文与长无空格词必须预先插入换行；Hugo原生Filter可保持离线标准版构建。⟦D⟧ SRC-107；⟦E⟧ 双版图像验收见docs/design/evidence/p3-fidelity/。

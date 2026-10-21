@@ -8,7 +8,7 @@
 
 ### Requirement: 字体白名单
 
-主题 SHALL 只随包分发白名单内的 OFL 字体（衬线角色 Newsreader、等宽角色 Commit Mono；中文字形走系统回退，不打包）；Plantin Now / Plantin MT Pro 等商业字体与上游参考站点专属的 Departure Mono MUST NOT 出现在仓库或任何构建产物中。
+主题 SHALL 只随包分发白名单内的 OFL 字体（网页衬线角色Newsreader、等宽角色Commit Mono，网页中文字形走系统回退；标题图片构建允许静态Newsreader与Noto Serif SC的两个明确白名单TrueType文件，且MUST NOT作为网页字体发布）；Plantin Now / Plantin MT Pro 等商业字体与上游参考站点专属的 Departure Mono MUST NOT 出现在仓库或任何构建产物中。
 
 #### Scenario: 白名单外字体入场
 
@@ -36,7 +36,7 @@
 
 ### Requirement: 原创资产边界
 
-主题资产 MUST 为原创或来自可再分发的公开许可：四角星 SVG、纸纹、光标、favicon 与场景渲染参数均须自行绘制或生成；MUST NOT 复制上游参考仓库的 `styles.css`、`script.js`、GLSL/WebGL 代码、图片、logo 或 SVG 路径数据；对上游结构的引用 MUST 在 `CREDITS.md` 标注来源与许可。
+主题资产 MUST 为原创、来自可再分发公开许可，或用户提供并明确授权用于主题品牌：四角星 SVG、纸纹、光标、favicon 与场景渲染参数均须自行绘制或生成，用户品牌轮廓的独立重绘须在CREDITS记录输入和处理方式；MUST NOT 复制上游参考仓库的 `styles.css`、`script.js`、GLSL/WebGL 代码、图片、logo 或 SVG 路径数据；对上游结构的引用 MUST 在 `CREDITS.md` 标注来源与许可。
 
 #### Scenario: 资产相似度检查
 

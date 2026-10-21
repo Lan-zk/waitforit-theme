@@ -1,0 +1,20 @@
+{
+  "source": "https://earendil.com/",
+  "capturedAt": "2026-10-21T01:06:54.498Z",
+  "notes": "Read-only live reference, WebGL via software SwiftShader for visual comparison; no performance claims. No upstream assets enter theme build.",
+  "pages": [
+    {
+      "width": 1200,
+      "height": 630,
+      "title": "pi-durable-on-cloudflare.png (1200×630)",
+      "bodyClass": "",
+      "rootClass": "",
+      "reduce": false,
+      "canvases": [],
+      "links": [],
+      "fonts": [],
+      "background": "rgb(14, 14, 14)"
+    }
+  ],
+  "errors": []
+}

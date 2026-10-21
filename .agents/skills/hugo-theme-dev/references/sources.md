@@ -193,3 +193,7 @@
 2. 逐条复查标 `⟦D⟧` 但影响构建结果的规则（模板路径、配置段限制、安全默认值、CLI flags），改动的写进新 reference 版本并在 `docs/decisions.md` 追加修正条目（该文件只追加，不改写历史）。
 3. `⟦U⟧` 表中已被新文档回答的条目，移出待查表并升级为 `⟦D⟧`。
 4. 更新 `SKILL.md` 的「基线版本」一行与 `AGENTS.md` 的指针说明；若最低支持版本变化，同步 `module.hugoVersion.min` 与 CI 矩阵。
+
+- **SRC-106** https://gohugo.io/functions/transform/highlightcodeblock/ 与 https://gohugo.io/render-hooks/code-blocks/ — code hook context、Inner/Wrapped、noClasses 与 0.162 的 type/code 边界，核对 2026-10-21。
+
+- **SRC-107** https://gohugo.io/functions/images/text/ 与 https://github.com/gohugoio/hugo/blob/v0.146.0/resources/images/text.go — images.Text的alignx/aligny版本界限、原生字体资源、换行及opentype解析；2026-10-21核对。

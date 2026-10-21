@@ -1,0 +1,46 @@
+{{- /* AST-17：按字形预算断行，中文和超长单词不会越过分享图安全区。 */ -}}
+{{- $title := . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace -}}
+{{- $count := len (findRE `(?s).` $title) -}}
+{{- $cjk := gt (len (findRE `[\p{Han}\p{Hiragana}\p{Katakana}]` $title)) 0 -}}
+{{- $size := 68 -}}
+{{- if gt $count 75 }}{{ $size = 54 }}{{ end -}}
+{{- if gt $count 150 }}{{ $size = 44 }}{{ end -}}
+{{- if gt $count 240 }}{{ $size = 32 }}{{ end -}}
+{{- if $cjk }}{{ $size = 56 }}{{ if gt $count 45 }}{{ $size = 46 }}{{ end }}{{ if gt $count 90 }}{{ $size = 32 }}{{ end }}{{ end -}}
+{{- $budget := div 900.0 (float $size) -}}
+{{- $lines := slice -}}{{- $line := "" -}}{{- $width := 0.0 -}}
+{{- range findRE `\S+\s*` $title -}}
+  {{- $word := . -}}{{- $weights := slice -}}{{- $wordWidth := 0.0 -}}
+  {{- range findRE `(?s).` $word -}}
+    {{- $weight := 1.0 -}}
+    {{- if eq . " " }}{{ $weight = 0.28 }}
+    {{- else if gt (len (findRE `[MWmw@%]` .)) 0 }}{{ $weight = 1.08 }}
+    {{- else if gt (len (findRE `[ilI.,'!:;|]` .)) 0 }}{{ $weight = 0.34 }}
+    {{- else if gt (len (findRE `[a-z0-9]` .)) 0 }}{{ $weight = 0.62 }}
+    {{- else if gt (len (findRE `[A-Z]` .)) 0 }}{{ $weight = 0.84 }}{{ end -}}
+    {{- $weights = $weights | append $weight -}}{{- $wordWidth = add $wordWidth $weight -}}
+  {{- end -}}
+  {{- if and (ne $line "") (gt (add $width $wordWidth) $budget) -}}
+    {{- $lines = $lines | append (strings.TrimSpace $line) -}}{{- $line = "" -}}{{- $width = 0.0 -}}
+  {{- end -}}
+  {{- range $index, $char := findRE `(?s).` $word -}}
+    {{- $weight := index $weights $index -}}
+    {{- $closing := gt (len (findRE `[，。！？：；、）》」』】…,.!?;:)]` $char)) 0 -}}
+    {{- if and (ne $line "") (gt (add $width $weight) $budget) (or (not $closing) (gt $width (add $budget 1.0))) -}}
+      {{- $lines = $lines | append (strings.TrimSpace $line) -}}{{- $line = "" -}}{{- $width = 0.0 -}}
+    {{- end -}}
+    {{- $line = printf "%s%s" $line $char -}}{{- $width = add $width $weight -}}
+  {{- end -}}
+{{- end -}}
+{{- if ne $line "" }}{{ $lines = $lines | append (strings.TrimSpace $line) }}{{ end -}}
+{{- $truncated := gt (len $lines) 8 -}}
+{{- if $truncated -}}
+  {{- $lines = first 8 $lines -}}
+  {{- $last := printf "%s…" (index $lines 7) -}}
+  {{- $lines = (first 7 $lines) | append $last -}}
+{{- end -}}
+{{- $font := "fonts/og/newsreader-400.ttf" -}}
+{{- if $cjk }}{{ $font = "fonts/og/noto-serif-sc-400.ttf" }}{{ end -}}
+{{- $ascent := 0.75 -}}
+{{- if $cjk }}{{ $ascent = 1.15 }}{{ end -}}
+{{- return (dict "ascent" $ascent "text" (delimit $lines "\n") "size" $size "lines" (len $lines) "font" $font "truncated" $truncated) -}}

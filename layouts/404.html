@@ -1,6 +1,6 @@
 {{ define "main" }}
 <div class="wf-404">
-  {{- partial "star.html" (dict "class" "wf-404__mark") }}
+  {{- partial "emblem.html" (dict "class" "wf-404__mark") }}
   <h1 class="wf-404__title">{{ T "waitforit.404.title" }}</h1>
   <p class="wf-404__body">{{ T "waitforit.404.body" }}</p>
   <p class="wf-404__home"><a class="wf-action-link" href="{{ site.Home.RelPermalink }}">{{ T "waitforit.404.home" }}{{ partial "star.html" (dict "class" "wf-action-link__star") }}</a></p>

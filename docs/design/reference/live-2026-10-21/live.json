@@ -1,0 +1,398 @@
+{
+  "source": "https://earendil.com/",
+  "capturedAt": "2026-10-21T01:03:40.779Z",
+  "notes": "Read-only live reference, WebGL via software SwiftShader for visual comparison; no performance claims. No upstream assets enter theme build.",
+  "pages": [
+    {
+      "width": 1440,
+      "height": 900,
+      "title": "Earendil",
+      "bodyClass": "theme-transition-ready loaded",
+      "rootClass": "",
+      "reduce": false,
+      "canvases": [
+        {
+          "id": "canvas",
+          "class": "shader-ready",
+          "width": 979,
+          "height": 612,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ],
+      "links": [
+        {
+          "label": "",
+          "href": "https://earendil.com/"
+        },
+        {
+          "label": "宗旨",
+          "href": "https://earendil.com/purpose/"
+        },
+        {
+          "label": "价值观",
+          "href": "https://earendil.com/values/"
+        },
+        {
+          "label": "加入我们",
+          "href": "https://earendil.com/join/"
+        },
+        {
+          "label": "文章",
+          "href": "https://earendil.com/posts/"
+        },
+        {
+          "label": "RFC",
+          "href": "https://rfc.earendil.com/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Radius",
+          "href": "https://radius.earendil.com/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "作品",
+          "href": "https://github.com/earendil-works/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "开放",
+          "href": "https://github.com/earendil-works"
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Departure Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "unloaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "loaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "loaded"
+        },
+        {
+          "family": "KaTeX_AMS",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Script",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size1",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size2",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size3",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size4",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Typewriter",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        }
+      ],
+      "background": "rgb(184, 184, 184)"
+    },
+    {
+      "width": 390,
+      "height": 900,
+      "title": "Earendil",
+      "bodyClass": "theme-transition-ready loaded",
+      "rootClass": "",
+      "reduce": false,
+      "canvases": [
+        {
+          "id": "canvas",
+          "class": "shader-ready",
+          "width": 265,
+          "height": 612,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 900
+          }
+        }
+      ],
+      "links": [
+        {
+          "label": "",
+          "href": "https://earendil.com/"
+        },
+        {
+          "label": "宗旨",
+          "href": "https://earendil.com/purpose/"
+        },
+        {
+          "label": "价值观",
+          "href": "https://earendil.com/values/"
+        },
+        {
+          "label": "加入我们",
+          "href": "https://earendil.com/join/"
+        },
+        {
+          "label": "文章",
+          "href": "https://earendil.com/posts/"
+        },
+        {
+          "label": "RFC",
+          "href": "https://rfc.earendil.com/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Radius",
+          "href": "https://radius.earendil.com/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "作品",
+          "href": "https://github.com/earendil-works/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "开放",
+          "href": "https://github.com/earendil-works"
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Departure Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "unloaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "loaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "loaded"
+        },
+        {
+          "family": "KaTeX_AMS",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Script",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size1",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size2",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size3",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size4",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Typewriter",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        }
+      ],
+      "background": "rgb(184, 184, 184)"
+    }
+  ],
+  "errors": []
+}

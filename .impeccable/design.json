@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-20T08:42:50.916Z",
+  "generatedAt": "2026-10-21T01:20:31.957Z",
   "title": "waitforit-theme Design System",
   "extensions": {
     "colorMeta": {
@@ -291,6 +291,11 @@
         "name": "hover",
         "value": "180ms cubic-bezier(0.333333, 0, 0.666667, 1)",
         "purpose": "Any link, control, or star hover"
+      },
+      {
+        "name": "sea-cycle",
+        "value": "24s linear",
+        "purpose": "Perceptible slow sea drift; stopped under reduced motion"
       }
     ],
     "breakpoints": [
@@ -309,7 +314,39 @@
         "value": "1100px",
         "purpose": "The column settles at min(100%, 760px); between 801px and 1100px it is min(680px, calc(100vw - 360px))"
       }
-    ]
+    ],
+    "brand": {
+      "asset": "assets/images/emblem.svg",
+      "aspectRatio": "558 / 375",
+      "source": "User-supplied silhouette; see docs/design/evidence/p3-signature/logo.md",
+      "color": "currentColor"
+    },
+    "scene": {
+      "maxFPS": 24,
+      "paused": [
+        "reduced-motion",
+        "save-data",
+        "hidden",
+        "pagehide"
+      ],
+      "cycle": "24s",
+      "amplitude": "2.4vh",
+      "ink": "var(--wf-ink)",
+      "opacityFar": 0.1,
+      "opacityNear": 0.28,
+      "visibility": "Side sea changes visibly over two seconds; central reading veil stays quiet.",
+      "renderer": "perspective-height-field",
+      "horizon": "60vh",
+      "sampleWidthMax": 640,
+      "homeVeilStart": "48vh",
+      "homeVeilEnd": "68vh"
+    },
+    "social": {
+      "size": "1200x630",
+      "content": "Brand emblem and per-page title",
+      "fonts": "Build-only Newsreader / Noto Serif SC TrueType",
+      "override": "Local page image first"
+    }
   },
   "components": [
     {
@@ -372,9 +409,9 @@
       "name": "Code block",
       "kind": "custom",
       "refersTo": "code-block",
-      "description": "A transparent block with hairline rules above and below, mono at 13px on a 1.846 line, no radius and no inline padding.",
-      "html": "<pre class=\"wf-code-block\"><code>hugo --source exampleSite --themesDir ../..</code></pre>",
-      "css": ".wf-code-block {\n  margin: 0;\n  padding: 1.5rem 0;\n  overflow-x: auto;\n  border-top: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  border-bottom: 1px solid var(--wf-hairline, rgba(39, 37, 34, 0.18));\n  background: transparent;\n  color: var(--wf-ink, #353431);\n  font-family: var(--wf-font-mono, ui-monospace, monospace);\n  font-size: 0.8125rem;\n  font-weight: var(--wf-type-weight, 400);\n  line-height: 1.846;\n  tab-size: 2;\n}\n.wf-code-block code {\n  font: inherit;\n  background: none;\n  padding: 0;\n}"
+      "description": "Transparent monochrome code, language label and progressively enhanced localized Copy action.",
+      "html": "<figure class=\"wf-code\"><figcaption class=\"wf-code__header\"><span>JS</span><button class=\"wf-code__copy\" type=\"button\">Copy</button></figcaption><pre class=\"wf-code__pre\" tabindex=\"0\"><code>const sea = true;</code></pre></figure>",
+      "css": ".wf-code { color: var(--wf-ink); border-block: 1px solid var(--wf-hairline); } .wf-code__header { display:flex; align-items:center; justify-content:space-between; font:var(--wf-type-label-size)/var(--wf-type-label-line) var(--wf-font-mono); } .wf-code__copy { min-height:var(--wf-tap-target); padding:0; background:none; border:0; color:inherit; font:inherit; text-decoration:underline dotted; } .wf-code__copy:hover { text-decoration-style:solid; } .wf-code__copy:focus-visible, .wf-code__pre:focus-visible { outline:var(--wf-focus-width) solid currentColor; outline-offset:var(--wf-focus-offset); } .wf-code__pre { overflow-x:auto; font:var(--wf-type-code-size)/var(--wf-type-code-line) var(--wf-font-mono); }"
     },
     {
       "name": "Language menu",
@@ -387,11 +424,11 @@
   ],
   "narrative": {
     "northStar": "A Letter Held Above a Drawn Sea",
-    "overview": "waitforit-theme is a correspondence theme, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — held above a live drawn sea: a Canvas 2D line field that drifts slowly at the horizon and fades out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: a star mark, the word MENU, a footer. Nothing scrolls but content. A post is a letter you received — Date, From, To, Subject set in mono above a serif reading column — and the site should read like the inside of an envelope, not the outside of an app.\n\nThe austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme=\"night\"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No card, no chip, no filled button, no accent hue. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.\n\nMotion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, content enters in 300ms, the menu opens in 240ms and closes in 180ms, the theme cross-fades in 900ms while scene, veil, and grain change light together, and the subscribe line confirms in 720ms. Everything respects `prefers-reduced-motion` — every duration token becomes 0ms and the sea freezes on its first frame — and nothing ever moves to attract attention.",
+    "overview": "waitforit-theme is a correspondence theme, not a product shell. Every page is a sheet of warm paper — a radial veil of `--wf-paper` — held above a live drawn sea: an original perspective Canvas 2D wave surface that drifts at the horizon and fades out where the paper becomes solid. A static grain tile sits between veil and frame. A fixed frame holds the only chrome a page ever gets: the brand emblem, the word MENU, a footer. Nothing scrolls but content. A post is a letter you received — Date, From, To, Subject set in mono above a serif reading column — and the site should read like the inside of an envelope, not the outside of an app.\n\nThe austerity is structural, not stylistic. Two OFL typefaces: Newsreader for the human voice, Commit Mono for the machine voice. Thirteen color tokens: paper and ink by day, their night counterparts under `[data-theme=\"night\"]`, and one moonlight that must survive both lights. Two radii in the whole system: `4px` on the language menu, `5px` on a keycap. No card, no chip, no filled button, no accent hue. Depth is never faked with elevation: the scene sits under the veil, the veil under the grain, the grain under the frame, and that stack is the entire trick.\n\nMotion is a small fixed vocabulary: pages arrive in 520ms and leave in 220ms, content enters in 300ms, the menu opens in 240ms and closes in 180ms, the theme cross-fades in 900ms while scene, veil, and grain change light together, and the subscribe line confirms in 720ms. Everything respects `prefers-reduced-motion` — every duration token becomes 0ms and the sea freezes on its first frame — and nothing ever moves to attract attention.",
     "keyCharacteristics": [
       "Two typefaces only: Newsreader (OFL variable serif, true italic) for display, title, and reading; Commit Mono (OFL) for body, UI, form, label, and code.",
       "Thirteen color tokens: `paper` and `ink` by day, `night-paper` and `night-ink` by night, plus a muted ink, a hairline, and a `moonlight` that survives both lights.",
-      "One ornament: an original eight-ray four-point star, used as the cursor, the two logos, and a hover reward — never as static decoration and never as a bullet.",
+      "One brand emblem: the user-supplied silhouette. One interaction ornament: an original eight-ray four-point star, used as the cursor and a hover reward — never as static decoration and never as a bullet.",
       "One fixed frame (75px, 40px at ≤800px, 28px at ≤520px) around one centered column of `min(100%, 760px)`.",
       "Four stacked layers and no page background: scene, then veil, then grain, then frame.",
       "Letter-shaped content: posts open with a Date, From, To, Subject block in mono above a serif reading column.",
@@ -411,7 +448,7 @@
       },
       {
         "name": "The Fixed Frame Rule",
-        "body": "The frame is chrome, not a container: it stays 75px, 40px, or 28px at the three breakpoints and content never paints over it. Nothing goes in the frame except the star mark, MENU, and the footer marks — no breadcrumbs, no progress bars, no floating buttons.",
+        "body": "The frame is chrome, not a container: it stays 75px, 40px, or 28px at the three breakpoints and content never paints over it. Nothing goes in the frame except the brand emblem, MENU, and the footer marks — no breadcrumbs, no progress bars, no floating buttons.",
         "section": "Layout"
       },
       {
@@ -426,7 +463,7 @@
       },
       {
         "name": "The Bare Chrome Rule",
-        "body": "Every action is text: no fill, no border, no card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.",
+        "body": "Every action is text: no fill, no border, no card, no chip, and no icon set. If an element cannot be expressed as a word, a dot underline, a hairline, or the star, or the brand emblem, it does not belong in this theme. Component snippets must stay paste-sized and self-contained, and any reference component that ships is a decision recorded with its reason in the snippet inventory.",
         "section": "Components"
       }
     ],

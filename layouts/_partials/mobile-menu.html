@@ -2,7 +2,7 @@
    不写 hidden 属性——无 JS 时面板保持可见，导航链接照样可用（D7）。 */}}
 <div class="wf-menu-panel" id="wf-menu-panel" data-wf-menu-panel>
   <button class="wf-menu-close" type="button" data-wf-menu-close aria-label="{{ T "waitforit.nav.close" }}">
-    <span class="wf-menu-close__glyph" aria-hidden="true">×</span>
+    {{- T "waitforit.nav.close" }}
   </button>
   <ul class="wf-menu-list">
     {{- if .Site.Menus.main }}

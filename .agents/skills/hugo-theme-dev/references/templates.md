@@ -180,3 +180,7 @@ base 只有在被解析模板**同时满足**两个条件时才套用：⟦D⟧ 
 ## 12. 来源
 
 `SRC-01`–`SRC-22`、`SRC-36`、`SRC-40`；实测 `E1`–`E10`、`E12`。URL 与未核实项见 `sources.md`。
+
+### P3 code hook 补充（2026-10-21）
+
+- **TPL-22** `transform.HighlightCodeBlock . OPTIONS` 返回 `.Inner`（不含包裹）与 `.Wrapped`。以 `noClasses=false` 强制 class 高亮，避免默认内联色；未知语言使用 `transform.CanHighlight` 判断后直接转义 `.Inner`。`type`/`code` 覆盖选项仅 0.162+，最低 0.146 不用；`.Inner` 可能被高亮器规范化，复制必须保留 hook 原始 `.Inner`。⟦D⟧ SRC-106；双版本验收见 docs/design/evidence/p3-signature/README.md。

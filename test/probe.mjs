@@ -49,11 +49,13 @@ export const USAGE = `waitforit-theme 浏览器验收探针（零依赖 CDP，No
 检查项（每项输出 {name, ok, detail}）:
   no-horizontal-overflow  documentElement.scrollWidth <= clientWidth
   design-tokens           --wf-ink/--wf-paper/--wf-veil-rgb/--wf-frame-block/--wf-motion-theme 实读非空
-  hit-targets             可见的 chrome 交互控件（导航/菜单/主题/语言/页脚）命中区域 >= 44x44
-  menu-toggle             菜单按钮点击后 aria-expanded=true，Escape 后 false 且焦点回到按钮
+  hit-targets             chrome、文章行与独立动作链接命中区域 >= 44x44（不含段内链接）
+  reader-frame            正文滚动区域不与 chrome 相交，跳过链接可将焦点交给正文
+  menu-toggle             菜单开合、移动端模态与双向 Tab 循环、Escape 回焦
   theme-persistence       localStorage wf-theme=night 刷新后 data-theme=night；非法值回落 auto 且无脚本错误
   reduced-motion          prefers-reduced-motion: reduce 下 --wf-motion-theme=0ms 且场景静态（无持续 rAF）
-  no-js                   禁用脚本后正文与导航链接仍在 DOM 中可见
+  ui-load-fallback        UI 脚本下载失败时恢复可见、可操作的普通导航
+  no-js                   禁用脚本后导航、正文和页脚可见且不互相遮挡
 
 退出码: 0 全部通过；1 有检查失败或浏览器/页面不可用；2 参数错误。`;
 
@@ -792,7 +794,7 @@ const TRIGGER_SELECTOR = '.wf-menu-trigger, [data-wf-menu-trigger]';
 const COLLECT_INTERACTIVES = `(() => {
   const isVisible = (el) => {
     const style = getComputedStyle(el);
-    if (style.display === 'none' || style.visibility === 'hidden') {
+    if (style.display === 'none' || style.visibility === 'hidden' || el.closest('[inert]')) {
       return false;
     }
     const rect = el.getBoundingClientRect();
@@ -803,7 +805,7 @@ const COLLECT_INTERACTIVES = `(() => {
     return text.slice(0, 32);
   };
   const seen = new Set();
-  const containers = Array.from(new Set(document.querySelectorAll('header, footer, nav, .wf-header, .wf-footer, .wf-menu')));
+  const containers = Array.from(new Set(document.querySelectorAll('header, footer, nav, .wf-header, .wf-footer, .wf-menu, .wf-index__list, .wf-home-posts__more, .wf-404__home')));
   const items = [];
   for (const container of containers) {
     for (const el of container.querySelectorAll('a[href], button, [role="button"]')) {
@@ -916,12 +918,14 @@ async function checkOverflow(cdp) {
         clientWidth: root.clientWidth,
         innerWidth: window.innerWidth,
         bodyScrollWidth: document.body ? document.body.scrollWidth : null,
+        mainScrollWidth: document.querySelector('main')?.scrollWidth,
+        mainClientWidth: document.querySelector('main')?.clientWidth,
         widest,
       };
     })()`,
   );
-  const ok = metrics.scrollWidth <= metrics.clientWidth;
-  let detail = `scrollWidth=${metrics.scrollWidth} <= clientWidth=${metrics.clientWidth} (innerWidth=${metrics.innerWidth}, body.scrollWidth=${metrics.bodyScrollWidth})`;
+  const ok = metrics.scrollWidth <= metrics.clientWidth && metrics.mainScrollWidth <= metrics.mainClientWidth;
+  let detail = `scrollWidth=${metrics.scrollWidth} <= clientWidth=${metrics.clientWidth} (main=${metrics.mainScrollWidth}/${metrics.mainClientWidth}, innerWidth=${metrics.innerWidth}, body.scrollWidth=${metrics.bodyScrollWidth})`;
   if (!ok && metrics.widest.label) {
     detail += `；最宽元素右缘 ${metrics.widest.right}px: ${metrics.widest.label}`;
   }
@@ -951,6 +955,7 @@ async function checkTokens(cdp) {
 }
 
 async function checkHitTargets(cdp) {
+  const closedItems = await evaluateInPage(cdp, COLLECT_INTERACTIVES);
   const trigger = await findMenuTrigger(cdp);
   let openedByCheck = false;
   if (trigger.found && trigger.visible && trigger.expanded !== 'true') {
@@ -959,9 +964,10 @@ async function checkHitTargets(cdp) {
       await sleep(400);
     }
   }
-  const items = await evaluateInPage(cdp, COLLECT_INTERACTIVES);
+  const openItems = await evaluateInPage(cdp, COLLECT_INTERACTIVES);
+  const items = Array.from(new Map([...closedItems, ...openItems].map((item) => [`${item.cls}:${item.label}`, item])).values());
   if (openedByCheck) {
-    await clickTaggedTrigger(cdp);
+    await pressEscape(cdp);
     await sleep(300);
   }
   const offenders = items.filter((item) => item.width < HIT_TARGET_PX || item.height < HIT_TARGET_PX);
@@ -978,6 +984,31 @@ async function checkHitTargets(cdp) {
         .join('; ');
   }
   return { name: 'hit-targets', ok: items.length > 0 && offenders.length === 0, detail };
+}
+
+async function checkReaderFrame(cdp) {
+  const result = await evaluateInPage(cdp, `(() => {
+    const main = document.querySelector('main');
+    const header = document.querySelector('header').getBoundingClientRect();
+    const footer = document.querySelector('footer').getBoundingClientRect();
+    const rect = main.getBoundingClientRect();
+    const skip = document.querySelector('a[href="#main"]');
+    const first = document.querySelector('a[href], button, [tabindex="0"]');
+    skip.focus();
+    skip.click();
+    return {
+      separated: rect.top >= header.bottom - 1 && rect.bottom <= footer.top + 1,
+      scrollable: getComputedStyle(main).overflowY === 'auto',
+      skipFirst: first === skip,
+      skipFocus: document.activeElement === main,
+      top: rect.top, bottom: rect.bottom, headerBottom: header.bottom, footerTop: footer.top,
+    };
+  })()`);
+  return {
+    name: 'reader-frame',
+    ok: result.separated && result.scrollable && result.skipFirst && result.skipFocus,
+    detail: `main=${result.top}..${result.bottom}, chrome=${result.headerBottom}/${result.footerTop}; 原生滚动=${result.scrollable}; 首个焦点为 skip=${result.skipFirst}, skip 激活后焦点在 main=${result.skipFocus}`,
+  };
 }
 
 async function checkMenuToggle(cdp) {
@@ -1030,12 +1061,41 @@ async function checkMenuToggle(cdp) {
       pointerDetail += `；DOM click -> aria-expanded=${afterClick.expanded ?? '<missing>'}`;
     }
   }
+  const focus = await evaluateInPage(cdp, `(() => {
+    const panel = document.querySelector('[data-wf-menu-panel]');
+    const mobile = matchMedia('(max-width: 800px)').matches;
+    return {
+      mobile,
+      inside: panel.contains(document.activeElement),
+      modal: panel.getAttribute('role') === 'dialog' && panel.getAttribute('aria-modal') === 'true',
+      inert: document.querySelector('main').inert && document.querySelector('footer').inert,
+    };
+  })()`);
+  let wrapped = true;
+  if (focus.mobile) {
+    for (const shift of [false, true]) {
+      await evaluateInPage(cdp, `(() => {
+        const items = document.querySelector('[data-wf-menu-panel]').querySelectorAll('a[href], button');
+        items[${shift ? '0' : 'items.length - 1'}].focus();
+        return true;
+      })()`);
+      const key = { key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, modifiers: shift ? 8 : 0 };
+      await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', ...key });
+      await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', ...key });
+      wrapped = wrapped && await evaluateInPage(cdp, `(() => {
+        const items = document.querySelector('[data-wf-menu-panel]').querySelectorAll('a[href], button');
+        return document.activeElement === items[${shift ? 'items.length - 1' : '0'}];
+      })()`);
+    }
+  }
   await pressEscape(cdp);
   await sleep(350);
   const afterEscape = await readMenuState(cdp);
-  const ok = pointerWorked && afterClick.expanded === 'true' && afterEscape.expanded === 'false' && afterEscape.focusOnTrigger;
+  const released = await evaluateInPage(cdp, '!document.querySelector("main").inert && !document.querySelector("footer").inert');
+  const ok = pointerWorked && afterClick.expanded === 'true' && focus.inside && (!focus.mobile || (focus.modal && focus.inert && wrapped)) && released && afterEscape.expanded === 'false' && afterEscape.focusOnTrigger;
   const detail =
     `${pointerDetail}` +
+    `; 面板内焦点=${focus.inside}, mobile=${focus.mobile}, modal=${focus.modal}, inert=${focus.inert}, 双向 Tab=${wrapped}, 解除 inert=${released}` +
     `; Escape -> aria-expanded=${afterEscape.expanded ?? '<missing>'}, focus=${afterEscape.focusOnTrigger ? 'trigger' : afterEscape.activeElement || '<none>'}`;
   return { name: 'menu-toggle', ok, detail };
 }
@@ -1149,6 +1209,43 @@ async function checkReducedMotion(cdp, state, url) {
   }
 }
 
+async function checkUiLoadFallback(cdp, state, url) {
+  let blocked = false;
+  cdp.on('Network.loadingFailed', (event) => {
+    if (event.type === 'Script' && event.blockedReason === 'inspector') {
+      blocked = true;
+    }
+  });
+  const uiUrl = await evaluateInPage(cdp, 'Array.from(document.scripts).find(script => script.src.includes("/js/ui.min.")).src');
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+  await cdp.send('Network.setBlockedURLs', { urls: [uiUrl] });
+  try {
+    await navigateAndWait(cdp, url, { state });
+    const result = await evaluateInPage(cdp, `(() => {
+      const panel = document.querySelector('[data-wf-menu-panel]');
+      const trigger = document.querySelector('[data-wf-menu-trigger]');
+      const links = Array.from(panel.querySelectorAll('a[href]'));
+      return {
+        enhanced: document.documentElement.classList.contains('js'),
+        triggerHidden: getComputedStyle(trigger).display === 'none',
+        linksUsable: !panel.inert && links.length > 0 && links.every(link => {
+          const style = getComputedStyle(link);
+          const rect = link.getBoundingClientRect();
+          return style.visibility === 'visible' && rect.width >= 44 && rect.height >= 44;
+        }),
+      };
+    })()`);
+    return {
+      name: 'ui-load-fallback',
+      ok: blocked && !result.enhanced && result.triggerHidden && result.linksUsable,
+      detail: `UI 下载已阻断=${blocked}; html.js=${result.enhanced}; 失效按钮隐藏=${result.triggerHidden}; 普通导航可操作=${result.linksUsable}`,
+    };
+  } finally {
+    await cdp.send('Network.setBlockedURLs', { urls: [] });
+    await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
+  }
+}
+
 async function checkNoJs(cdp, state, url) {
   await cdp.send('Emulation.setScriptExecutionDisabled', { value: true });
   try {
@@ -1168,6 +1265,9 @@ async function checkNoJs(cdp, state, url) {
         const visibleLinks = links.filter(isVisible).length;
         const bodyText = document.body ? document.body.innerText.replace(/\\s+/g, ' ').trim() : '';
         const panel = document.querySelector('.wf-menu-panel, [data-wf-menu-panel]');
+        const main = document.querySelector('main').getBoundingClientRect();
+        const header = document.querySelector('header').getBoundingClientRect();
+        const footer = document.querySelector('footer').getBoundingClientRect();
         return {
           jsClass: document.documentElement.classList.contains('js'),
           bodyTextLength: bodyText.length,
@@ -1175,15 +1275,16 @@ async function checkNoJs(cdp, state, url) {
           links: links.length,
           visibleLinks,
           panelVisible: panel ? isVisible(panel) : null,
+          separated: main.top >= header.bottom - 1 && main.bottom <= footer.top + 1,
         };
       })()`,
     );
-    const ok = probe.jsClass === false && probe.bodyTextLength >= 20 && probe.visibleLinks >= 1;
+    const ok = probe.jsClass === false && probe.bodyTextLength >= 20 && probe.visibleLinks >= 1 && probe.separated;
     const detail =
       `html.js=${probe.jsClass}（应为 false）; 正文 ${probe.bodyTextLength} 字符` +
       `${probe.bodyTextSample ? ` ("${probe.bodyTextSample}…")` : ''}` +
       `; 导航链接 ${probe.links} 个，可见 ${probe.visibleLinks} 个` +
-      `; 菜单面板可见=${probe.panelVisible === null ? '<none>' : probe.panelVisible}`;
+      `; 菜单面板可见=${probe.panelVisible === null ? '<none>' : probe.panelVisible}; 导航/正文/页脚无重叠=${probe.separated}`;
     return { name: 'no-js', ok, detail };
   } finally {
     await cdp.send('Emulation.setScriptExecutionDisabled', { value: false }).catch(() => {});
@@ -1264,10 +1365,12 @@ export async function runProbe(options) {
     // 顺序：静态断言 → 菜单交互 → 主题持久化 → 动效降级 → 无 JS。
     await runCheck('no-horizontal-overflow', () => checkOverflow(cdp));
     await runCheck('design-tokens', () => checkTokens(cdp));
+    await runCheck('reader-frame', () => checkReaderFrame(cdp));
     await runCheck('menu-toggle', () => checkMenuToggle(cdp));
     await runCheck('hit-targets', () => checkHitTargets(cdp));
     await runCheck('theme-persistence', () => checkThemePersistence(cdp, state));
     await runCheck('reduced-motion', () => checkReducedMotion(cdp, state, options.url));
+    await runCheck('ui-load-fallback', () => checkUiLoadFallback(cdp, state, options.url));
     await runCheck('no-js', () => checkNoJs(cdp, state, options.url));
 
     const summary = summarize(checks);

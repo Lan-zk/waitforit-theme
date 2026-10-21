@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-21T01:01:11.016Z",
+  "results": [
+    {
+      "width": 1440,
+      "theme": "day",
+      "elapsedMs": 2000,
+      "edgeChangedRatio": 0.009958234096165131,
+      "edgeMax": 12,
+      "centerChangedRatio": 0,
+      "ok": false
+    },
+    {
+      "width": 1440,
+      "theme": "night",
+      "elapsedMs": 2000,
+      "edgeChangedRatio": 0.007162334748541645,
+      "edgeMax": 12,
+      "centerChangedRatio": 0,
+      "ok": false
+    },
+    {
+      "width": 390,
+      "theme": "day",
+      "elapsedMs": 2000,
+      "edgeChangedRatio": 0.014326826826826827,
+      "edgeMax": 15,
+      "centerChangedRatio": 0,
+      "ok": true
+    },
+    {
+      "width": 390,
+      "theme": "night",
+      "elapsedMs": 2000,
+      "edgeChangedRatio": 0.011574074074074073,
+      "edgeMax": 13,
+      "centerChangedRatio": 0,
+      "ok": false
+    }
+  ]
+}

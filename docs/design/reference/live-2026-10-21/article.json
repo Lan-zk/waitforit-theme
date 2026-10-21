@@ -1,0 +1,734 @@
+{
+  "source": "https://earendil.com/",
+  "capturedAt": "2026-10-21T01:06:13.296Z",
+  "notes": "Read-only live reference, WebGL via software SwiftShader for visual comparison; no performance claims. No upstream assets enter theme build.",
+  "pages": [
+    {
+      "width": 1440,
+      "height": 900,
+      "title": "Pi Durable on Cloudflare | Earendil",
+      "bodyClass": "skip-intro loaded theme-transition-ready",
+      "rootClass": "",
+      "reduce": false,
+      "canvases": [
+        {
+          "id": "canvas",
+          "class": "shader-ready",
+          "width": 490,
+          "height": 306,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ],
+      "links": [
+        {
+          "label": "",
+          "href": "https://earendil.com/"
+        },
+        {
+          "label": "宗旨",
+          "href": "https://earendil.com/purpose/"
+        },
+        {
+          "label": "价值观",
+          "href": "https://earendil.com/values/"
+        },
+        {
+          "label": "加入我们",
+          "href": "https://earendil.com/join/"
+        },
+        {
+          "label": "文章",
+          "href": "https://earendil.com/posts/"
+        },
+        {
+          "label": "RFC",
+          "href": "https://rfc.earendil.com/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Radius",
+          "href": "https://radius.earendil.com/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "作品",
+          "href": "https://github.com/earendil-works/"
+        },
+        {
+          "label": "rfc@earendil.com",
+          "href": "mailto:rfc@earendil.com"
+        },
+        {
+          "label": "announcement",
+          "href": "https://earendil.com/posts/pi-durable/"
+        },
+        {
+          "label": "Download the multiplayer demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/multiplayer.mp4"
+        },
+        {
+          "label": "Cloudflare Workers Vitest integration",
+          "href": "https://developers.cloudflare.com/workers/testing/vitest-integration/"
+        },
+        {
+          "label": "Download the conversation forking demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/fork.mp4"
+        },
+        {
+          "label": "Download the scheduled task demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/schedule.mp4"
+        },
+        {
+          "label": "Download the conversation search demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/search.mp4"
+        },
+        {
+          "label": "Sample repository",
+          "href": "https://github.com/earendil-works/pi-durable-cloudflare"
+        },
+        {
+          "label": "Introducing Pi Durable",
+          "href": "https://earendil.com/posts/pi-durable/"
+        },
+        {
+          "label": "Cloudflare Durable Objects",
+          "href": "https://developers.cloudflare.com/durable-objects/"
+        },
+        {
+          "label": "Durable Object alarms",
+          "href": "https://developers.cloudflare.com/durable-objects/api/alarms/"
+        },
+        {
+          "label": "WebSocket hibernation",
+          "href": "https://developers.cloudflare.com/durable-objects/best-practices/websockets/"
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Departure Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_AMS",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Script",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size1",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size2",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size3",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size4",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Typewriter",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        }
+      ],
+      "background": "rgb(184, 184, 184)",
+      "code": {
+        "font": "\"Departure Mono\", SFMono-Regular, ui-monospace, monospace",
+        "size": "13px",
+        "line": "24px",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "buttons": [
+          {
+            "label": "菜单",
+            "aria": "Open menu"
+          },
+          {
+            "label": "中文",
+            "aria": "Change language"
+          },
+          {
+            "label": "English✓EN",
+            "aria": null
+          },
+          {
+            "label": "العربية✓عر",
+            "aria": null
+          },
+          {
+            "label": "বাংলা✓বা",
+            "aria": null
+          },
+          {
+            "label": "Deutsch✓DE",
+            "aria": null
+          },
+          {
+            "label": "Español✓ES",
+            "aria": null
+          },
+          {
+            "label": "فارسی✓فا",
+            "aria": null
+          },
+          {
+            "label": "Français✓FR",
+            "aria": null
+          },
+          {
+            "label": "עברית✓עב",
+            "aria": null
+          },
+          {
+            "label": "हिन्दी✓हि",
+            "aria": null
+          },
+          {
+            "label": "Bahasa Indonesia✓ID",
+            "aria": null
+          },
+          {
+            "label": "Italiano✓IT",
+            "aria": null
+          },
+          {
+            "label": "日本語✓日本",
+            "aria": null
+          },
+          {
+            "label": "한국어✓한국",
+            "aria": null
+          },
+          {
+            "label": "Bahasa Melayu✓MS",
+            "aria": null
+          },
+          {
+            "label": "Nederlands✓NL",
+            "aria": null
+          },
+          {
+            "label": "Norsk✓NO",
+            "aria": null
+          },
+          {
+            "label": "Português✓PT",
+            "aria": null
+          },
+          {
+            "label": "Русский✓РУ",
+            "aria": null
+          },
+          {
+            "label": "Svenska✓SV",
+            "aria": null
+          },
+          {
+            "label": "Kiswahili✓SW",
+            "aria": null
+          },
+          {
+            "label": "தமிழ்✓தமி",
+            "aria": null
+          },
+          {
+            "label": "తెలుగు✓తె",
+            "aria": null
+          },
+          {
+            "label": "ไทย✓ไท",
+            "aria": null
+          },
+          {
+            "label": "Türkçe✓TR",
+            "aria": null
+          },
+          {
+            "label": "Українська✓УК",
+            "aria": null
+          },
+          {
+            "label": "Tiếng Việt✓VI",
+            "aria": null
+          },
+          {
+            "label": "中文✓中文",
+            "aria": null
+          },
+          {
+            "label": "自动",
+            "aria": "Appearance: 自动"
+          }
+        ],
+        "ogImage": "https://earendil.com/static/og/posts/pi-durable-on-cloudflare.png",
+        "twitter": "summary_large_image"
+      }
+    },
+    {
+      "width": 390,
+      "height": 900,
+      "title": "Pi Durable on Cloudflare | Earendil",
+      "bodyClass": "skip-intro loaded theme-transition-ready",
+      "rootClass": "",
+      "reduce": false,
+      "canvases": [
+        {
+          "id": "canvas",
+          "class": "shader-ready",
+          "width": 133,
+          "height": 306,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 900
+          }
+        }
+      ],
+      "links": [
+        {
+          "label": "",
+          "href": "https://earendil.com/"
+        },
+        {
+          "label": "宗旨",
+          "href": "https://earendil.com/purpose/"
+        },
+        {
+          "label": "价值观",
+          "href": "https://earendil.com/values/"
+        },
+        {
+          "label": "加入我们",
+          "href": "https://earendil.com/join/"
+        },
+        {
+          "label": "文章",
+          "href": "https://earendil.com/posts/"
+        },
+        {
+          "label": "RFC",
+          "href": "https://rfc.earendil.com/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Radius",
+          "href": "https://radius.earendil.com/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "作品",
+          "href": "https://github.com/earendil-works/"
+        },
+        {
+          "label": "rfc@earendil.com",
+          "href": "mailto:rfc@earendil.com"
+        },
+        {
+          "label": "announcement",
+          "href": "https://earendil.com/posts/pi-durable/"
+        },
+        {
+          "label": "Download the multiplayer demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/multiplayer.mp4"
+        },
+        {
+          "label": "Cloudflare Workers Vitest integration",
+          "href": "https://developers.cloudflare.com/workers/testing/vitest-integration/"
+        },
+        {
+          "label": "Download the conversation forking demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/fork.mp4"
+        },
+        {
+          "label": "Download the scheduled task demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/schedule.mp4"
+        },
+        {
+          "label": "Download the conversation search demonstration.",
+          "href": "https://earendil.com/static/posts/pi-durable-on-cloudflare/search.mp4"
+        },
+        {
+          "label": "Sample repository",
+          "href": "https://github.com/earendil-works/pi-durable-cloudflare"
+        },
+        {
+          "label": "Introducing Pi Durable",
+          "href": "https://earendil.com/posts/pi-durable/"
+        },
+        {
+          "label": "Cloudflare Durable Objects",
+          "href": "https://developers.cloudflare.com/durable-objects/"
+        },
+        {
+          "label": "Durable Object alarms",
+          "href": "https://developers.cloudflare.com/durable-objects/api/alarms/"
+        },
+        {
+          "label": "WebSocket hibernation",
+          "href": "https://developers.cloudflare.com/durable-objects/best-practices/websockets/"
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Departure Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_AMS",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Script",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size1",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size2",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size3",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size4",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Typewriter",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        }
+      ],
+      "background": "rgb(184, 184, 184)",
+      "code": {
+        "font": "\"Departure Mono\", SFMono-Regular, ui-monospace, monospace",
+        "size": "13px",
+        "line": "24px",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderTop": "1px",
+        "borderBottom": "1px",
+        "buttons": [
+          {
+            "label": "菜单",
+            "aria": "Open menu"
+          },
+          {
+            "label": "中文",
+            "aria": "Change language"
+          },
+          {
+            "label": "English✓EN",
+            "aria": null
+          },
+          {
+            "label": "العربية✓عر",
+            "aria": null
+          },
+          {
+            "label": "বাংলা✓বা",
+            "aria": null
+          },
+          {
+            "label": "Deutsch✓DE",
+            "aria": null
+          },
+          {
+            "label": "Español✓ES",
+            "aria": null
+          },
+          {
+            "label": "فارسی✓فا",
+            "aria": null
+          },
+          {
+            "label": "Français✓FR",
+            "aria": null
+          },
+          {
+            "label": "עברית✓עב",
+            "aria": null
+          },
+          {
+            "label": "हिन्दी✓हि",
+            "aria": null
+          },
+          {
+            "label": "Bahasa Indonesia✓ID",
+            "aria": null
+          },
+          {
+            "label": "Italiano✓IT",
+            "aria": null
+          },
+          {
+            "label": "日本語✓日本",
+            "aria": null
+          },
+          {
+            "label": "한국어✓한국",
+            "aria": null
+          },
+          {
+            "label": "Bahasa Melayu✓MS",
+            "aria": null
+          },
+          {
+            "label": "Nederlands✓NL",
+            "aria": null
+          },
+          {
+            "label": "Norsk✓NO",
+            "aria": null
+          },
+          {
+            "label": "Português✓PT",
+            "aria": null
+          },
+          {
+            "label": "Русский✓РУ",
+            "aria": null
+          },
+          {
+            "label": "Svenska✓SV",
+            "aria": null
+          },
+          {
+            "label": "Kiswahili✓SW",
+            "aria": null
+          },
+          {
+            "label": "தமிழ்✓தமி",
+            "aria": null
+          },
+          {
+            "label": "తెలుగు✓తె",
+            "aria": null
+          },
+          {
+            "label": "ไทย✓ไท",
+            "aria": null
+          },
+          {
+            "label": "Türkçe✓TR",
+            "aria": null
+          },
+          {
+            "label": "Українська✓УК",
+            "aria": null
+          },
+          {
+            "label": "Tiếng Việt✓VI",
+            "aria": null
+          },
+          {
+            "label": "中文✓中文",
+            "aria": null
+          },
+          {
+            "label": "自动",
+            "aria": "Appearance: 自动"
+          }
+        ],
+        "ogImage": "https://earendil.com/static/og/posts/pi-durable-on-cloudflare.png",
+        "twitter": "summary_large_image"
+      }
+    }
+  ],
+  "errors": []
+}

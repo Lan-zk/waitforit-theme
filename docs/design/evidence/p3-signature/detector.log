@@ -1,0 +1,3 @@
+impeccable detect: could not read linked stylesheet {{ $transitions.RelPermalink }} (resolved to /Users/linzhikai/Dev/Github/waitforit-theme/layouts/_partials/{{ $transitions.RelPermalink }}); color and custom-property rules will be incomplete
+impeccable detect: could not read linked stylesheet {{ $fonts.RelPermalink }} (resolved to /Users/linzhikai/Dev/Github/waitforit-theme/layouts/_partials/{{ $fonts.RelPermalink }}); color and custom-property rules will be incomplete
+impeccable detect: could not read linked stylesheet {{ $main.RelPermalink }} (resolved to /Users/linzhikai/Dev/Github/waitforit-theme/layouts/_partials/{{ $main.RelPermalink }}); color and custom-property rules will be incomplete

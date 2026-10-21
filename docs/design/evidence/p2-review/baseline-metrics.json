@@ -1,0 +1,162 @@
+{
+  "home": {
+    "targets": [
+      {
+        "name": "September 12, 2026\n  On the Gr",
+        "height": 138
+      },
+      {
+        "name": "July 1, 2026\n  The Second Lett",
+        "height": 69
+      },
+      {
+        "name": "March 14, 2026\n  The Lamp Left",
+        "height": 69
+      },
+      {
+        "name": "Read",
+        "height": 19.25
+      }
+    ],
+    "paint": [
+      {
+        "name": "first-paint",
+        "start": 56
+      },
+      {
+        "name": "first-contentful-paint",
+        "start": 56
+      }
+    ],
+    "resources": [
+      {
+        "name": "newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2",
+        "bytes": 126112,
+        "duration": 6.300000190734863
+      },
+      {
+        "name": "fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css",
+        "bytes": 1178,
+        "duration": 5.200000047683716
+      },
+      {
+        "name": "main.min.3fa64f3398d8c24a57d522444487acb8f47385937d9fb59a24b25c6cceb26bee.css",
+        "bytes": 20348,
+        "duration": 5.8999998569488525
+      },
+      {
+        "name": "theme.min.2c792dd8f78101531e93ec2ced81ab3500261ee030030794273546ae4c4cd1e9.js",
+        "bytes": 1073,
+        "duration": 6.599999904632568
+      },
+      {
+        "name": "commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2",
+        "bytes": 15400,
+        "duration": 6.099999904632568
+      },
+      {
+        "name": "ui.min.64ae9ee1598a85f79d7cf159c31b8214c09fb0afd176ce6ae03db738c63ac3e9.js",
+        "bytes": 1136,
+        "duration": 9.700000047683716
+      },
+      {
+        "name": "scene.min.5a6cecd9226a5bc84485566a246d746a1ffbd6fc1e2b9c2fa5e1a6a9c7849915.js",
+        "bytes": 1926,
+        "duration": 8.299999952316284
+      },
+      {
+        "name": "cursor-dark.svg",
+        "bytes": 1078,
+        "duration": 5.099999904632568
+      },
+      {
+        "name": "grain-light.png",
+        "bytes": 7529,
+        "duration": 3.5999999046325684
+      },
+      {
+        "name": "grain-dark.png",
+        "bytes": 7365,
+        "duration": 4.699999809265137
+      },
+      {
+        "name": "newsreader-italic-latin-var.b2705b8453f06e95c96d2908d245dee05d6609d480d7e85ed064c79b31111224.woff2",
+        "bytes": 140976,
+        "duration": 17.299999952316284
+      },
+      {
+        "name": "cursor-light.svg",
+        "bytes": 1080,
+        "duration": 4
+      },
+      {
+        "name": "favicon-dark.28a5d9d94175265f3f891e810c624d11e97a9d08c9e2a2c3981b46237b82e29a.svg",
+        "bytes": 1094,
+        "duration": 1.5999999046325684
+      }
+    ]
+  },
+  "menu": {
+    "role": null,
+    "modal": null,
+    "backgroundInert": false,
+    "firstFocus": "wf-menu-close",
+    "scroll": "visible",
+    "tabStops": [
+      {
+        "className": "wf-menu-link",
+        "text": "Letters"
+      },
+      {
+        "className": "wf-menu-link",
+        "text": "Purpose"
+      },
+      {
+        "className": "wf-menu-link",
+        "text": "Values"
+      },
+      {
+        "className": "wf-menu-link",
+        "text": "Join"
+      },
+      {
+        "className": "wf-menu-link",
+        "text": "Notes"
+      },
+      {
+        "className": "wf-post-row",
+        "text": "September 12, 2026\n "
+      },
+      {
+        "className": "wf-post-row",
+        "text": "July 1, 2026\n  The S"
+      },
+      {
+        "className": "wf-post-row",
+        "text": "March 14, 2026\n  The"
+      }
+    ]
+  },
+  "noJs": {
+    "proseTop": 353,
+    "navBottom": 324,
+    "overlap": false
+  },
+  "letter": {
+    "metaGap": 0,
+    "titleClass": "wf-sr-only",
+    "title": "The Second Letter, Unaddressed"
+  },
+  "grain": [
+    {
+      "className": "wf-grain wf-grain--day",
+      "image": "url(\"http://127.0.0.1:8794/images/grain-dark.png\")",
+      "opacity": "0"
+    },
+    {
+      "className": "wf-grain wf-grain--night",
+      "image": "url(\"http://127.0.0.1:8794/images/grain-dark.png\")",
+      "opacity": "0.08"
+    }
+  ]
+}

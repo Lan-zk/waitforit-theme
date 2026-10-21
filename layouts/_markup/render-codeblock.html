@@ -1,0 +1,15 @@
+{{- /* TPL-22：展示用高亮结果，复制保留原始 Inner 并补回 Goldmark 去掉的一个尾换行，避免高亮器改写空白。 */ -}}
+{{- .Page.Store.Set "wf-has-code" true -}}
+{{- $id := printf "wf-code-%d" .Ordinal -}}
+{{- $label := .Type | default (T "waitforit.code.text") -}}
+<figure class="wf-code"{{ with .Attributes.id }} id="{{ . }}"{{ end }} data-wf-code>
+  <figcaption class="wf-code__header">
+    <span id="{{ $id }}-label">{{ $label }}</span>
+    {{- if .Inner }}
+    <button type="button" class="wf-code__copy" data-wf-copy hidden aria-label="{{ T "waitforit.code.copy" }}: {{ $label }}" data-success="{{ T "waitforit.code.success" }}" data-error="{{ T "waitforit.code.error" }}">{{ T "waitforit.code.copy" }}</button>
+    {{- end }}
+  </figcaption>
+  <pre class="wf-code__pre" tabindex="0" aria-labelledby="{{ $id }}-label"><code class="chroma">{{- if transform.CanHighlight .Type -}}{{- $result := transform.HighlightCodeBlock . (dict "noClasses" false "lineNos" false "hl_Lines" "" "anchorLineNos" false) -}}{{ $result.Inner }}{{- else -}}{{ .Inner }}{{- end -}}</code></pre>
+  <textarea data-wf-source hidden aria-hidden="true" tabindex="-1">{{ printf "\n%s\n" .Inner }}</textarea>
+  <span class="wf-code__status" role="status" aria-live="polite" data-wf-copy-status></span>
+</figure>

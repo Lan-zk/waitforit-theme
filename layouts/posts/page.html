@@ -1,7 +1,7 @@
 {{- /* 详情页外层：只写 define，骨架/head/header/footer 在 baseof（TPL-16）。 */}}
 {{ define "main" }}
 <article class="wf-column wf-letter">
-  <h1 class="wf-sr-only">{{ .Title }}</h1>
+  <h1 class="{{ if .Params.subject }}wf-sr-only{{ else }}wf-letter-title{{ end }}">{{ .Title }}</h1>
   {{- partial "letter-meta.html" . }}
   <div class="wf-prose">{{ .Content }}</div>
 </article>

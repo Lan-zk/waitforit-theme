@@ -1,6 +1,6 @@
 ---
 name: hugo-theme-dev
-description: Hugo 主题开发的显式规范与可溯源事实库（基线 v0.168.0，最低支持 0.146.0）。当在本仓库编写或修改 layouts 模板、主题 hugo.toml/theme.toml、_partials/_shortcodes/_markup、assets 资源管线、内容模型与输出格式、i18n、404/分页、CI 构建与发版，或排查"模板不生效、页面静默消失、字体/样式不发布、构建警告"时使用。含 105 条编号规则（TPL/CFG/AST/CNT/REL）、来源注册表、可复跑实测脚本。
+description: Hugo 主题开发的显式规范与可溯源事实库（基线 v0.168.0，最低支持 0.146.0）。当在本仓库编写或修改 layouts 模板、主题 hugo.toml/theme.toml、_partials/_shortcodes/_markup、assets 资源管线、内容模型与输出格式、i18n、404/分页、CI 构建与发版，或排查"模板不生效、页面静默消失、字体/样式不发布、构建警告"时使用。含 107 条编号规则（TPL/CFG/AST/CNT/REL）、来源注册表、可复跑实测脚本。
 allowed-tools: Bash(openspec:*)
 license: MIT
 compatibility: 需要 Hugo ≥ 0.146（基线 0.168.0，extended 非必需）；复跑实测脚本需 PowerShell 7 与 hugo 可执行文件。
@@ -41,15 +41,15 @@ metadata:
 
 冲突优先级：**实测 ⟦E⟧ > 文档明文 ⟦D⟧ > 推断 ⟦I⟧**。文档与实测冲突时以实测为准并注释（已知冲突：TPL-02 `_default` 仍能用但报 unused、TPL-15 缺模板不报错、CFG-16 版本不匹配不阻断）。**没有来源标记的规则视为缺陷**：补实测（新增 E#）或降级为 ⟦U⟧，不要留在正文里当依据。
 
-## 规则索引（105 条）
+## 规则索引（107 条）
 
 按主题分五个文件；编号连续，可 grep 精确定位：
 
 | 文件 | 编号 | 覆盖 | 什么时候读 |
 | --- | --- | --- | --- |
-| `references/templates.md` | TPL-01…21 | 新模板系统路径、查找顺序与权重、baseof/block、partial、shortcode、render hook、分页、404 | 写任何模板之前 |
+| `references/templates.md` | TPL-01…22 | 新模板系统路径、查找顺序与权重、baseof/block、partial、shortcode、render hook、分页、404 | 写任何模板之前 |
 | `references/configuration-modules.md` | CFG-01…29 | 主题配置可合并段、params/menus 合并语义、outputs/mediaTypes、版本护栏、mount、module 分发、i18n、安全 | 写 `hugo.toml`/`theme.toml`、定参数契约、多语言之前 |
-| `references/assets-pipeline.md` | AST-01…16 | assets vs static、资源发布与指纹、Sass/PostCSS/js.Build、图像处理、字体交付、可移植性 | 引样式/脚本/字体/图片、写 `assets/` 结构之前 |
+| `references/assets-pipeline.md` | AST-01…17 | assets vs static、资源发布与指纹、Sass/PostCSS/js.Build、图像处理、字体交付、可移植性 | 引样式/脚本/字体/图片、写 `assets/` 结构之前 |
 | `references/content-output.md` | CNT-01…27 | bundle/section、front matter、taxonomy、输出格式与模板命名、sitemap/RSS/robots、Goldmark 与 shortcode 渲染、i18n/RTL | 定内容模型、输出格式、多语言、Markdown 行为之前 |
 | `references/release-ci.md` | REL-01…12 | 版本/edition 事实、0.146 后的破坏性变更、CLI flags、CI 验收命令、gallery 发布规则、安全默认值 | 写 CI、升 Hugo、发版之前 |
 

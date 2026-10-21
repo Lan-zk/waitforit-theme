@@ -1,8 +1,9 @@
 # Credits
 
 waitforit-theme is an original Hugo theme. Its visual language is inspired by the Earendil
-site and its upstream repository; all theme code, copy, and visual assets are written or
-drawn for this repository. Third-party licenses and sources are recorded below. Nothing in
+site and its upstream repository. Theme code and copy are original; visual assets are
+created for this repository or derived from the user-provided brand silhouette described
+below. Third-party licenses and sources are recorded below. Nothing in
 this file relicenses third-party work.
 
 ## Inspiration: Earendil
@@ -99,7 +100,7 @@ reference-site font) are **not** included in this repository or in its build out
 
 ## Original theme assets
 
-The four-point star SVGs, paper-grain PNGs, cursors, and favicons under `assets/` are
+The four-point star SVGs, paper-grain PNGs, and cursors under `assets/` are
 original works created for this theme. They contain no copied upstream path data or pixel
 bytes; the comparison method and upstream pin are documented in
 `docs/design/reference/upstream-pin.md`.
@@ -115,3 +116,17 @@ by templates, and never enter the theme's build output.
 
 The theme's source code is licensed under the MIT License; that license does not cover the
 bundled font files, which remain under the SIL Open Font License 1.1 as described above.
+
+## 用户提供的品牌轮廓（2026-10-21）
+
+`assets/images/emblem.svg` 根据用户本轮提供图片的主体平面重绘，派生透明 PNG、favicon、Apple 图标与 OG。原始图片的第三方来源未提供；本记录仅说明输入与处理过程，不为来源或第三方权利作额外断言。处理证据见 `docs/design/evidence/p3-signature/logo.md`。
+
+## Build-only social-image fonts (2026-10-21)
+
+Hugo's native image renderer reads TrueType files from `assets/fonts/og/`; these are never published as web fonts. Browser font payload remains the four WOFF2 files above.
+
+- `newsreader-400.ttf` (43,004 bytes, SHA-256 `1e1d930dd86f99b5d9480917f444afc9f18b7c71116ba9a557feb6bcbced70a5`) is derived from the existing licensed Latin Newsreader variable font at wght=400, opsz=72; 223 Unicode mappings retained. Covered by the Newsreader OFL text, also copied next to the build font as `assets/fonts/og/newsreader-OFL.txt`.
+- `noto-serif-sc-400.ttf` (14,561,480 bytes, SHA-256 `fe51c9269e14d22c5964f5c235c8c7aec50be25483b5573da00caf4177d91057`) is a static wght=400 instance of Google Fonts' Noto Serif SC; all 30,928 source Unicode mappings are retained. Copyright 2012 Google Inc.; SIL OFL 1.1 is included as `assets/fonts/og/noto-serif-sc-OFL.txt`.
+- Official source: <https://github.com/google/fonts/tree/main/ofl/notoserifsc>, font Git blob `eab063faf229160a52d3760f5555150e4eb9e5bf`, downloaded 2026-10-21. Source `NotoSerifSC[wght].ttf` SHA-256 `050080d9255a86808f2945bffac582b31ef32bc36411ce29563b4961670c66f9`. FontTools 4.60.2 instanced the fonts, removed hinting, retained horizontal kerning and all source character mappings. No font conversion tool is needed by theme users.
+
+The full Chinese face increases repository/build input size by about 14 MiB; it does not add a network request or font download to the reader's page. The MIT code license does not relicense these fonts.

@@ -1,0 +1,26 @@
+Start building sites … 
+hugo v0.146.0 darwin/arm64 BuildDate=unknown
+
+INFO  build:  step process substep collect files 24 files_total 24 pages_total 23 resources_total 1 duration 1.837792ms
+INFO  build:  step process duration 2.077708ms
+INFO  build:  step assemble duration 654.458µs
+INFO  build:  step render substep pages site en outputFormat html duration 21.903542ms
+INFO  build:  step render substep pages site en outputFormat rss duration 356.375µs
+INFO  build:  step render substep pages site zh outputFormat html duration 4.117375ms
+INFO  build:  step render substep pages site zh outputFormat rss duration 218.5µs
+INFO  build:  step render pages 44 content 28 duration 26.731709ms
+INFO  build:  step render deferred count 0 duration 417ns
+INFO  build:  step postProcess duration 3.083µs
+INFO  build:  duration 29.745417ms
+
+                   | EN | ZH  
+-------------------+----+-----
+  Pages            | 26 | 18  
+  Paginator pages  |  0 |  0  
+  Non-page files   |  1 |  0  
+  Static files     |  0 |  0  
+  Processed images | 28 |  0  
+  Aliases          |  1 |  0  
+  Cleaned          |  0 |  0  
+
+Total in 46 ms

@@ -4,13 +4,15 @@
    站点可选在 [languages.<lang>.params] 里给 locale / dir，缺省回退 .Lang 与 ltr。 */}}
 {{- $lang := site.Language.Params.locale | default site.Language.Lang -}}
 {{- $dir := site.Language.Params.dir | default `ltr` -}}
-<html lang="{{ $lang }}" dir="{{ $dir }}">
+{{- $theme := site.Params.waitforit.defaultTheme | default "auto" -}}
+{{- if not (in (slice "auto" "day" "night") $theme) }}{{ $theme = "auto" }}{{ end -}}
+<html lang="{{ $lang }}" dir="{{ $dir }}" data-wf-theme-default="{{ $theme }}"{{ if ne $theme "auto" }} data-theme="{{ $theme }}"{{ end }}>
   {{- partial "head.html" . }}
-  <body>
+  <body{{ if .IsHome }} class="wf-is-home"{{ end }}>
     <a class="wf-skip" href="#main">{{ T "waitforit.skip" }}</a>
     {{- partial "scene.html" . }}
     {{- partial "header.html" . }}
-    <main class="wf-main" id="main">
+    <main class="wf-main" id="main" tabindex="-1">
       {{- block "main" . }}{{ end }}
     </main>
     {{- partial "footer.html" . }}

@@ -1,6 +1,6 @@
 /* 主题三态切换（D6）：auto → day → night，写 localStorage["wf-theme"]，改 documentElement[data-theme]。
  * 启动时的一次性设置由 head 内联脚本完成（避免首帧闪烁），本文件只负责切换与标签。
- * 无 JS 时按钮由 CSS 隐藏，页面按系统偏好显示。 */
+ * 无 JS 时按钮由 CSS 隐藏，页面保留站点默认模式；auto 跟随系统。 */
 (function () {
   "use strict";
 
@@ -8,11 +8,18 @@
   var MODES = ["auto", "day", "night"];
 
   function read() {
+    var fallback = document.documentElement.getAttribute("data-wf-theme-default");
+    if (MODES.indexOf(fallback) === -1) {
+      fallback = "auto";
+    }
     try {
       var stored = window.localStorage.getItem(KEY);
+      if (stored === null) {
+        return fallback;
+      }
       return MODES.indexOf(stored) > -1 ? stored : "auto";
     } catch (error) {
-      return "auto";
+      return fallback;
     }
   }
 
@@ -30,6 +37,7 @@
     var label = button.getAttribute("data-label-" + mode);
     if (target && label) {
       target.textContent = label;
+      button.setAttribute("aria-label", button.getAttribute("data-label-theme") + ": " + label);
     }
   }
 
@@ -44,11 +52,8 @@
     button.addEventListener("click", function () {
       mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
       try {
-        if (mode === "auto") {
-          window.localStorage.removeItem(KEY);
-        } else {
-          window.localStorage.setItem(KEY, mode);
-        }
+        // 显式 auto 也要保存，才能覆盖站点的 day/night 默认值。
+        window.localStorage.setItem(KEY, mode);
       } catch (error) {
         /* 存储被禁用时仍然允许本次切换，只是不记忆。 */
       }

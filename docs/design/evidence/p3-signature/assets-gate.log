@@ -1,0 +1,9 @@
+waitforit-theme 资产与设计契约门禁
+仓库根: /Users/linzhikai/Dev/Github/waitforit-theme
+PASS  [token-literals] 扫描 27 个 CSS 文件与 28 个 HTML 的样式块
+PASS  [fonts] 字体文件 4 个，woff2 总量 289.7KB
+PASS  [component-forms] 扫描 28 个样式/模板源
+PASS  [decoration] SVG 8 个、资产 26 个，均通过白名单/哈希边界
+PASS  [sidecar] frontmatter 13/8/2/11/20 与 sidecar 9 片段、8 动效、3 断点、3 阴影
+
+全部通过：令牌 / 字体 / 形态 / 装饰 / sidecar 5 项门禁

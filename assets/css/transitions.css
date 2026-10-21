@@ -1,0 +1,39 @@
+/* 原生 MPA：不拦截链接，背景与框架在 root 快照中保持静止。 */
+@view-transition {
+  navigation: auto;
+}
+.wf-main {
+  view-transition-name: wf-reading;
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-old(root) {
+  opacity: 0;
+}
+::view-transition-new(root) {
+  opacity: 1;
+}
+::view-transition-group(wf-reading) {
+  animation-duration: var(--wf-motion-page-enter);
+  animation-timing-function: var(--wf-ease);
+}
+::view-transition-old(wf-reading) {
+  animation: wf-page-out var(--wf-motion-page-exit) var(--wf-ease) both;
+}
+::view-transition-new(wf-reading) {
+  animation: wf-page-in var(--wf-motion-page-enter) var(--wf-ease) both;
+}
+@keyframes wf-page-out {
+  to { opacity: 0; transform: translateY(calc(-1 * var(--wf-space-section))); }
+}
+@keyframes wf-page-in {
+  from { opacity: 0; transform: translateY(var(--wf-space-section)); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  .wf-main { view-transition-name: none; }
+}

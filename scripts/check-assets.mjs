@@ -167,6 +167,10 @@ const ALLOWED_FONTS = new Set([
   'commit-mono-400-latin.woff2',
   'commit-mono-700-latin.woff2',
 ]);
+const BUILD_FONTS = new Map([
+  ['assets/fonts/og/newsreader-400.ttf', 'assets/fonts/og/newsreader-OFL.txt'],
+  ['assets/fonts/og/noto-serif-sc-400.ttf', 'assets/fonts/og/noto-serif-sc-OFL.txt'],
+]);
 const FONT_EXTS = new Set(['.woff2', '.woff', '.otf', '.ttf']);
 const FONT_MAX_BYTES = 300 * 1024;
 
@@ -179,7 +183,7 @@ function checkFonts() {
   for (const file of fontFiles) {
     const name = basename(file);
     const lower = name.toLowerCase();
-    if (!ALLOWED_FONTS.has(name)) {
+    if (!ALLOWED_FONTS.has(name) && !BUILD_FONTS.has(rel(file))) {
       fail('fonts', `${rel(file)} 不在字体白名单（只允许 ${[...ALLOWED_FONTS].join(', ')}）`);
     }
     if (lower.includes('plantin') || lower.includes('departure')) {
@@ -199,12 +203,20 @@ function checkFonts() {
       fail('fonts', `缺少字体文件 assets/fonts/${required}（5.3 交付）`);
     }
   }
+  for (const [file, license] of BUILD_FONTS) {
+    if (!existsSync(join(ROOT, file))) {
+      fail('fonts', `缺少构建专用字体 ${file}`);
+    }
+    if (!existsSync(join(ROOT, license))) {
+      fail('fonts', `构建专用字体缺少同目录OFL许可 ${license}`);
+    }
+  }
   const licenseRe = /^.+-(OFL|LICENSE)\.txt$/i;
   const licenses = existsSync(fontsDir) ? readdirSync(fontsDir).filter((n) => licenseRe.test(n)) : [];
   if (licenses.length < 2) {
     fail('fonts', `assets/fonts/ 下许可文本不足（需 newsreader-OFL.txt 与 commit-mono-OFL.txt，实际 ${licenses.length} 个）`);
   }
-  report('fonts', true, `字体文件 ${fontFiles.length} 个，woff2 总量 ${(total / 1024).toFixed(1)}KB`);
+  report('fonts', true, `字体文件 ${fontFiles.length} 个，网页woff2 ${(total / 1024).toFixed(1)}KB，另有${BUILD_FONTS.size}个构建专用TTF`);
 }
 
 // ---------- 3. 形态门禁：无 accent、无填充按钮、无卡片圆角+阴影、无 chip 类名 ----------
@@ -234,6 +246,7 @@ function checkComponentForms() {
 
 // ---------- 4. 装饰门禁：SVG 白名单 + 原创资产边界 ----------
 const ALLOWED_SVGS = new Set([
+  'assets/images/emblem.svg',
   'assets/images/star-18.svg',
   'assets/images/star-24.svg',
   'assets/images/star-32.svg',
@@ -259,7 +272,7 @@ function checkDecoration() {
   ];
   for (const file of svgs) {
     if (!ALLOWED_SVGS.has(rel(file))) {
-      fail('decoration', `${rel(file)} 不在 SVG 白名单（内置 SVG 只允许四角星变体与 favicon/光标）`);
+      fail('decoration', `${rel(file)} 不在 SVG 白名单（内置 SVG 只允许品牌轮廓、四角星变体与 favicon/光标）`);
     }
   }
   for (const file of svgs) {

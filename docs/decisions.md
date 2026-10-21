@@ -303,6 +303,72 @@
 
 后果：`AGENTS.md`、`README.md`（P4）的契约说明按本条目执行；知识库追加 E13 并修正 CNT-19/CNT-20；P3 只改场景时间驱动与转场，不回改 P2 结构。
 
+### D21 P2 审查后的阅读与交互基线
+
+**状态：默认采用**（2026-10-20，本轮按 `DESIGN.md` 审查与优化）。
+
+决定：固定框架采用视口内三行 grid，顶栏和页脚保留在视口边缘，只有中间正文使用原生滚动；页脚换行时由布局自然分配高度，正文不穿过 chrome。无 JS 时导航、正文、页脚回到文档流。保留浏览器原生导航、锚点与历史行为，不增加 JS 滚动或历史管理（延续 D7；模板仍遵守 TPL-16）。
+
+UI 脚本下载失败时由 head 捕获资源错误并撤销 js 增强标记，复用无 JS 文档流与普通导航，避免留下没有处理器的菜单按钮；此路径由主动阻断 ui.js 的浏览器回归覆盖。
+
+小屏全屏菜单作为具名模态对话框，背景设为 inert，Tab / Shift+Tab 在面板内循环；Escape 关闭并回焦，跨 800px 断点时关闭并解除隔离。关闭中的菜单也保持 inert，避免淡出期间出现不可见的 Tab 停靠点。关闭动作使用本地化文字，遵守 Bare Chrome Rule。
+
+已有 `params.waitforit.defaultTheme` 由服务端输出并供启动脚本读取（CFG-05/CFG-07）：无保存值时用站点默认值，存储不可用时也保留默认值；显式 auto/day/night 优先，非法存储回退 auto。显式 auto 必须保存，才能覆盖站点 day/night 默认值。无 JS 时同样保留站点默认模式。
+
+信件元信息后使用既有 24px section 间距；缺少 `params.subject` 时显示文章标题，元信息仍按 CNT-08 隐藏缺失字段。日期列在同一列表内共享宽度；文章行与独立动作链接至少 44×44，段内链接保持自然排版。禁止合成字重与斜体；日夜颗粒层分别固定读取各自的既有图像和透明度，新增的令牌别名不引入视觉新值（AST-08 的产物路径约定保持）。
+
+理由：首轮实测发现正文与页脚叠印、无 JS 导航占用信件元信息区域、模态菜单焦点逃逸，以及 320px / 200% 文字缩放时页脚溢出；参考站存在类似行为不能成为保留缺陷的依据。修复落实 Fixed Frame Rule、Two Faces Rule 与键盘可访问要求，不修改 `DESIGN.md` 的配色、字体、纸光、间距或动效取值。
+
+后果：当前证据以 `docs/design/evidence/p2-review/` 为准，早期 P2 截图保留为历史记录。P3 的跨页转场必须覆盖正文滚动区域与浏览器返回恢复；当前 Chromium 实测返回后 scrollTop 保持 200 → 200。发布前仍需 Firefox、WebKit、真实触控设备与辅助技术验证。
+
+## D22 P3：用户轮廓品牌与签名体验
+
+日期：2026-10-21。状态：默认采用；实现已完成，活动变更 signature-capabilities 留待最终审核。本条更新 D7 的时长、D8-R 的时间驱动实现与 D20 的 P3 边界，历史条目保留。
+
+决定：用户提供图片主体作为品牌标志，以三块区域和负形平面重绘 SVG/currentColor；首页/内页/404/favicon/OG 共用。四角星限交互装饰。根 DESIGN.md 与 sidecar 同步，SVG 门禁显式增加唯一品牌资产；来源与处理见 CREDITS 和 P3 logo.md。标志不是逐像素无损转换，不为原图未知来源作额外许可断言。
+
+海面保留 P2 双 Canvas 与四层表面；时间驱动最多24fps，reduce/saveData/hidden/pagehide 取消 RAF，pageshow 恢复，时间步长封顶避免跳跃。无法通用检测 OS 省电模式，故明确支持 reduce 与浏览器 saveData，不声称电池 API 检测。关闭 sea 不输出 Canvas/脚本（CFG-05/07、AST-02/04/16）。
+
+代码 hook 走 layouts/_markup，HighlightCodeBlock Inner + class 高亮覆盖，关闭行号/行高亮，未知语言转义原文。复制另存 hook 原文并补回 Goldmark 去掉的一个尾换行；按钮仅脚本就绪后显示，成功或拒绝都有可见/可宣布反馈，拒绝选中代码。透明细线、单色语义、44px 命中区、代码内横滚（TPL-03/13/22、CNT-18/25/26）。
+
+OG/Twitter 输出逐页标题/摘要/绝对URL/语言与文章发布时间；打包1200×630默认品牌图，允许 params.waitforit.image/imageAlt 覆盖，bundle 优先于 assets，支持 PNG/JPEG/WebP，缺失回落默认。默认图不绘制逐篇标题；不增加 CJK 字体或构建工具依赖（AST-01/02/10/16、CNT-03/08/19）。
+
+转场为纯 CSS 原生跨文档增强，仅 features.transitions=true 时加载；默认false，exampleSite开启。正文220ms退出/520ms入场取 DESIGN令牌，框架/背景静止。reduce关闭，浏览器不支持即普通MPA；无导航拦截、history或scroll脚本（AST-02/04/16、TPL-16）。
+
+后果：P3验收与说明分别见 docs/design/evidence/p3-signature/ 和 docs/signature-capabilities.md；P4仍需真实设备/跨引擎/辅助技术与发布流程。未提交、推送或归档本活动变更。
+
+## D23 海面可见性与实站对照复核
+
+日期：2026-10-21。状态：默认采用，补充D22。
+
+用户反馈动态海面难以察觉，实际复现确认脚本正常、无reduce/saveData/hidden降级；问题在于原有1.2vh幅度、约39秒周期与hairline透明度叠乘使最终合成画面变化太弱。原有Canvas hash变化断言只证明绘制，不能证明可见。
+
+决定：海面独立令牌为24秒周期、2.4vh近景幅度、ink远0.10/近0.28强度，保留24fps上限与中央veil。周期reduce归零，偏好恢复时重新读取；不改变纸光、正文、分隔线。新增完整合成画面两秒边缘变化与中央稳定的回归，失败和通过画面都保留。1.2%是fixture的工程下限，非人眼通用阈值。
+
+实际对照Earendil实时首页/列表/文章/OG：参考为有透视和明暗体积的波面，主题仍是二维线场，形态差距未消除；参考逐篇OG含文章标题，主题默认仍是共享品牌图。功能通过不等于视觉保真。对照截图只放docs/design/reference/live-2026-10-21/，不进入主题资产。具体差距与下一优先级见docs/design/evidence/p3-signature/earendil-comparison.md。
+
+## D24 按实站差距升级波面、首页与逐篇OG
+
+日期：2026-10-21。状态：用户已授权继续优化，取代D22/D23的稀疏线场、共享默认OG与首屏列表安排。
+
+海面保持原创Canvas 2D与四层结构，使用三组方向波的透视高度场与解析坡度着色；远处密集、近处宽阔。计算一份标量场着色双昼夜，内部宽度≤640像素，24fps上限，后台/离页/reduce/saveData暂停及静态首帧不变。未复制Earendil的shader或运行时。海平线改为60vh；首页纸光从48vh到68vh渐退，露出下方波面；正文页保留径向纸光保护。
+
+首页主句居中，近期文章与附加正文保留在首屏后的原生滚动区域；无JS恢复文档流。动效与阅读内容都不承担导航逻辑（TPL-16）。
+
+OG改为Hugo images.Text原生逐页标题图，本地图覆盖优先。中英标题按字形/单词预算折行，中文闭合标点随前行；极长无空格标题缩小至32px、最多8行并省略，完整标题保留元数据。品牌名展示最长36字符，元数据仍完整。1200×630原创纸纹品牌底不采用参考像素（AST-01/02/10/17，CNT-08/19）。
+
+英文字体取既有Newsreader的400/opsz72静态TrueType；中文用OFL Noto Serif SC400（保留原始30928 Unicode映射）。新增TTF只在Hugo图像构建时读取，不调用Permalink/Publish。代价为仓库增加约14MiB字体输入，浏览器仍只下载原有289.7KiB WOFF2，不需Node/Chrome/字体转换或网络构建。门禁显式区分web字体与两个build-only白名单；许可/来源与可复跑转换脚本见CREDITS及scripts/prepare-og-fonts.py（AST-15/16/17）。
+
+0.146的strings.Truncate返回template.HTML，传给images.Text前显式printf成string，避免版本差异；两版均不用0.147才引入的aligny。首轮0.146错误已修复并纳入双版验收。
+
+验收以docs/design/evidence/p3-fidelity/为准，旧p3-signature/的线场和共享OG记录是历史。参考仍是独立品牌和不同渲染技术，当前并不声称逐像素匹配或已完成真实手机/跨引擎性能验证。
+
+## D25 P3 规范同步与归档
+
+日期：2026-10-21。状态：按用户“归档，然后提交并推送”的明确指示执行。
+
+signature-capabilities 的13项任务已完成。先同步 asset-licensing 的字体/原创资产边界与 design-system 的品牌形态要求，再创建 signature-experience 主规范；保留原有 Purpose 与未修改要求。变更归档至 openspec/changes/archive/2026-10-21-signature-capabilities/。P2 theme-skeleton 的归档和本轮实现、验证证据一并纳入版本控制。此前“待审核/未归档”描述记录的是当时状态，由本条更新；P4发布范围不因此提前完成。
+
 ## 待定项
 
 | 项 | 需要谁定 | 影响 |

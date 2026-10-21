@@ -18,13 +18,17 @@ html {
 
 body {
   margin: 0;
-  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100svh;
+  min-height: 0;
   color: var(--wf-ink);
   font-family: var(--wf-type-body-family);
   font-size: var(--wf-type-body-size);
   font-weight: var(--wf-type-weight);
   line-height: var(--wf-type-body-line);
   letter-spacing: var(--wf-type-tracking);
+  font-synthesis: none;
   cursor: url("../cursors/cursor-dark.svg") 16 16, auto;
 }
 
@@ -40,6 +44,11 @@ body {
 
 a {
   color: inherit;
+}
+
+::selection {
+  background: var(--wf-ink);
+  color: var(--wf-paper);
 }
 
 img,
@@ -169,7 +178,12 @@ canvas {
 }
 
 .wf-grain--day {
-  opacity: var(--wf-grain-opacity);
+  background-image: var(--wf-grain-image-day);
+  opacity: var(--wf-grain-opacity-day);
+}
+
+.wf-grain--night {
+  background-image: var(--wf-grain-image-night);
 }
 
 [data-theme="night"] .wf-grain--day {
@@ -177,7 +191,7 @@ canvas {
 }
 
 [data-theme="night"] .wf-grain--night {
-  opacity: var(--wf-grain-opacity);
+  opacity: var(--wf-grain-opacity-night);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -186,13 +200,14 @@ canvas {
   }
 
   :root:not([data-theme="day"]):not([data-theme="night"]) .wf-grain--night {
-    opacity: var(--wf-grain-opacity);
+    opacity: var(--wf-grain-opacity-night);
   }
 }
 
 /* 首帧关闭过渡（is-boot 由 head 内联脚本加/删，D6）。 */
 html.is-boot .wf-scene,
 html.is-boot .wf-canvas,
+html.is-boot .wf-veil,
 html.is-boot .wf-grain {
   transition: none;
 }
@@ -200,7 +215,7 @@ html.is-boot .wf-grain {
 /* ---------- 3. 固定框架：顶栏 = 星标 + MENU，底栏 = 品牌 + 语言/主题 ---------- */
 .wf-header,
 .wf-footer {
-  position: fixed;
+  position: relative;
   inset-inline: 0;
   z-index: var(--wf-z-frame);
   display: flex;
@@ -253,6 +268,8 @@ html.is-boot .wf-grain {
   display: flex;
   flex-direction: column;
   gap: var(--wf-space-xs);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .wf-footer__brand,
@@ -268,7 +285,9 @@ html.is-boot .wf-grain {
 .wf-footer__controls {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--wf-space-md);
+  max-width: 100%;
 }
 
 /* ---------- 4. 导航：MENU 触发 + 面板（桌面右列 / ≤800 全屏纸面板） ---------- */
@@ -301,7 +320,7 @@ html.js .wf-menu-trigger {
 .wf-menu-trigger:hover,
 .wf-menu-trigger:focus-visible {
   text-decoration-line: underline;
-  text-decoration-style: dotted;
+  text-decoration-style: solid;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.14em;
 }
@@ -366,7 +385,7 @@ html.js .wf-menu-panel[data-open] {
 .wf-menu-link:hover,
 .wf-menu-link:focus-visible {
   text-decoration-line: underline;
-  text-decoration-style: dotted;
+  text-decoration-style: solid;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.14em;
 }
@@ -426,7 +445,7 @@ html.js .wf-menu-panel[data-open] {
 .wf-lang-link:focus-visible {
   color: var(--wf-ink);
   text-decoration-line: underline;
-  text-decoration-style: dotted;
+  text-decoration-style: solid;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.14em;
 }
@@ -455,7 +474,7 @@ html.js .wf-theme-toggle {
 .wf-theme-toggle:hover,
 .wf-theme-toggle:focus-visible {
   text-decoration-line: underline;
-  text-decoration-style: dotted;
+  text-decoration-style: solid;
   text-decoration-thickness: 0.06em;
   text-underline-offset: 0.14em;
 }
@@ -467,12 +486,17 @@ html.js .wf-theme-toggle {
 
 /* ---------- 6. 内容版式：固定框架内的阅读列 ---------- */
 .wf-main {
-  /* 内容层压在 surface 之上、固定框架之下：与 grain 同层（DOM 靠后所以盖住颗粒），
-     但低于 z-frame，滚动时正文不会盖住顶栏/底栏，也不会挡住 MENU 的命中区。 */
+  /* 三行 grid 让 chrome 留在视口边缘；只有中间的正文原生滚动，页脚换行也不叠印。 */
   position: relative;
   z-index: var(--wf-z-grain);
-  min-height: 100vh;
-  padding-block: var(--wf-page-top) var(--wf-page-bottom);
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scroll-padding-block: var(--wf-space-section);
+  scrollbar-color: var(--wf-muted-ink) var(--wf-paper);
+  padding-block:
+    calc(var(--wf-page-top) - var(--wf-frame-block) - var(--wf-tap-target))
+    calc(var(--wf-page-bottom) - var(--wf-frame-block) - var(--wf-tap-target));
   padding-inline: var(--wf-frame-block);
 }
 
@@ -484,10 +508,10 @@ html.js .wf-theme-toggle {
 
 .wf-hero {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  min-height: calc(var(--wf-horizon) - var(--wf-page-top));
-  padding-block-end: var(--wf-space-horizon-gap);
+  min-height: calc(100svh - var(--wf-page-top) - var(--wf-frame-block) - var(--wf-tap-target));
+  padding-block-end: 0;
   text-align: center;
 }
 
@@ -532,7 +556,9 @@ html.js .wf-theme-toggle {
 }
 
 .wf-index__list {
-  display: block;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 1ch;
 }
 
 .wf-index__intro {
@@ -563,6 +589,20 @@ html.js .wf-theme-toggle {
   line-height: var(--wf-type-body-line);
 }
 
+.wf-letter-title {
+  margin: 0 0 var(--wf-space-section);
+  font-family: var(--wf-type-title-family);
+  font-size: var(--wf-type-title-size);
+  font-style: italic;
+  font-weight: var(--wf-type-weight);
+  line-height: var(--wf-type-title-line);
+  overflow-wrap: anywhere;
+}
+
+.wf-letter-meta + .wf-prose {
+  margin-block-start: var(--wf-space-section);
+}
+
 .wf-letter-meta__key {
   color: var(--wf-muted-ink);
 }
@@ -585,10 +625,12 @@ html.js .wf-theme-toggle {
 
 .wf-post-row {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  column-gap: 0.6em;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  column-gap: 1ch;
   row-gap: var(--wf-space-xs);
   align-items: baseline;
+  min-height: var(--wf-tap-target);
   padding-block: var(--wf-space-sm);
   color: var(--wf-ink);
   text-decoration: none;
@@ -630,6 +672,10 @@ html.js .wf-theme-toggle {
 }
 
 @media (max-width: 520px) {
+  .wf-index__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .wf-post-row {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -646,6 +692,7 @@ html.js .wf-theme-toggle {
   font-weight: var(--wf-type-weight);
   line-height: var(--wf-type-reading-line);
   letter-spacing: var(--wf-type-tracking);
+  overflow-wrap: anywhere;
 }
 
 .wf-prose p {
@@ -751,7 +798,9 @@ html.js .wf-theme-toggle {
 
 .wf-action-link {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
   gap: var(--wf-space-xs);
   color: var(--wf-ink);
   font-family: var(--wf-type-label-family);
@@ -760,7 +809,15 @@ html.js .wf-theme-toggle {
   line-height: var(--wf-type-label-line);
   letter-spacing: var(--wf-type-tracking);
   text-transform: uppercase;
-  text-decoration: none;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+}
+
+.wf-action-link:hover,
+.wf-action-link:focus-visible {
+  text-decoration-style: solid;
 }
 
 .wf-action-link__star {
@@ -822,7 +879,7 @@ html.js .wf-theme-toggle {
 /* ---------- 8. 响应式：三个断点承载全部适配（520 / 800 / 1100，令牌层已改框架与列宽） ---------- */
 @media (max-width: 800px) {
   .wf-footer {
-    align-items: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     gap: var(--wf-space-sm);
   }
@@ -863,6 +920,11 @@ html.js .wf-theme-toggle {
     inset-inline-end: var(--wf-frame-block);
     display: inline-flex;
   }
+
+  .wf-menu-modal .wf-footer,
+  .wf-menu-modal .wf-logo {
+    visibility: hidden;
+  }
 }
 
 @media (max-width: 520px) {
@@ -881,6 +943,26 @@ html.js .wf-theme-toggle {
 }
 
 /* ---------- 9. 降级：动效令牌已在 reduce 下归零，这里只处理非时长类效果 ---------- */
+/* 没有折叠交互时，导航与页脚进入文档流，给正文留下独立的阅读空间。 */
+html:not(.js) body {
+  display: block;
+  height: auto;
+  min-height: 100vh;
+}
+
+html:not(.js) .wf-menu-panel {
+  position: static;
+}
+
+html:not(.js) .wf-main {
+  overflow: visible;
+  padding-block: var(--wf-space-block);
+}
+
+html:not(.js) .wf-hero {
+  min-height: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wf-skip {
     transition: none;
@@ -890,4 +972,76 @@ html.js .wf-theme-toggle {
   .wf-action-link__star {
     transition: none;
   }
+}
+
+/* 代码在阅读列内独立横滚；语法层级只使用两级墨色。 */
+.wf-code {
+  min-width: 0;
+  margin: var(--wf-space-section) 0;
+  border-block: 1px solid var(--wf-hairline);
+}
+.wf-code__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wf-space-lg);
+  min-height: var(--wf-tap-target);
+  font-family: var(--wf-font-mono);
+  font-size: var(--wf-type-label-size);
+  line-height: var(--wf-type-label-line);
+  color: var(--wf-muted-ink);
+  overflow-wrap: anywhere;
+}
+.wf-code__copy {
+  flex-shrink: 0;
+  min-width: var(--wf-tap-target);
+  min-height: var(--wf-tap-target);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--wf-ink);
+  font: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.14em;
+  cursor: pointer;
+}
+.wf-code__copy:hover,
+.wf-code__copy:focus-visible {
+  text-decoration-style: solid;
+}
+.wf-prose .wf-code__pre {
+  margin: 0;
+  padding-block: var(--wf-space-sm) var(--wf-space-section);
+  border: 0;
+  max-width: 100%;
+  background: transparent;
+  tab-size: 4;
+}
+.wf-code .chroma {
+  color: var(--wf-ink);
+  background: transparent;
+}
+.wf-code .c, .wf-code .c1, .wf-code .cm, .wf-code .cp,
+.wf-code .s, .wf-code .s1, .wf-code .s2, .wf-code .sb {
+  color: var(--wf-muted-ink);
+}
+.wf-logo__mark,
+.wf-404__mark {
+  height: auto;
+  aspect-ratio: 558 / 375;
+}
+.wf-code__status {
+  display: block;
+  color: var(--wf-muted-ink);
+  font-family: var(--wf-font-mono);
+  font-size: var(--wf-type-label-size);
+  line-height: var(--wf-type-label-line);
+}
+.wf-code__status:not(:empty) {
+  padding-bottom: var(--wf-space-sm);
+}
+
+/* 首页让近景波面露出；阅读页仍保留完整纸光保护。 */
+.wf-is-home .wf-veil {
+  mask-image: linear-gradient(to bottom, var(--wf-pure-white) var(--wf-home-veil-start), transparent var(--wf-home-veil-end));
 }

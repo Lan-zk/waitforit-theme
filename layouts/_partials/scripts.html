@@ -1,7 +1,13 @@
 {{- /* 渐进增强脚本：全部指纹化发布（AST-02）。defer 保证不阻塞首屏，无 JS 时页面仍可读（D7）。 */}}
 {{- $theme := resources.Get "js/theme.js" | minify | fingerprint }}
 {{- $ui := resources.Get "js/ui.js" | minify | fingerprint }}
-{{- $scene := resources.Get "js/scene.js" | minify | fingerprint }}
   <script src="{{ $theme.RelPermalink }}" integrity="{{ $theme.Data.Integrity }}" crossorigin="anonymous" defer></script>
-  <script src="{{ $ui.RelPermalink }}" integrity="{{ $ui.Data.Integrity }}" crossorigin="anonymous" defer></script>
+  <script src="{{ $ui.RelPermalink }}" integrity="{{ $ui.Data.Integrity }}" crossorigin="anonymous" data-wf-ui defer></script>
+{{- if site.Params.waitforit.features.sea }}
+{{- $scene := resources.Get "js/scene.js" | minify | fingerprint }}
   <script src="{{ $scene.RelPermalink }}" integrity="{{ $scene.Data.Integrity }}" crossorigin="anonymous" defer></script>
+{{- end }}
+{{- if .Store.Get "wf-has-code" }}
+{{- $code := resources.Get "js/code.js" | minify | fingerprint }}
+  <script src="{{ $code.RelPermalink }}" integrity="{{ $code.Data.Integrity }}" crossorigin="anonymous" defer></script>
+{{- end }}

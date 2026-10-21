@@ -1,0 +1,259 @@
+{
+  "source": "https://earendil.com/",
+  "capturedAt": "2026-10-21T01:05:12.181Z",
+  "notes": "Read-only live reference, WebGL via software SwiftShader for visual comparison; no performance claims. No upstream assets enter theme build.",
+  "pages": [
+    {
+      "width": 1440,
+      "height": 900,
+      "title": "文章 | Earendil",
+      "bodyClass": "skip-intro loaded theme-transition-ready",
+      "rootClass": "",
+      "reduce": false,
+      "canvases": [
+        {
+          "id": "canvas",
+          "class": "shader-ready",
+          "width": 490,
+          "height": 306,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ],
+      "links": [
+        {
+          "label": "",
+          "href": "https://earendil.com/"
+        },
+        {
+          "label": "宗旨",
+          "href": "https://earendil.com/purpose/"
+        },
+        {
+          "label": "价值观",
+          "href": "https://earendil.com/values/"
+        },
+        {
+          "label": "加入我们",
+          "href": "https://earendil.com/join/"
+        },
+        {
+          "label": "文章",
+          "href": "https://earendil.com/posts/"
+        },
+        {
+          "label": "RFC",
+          "href": "https://rfc.earendil.com/"
+        },
+        {
+          "label": "Pi",
+          "href": "https://pi.dev/"
+        },
+        {
+          "label": "Radius",
+          "href": "https://radius.earendil.com/"
+        },
+        {
+          "label": "Lefos",
+          "href": "https://lefos.com/"
+        },
+        {
+          "label": "作品",
+          "href": "https://github.com/earendil-works/"
+        },
+        {
+          "label": "2026年10月16日周五\n              \n              Pi Durable on Cloudflare",
+          "href": "https://earendil.com/posts/pi-durable-on-cloudflare/"
+        },
+        {
+          "label": "2026年10月09日周五\n              \n              There are many themes, but this one is yours",
+          "href": "https://earendil.com/posts/system-theme/"
+        },
+        {
+          "label": "2026年10月01日周四\n              \n              Pi Durable",
+          "href": "https://earendil.com/posts/pi-durable/"
+        },
+        {
+          "label": "2026年10月01日周四\n              \n              Pi 1.0",
+          "href": "https://earendil.com/posts/pi-1-0/"
+        },
+        {
+          "label": "2026年9月29日周二\n              \n              “You Said No MCP!”",
+          "href": "https://earendil.com/posts/you-said-no-mcp/"
+        },
+        {
+          "label": "2026年9月10日周四\n              \n              Measuring the Sloppiness of Code",
+          "href": "https://earendil.com/posts/measuring-code-sloppiness/"
+        },
+        {
+          "label": "2026年9月01日周二\n              \n              There are many agent harnesses, but this one is mine.",
+          "href": "https://earendil.com/posts/there-are-many-agent-harnesses-but-this-one-is-mine/"
+        },
+        {
+          "label": "2026年8月20日周四\n              \n              What is a Harness?",
+          "href": "https://earendil.com/posts/what-is-a-harness/"
+        },
+        {
+          "label": "2026年8月13日周四\n              \n              How Compaction Works in Pi",
+          "href": "https://earendil.com/posts/compaction-in-pi/"
+        },
+        {
+          "label": "2026年8月04日周二\n              \n              Pi, Minimal and Performant",
+          "href": "https://earendil.com/posts/pi-autoresearch-and-databricks/"
+        },
+        {
+          "label": "2026年7月30日周四\n              \n              The Session You Cannot Take With You",
+          "href": "https://earendil.com/posts/session-portability/"
+        },
+        {
+          "label": "2026年7月22日周三\n              \n              Prompt Caching In Agents",
+          "href": "https://earendil.com/posts/prompt-caching/"
+        },
+        {
+          "label": "2026年4月08日周三\n              \n              对今日公告的思考",
+          "href": "https://earendil.com/posts/announcement-reflection/"
+        },
+        {
+          "label": "2026年4月08日周三\n              \n              宣布 Pi 和 Lefos",
+          "href": "https://earendil.com/posts/announcing-pi-and-lefos/"
+        },
+        {
+          "label": "2026年2月12日周四\n              \n              高地",
+          "href": "https://earendil.com/posts/the-high-ground/"
+        },
+        {
+          "label": "2026年1月18日周日\n              \n              开始一段通信的邀请",
+          "href": "https://earendil.com/posts/invitation/"
+        },
+        {
+          "label": "订阅更新",
+          "href": "https://earendil.com/posts/subscribe/"
+        }
+      ],
+      "fonts": [
+        {
+          "family": "Departure Mono",
+          "status": "loaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "unloaded"
+        },
+        {
+          "family": "PlantinNow",
+          "status": "loaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "unloaded"
+        },
+        {
+          "family": "Plantin MT Pro",
+          "status": "loaded"
+        },
+        {
+          "family": "KaTeX_AMS",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Caligraphic",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Fraktur",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Main",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Math",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_SansSerif",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Script",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size1",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size2",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size3",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Size4",
+          "status": "unloaded"
+        },
+        {
+          "family": "KaTeX_Typewriter",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        },
+        {
+          "family": "Commit Mono",
+          "status": "unloaded"
+        }
+      ],
+      "background": "rgb(184, 184, 184)"
+    }
+  ],
+  "errors": []
+}

@@ -15,15 +15,28 @@
     {{- end }}
   {{- end }}
   {{- /* 主题启动：样式表之前执行，避免首帧闪白/闪暗（D6，任务 4.1）。
-         只读取 localStorage 并设置 data-theme，同时标记 js 与 is-boot；两帧后去掉 is-boot 恢复过渡。 */}}
+         用户保存值优先于服务端默认模式，同时标记 js 与 is-boot；两帧后去掉 is-boot 恢复过渡。 */}}
   <script>
     (function () {
       var root = document.documentElement;
-      var mode = null;
-      try { mode = window.localStorage.getItem("wf-theme"); } catch (error) { mode = null; }
-      if (mode === "day" || mode === "night") { root.setAttribute("data-theme", mode); }
+      var mode = root.getAttribute("data-wf-theme-default");
+      try {
+        var stored = window.localStorage.getItem("wf-theme");
+        if (stored !== null) { mode = stored; }
+      } catch (error) { /* 存储不可用时保留站点默认值。 */ }
+      if (mode === "day" || mode === "night") {
+        root.setAttribute("data-theme", mode);
+      } else {
+        root.removeAttribute("data-theme");
+      }
       root.classList.add("js");
       root.classList.add("is-boot");
+      // UI 包未到达时，复用无 JS 布局，保留可操作的普通导航。
+      window.addEventListener("error", function (event) {
+        if (event.target && event.target.nodeType === 1 && event.target.hasAttribute("data-wf-ui")) {
+          root.classList.remove("js");
+        }
+      }, true);
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { root.classList.remove("is-boot"); });
       });
@@ -38,5 +51,10 @@
   {{- with resources.Get "favicon/apple-touch-icon.png" }}{{ $icon := . | fingerprint }}
   <link rel="apple-touch-icon" href="{{ $icon.RelPermalink }}">
   {{- end }}
+  {{- partial "social.html" . }}
   {{- partial "styles.html" . }}
+  {{- if site.Params.waitforit.features.transitions }}
+  {{- $transitions := resources.Get "css/transitions.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $transitions.RelPermalink }}" integrity="{{ $transitions.Data.Integrity }}" crossorigin="anonymous">
+  {{- end }}
 </head>

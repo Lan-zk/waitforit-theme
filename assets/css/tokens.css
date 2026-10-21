@@ -19,6 +19,7 @@
 }
 
 :root {
+  color-scheme: light;
   /* ---------- 颜色：13 个采纳令牌（参考 DESIGN.md frontmatter 原值） ---------- */
   --wf-ink: #353431;
   --wf-muted-ink: rgba(25, 24, 22, 0.6);
@@ -54,9 +55,13 @@
   --wf-veil-alpha-end: 0;
 
   /* ---------- 颗粒：静态平铺 PNG 参数（图由 spike/P2 主题 CSS 指向） ---------- */
-  --wf-grain-image: url("../images/grain-light.png");
+  --wf-grain-image-day: url("../images/grain-light.png");
+  --wf-grain-image-night: url("../images/grain-dark.png");
+  --wf-grain-opacity-day: 0.06;
+  --wf-grain-opacity-night: 0.08;
+  --wf-grain-image: var(--wf-grain-image-day);
   --wf-grain-size: 120px;
-  --wf-grain-opacity: 0.06;
+  --wf-grain-opacity: var(--wf-grain-opacity-day);
   --wf-grain-blend: normal;
 
   /* ---------- 层序：场景 → 纸光 → 颗粒 → 框架（D3） ---------- */
@@ -123,7 +128,13 @@
   --wf-page-top: calc(var(--wf-frame-block) + 76px);
   --wf-page-bottom: calc(var(--wf-frame-block) + 100px);
   --wf-measure: min(100%, 760px);
-  --wf-horizon: 39.4309vh;
+  --wf-horizon: 60vh;
+  --wf-home-veil-start: 48vh;
+  --wf-home-veil-end: 68vh;
+  --wf-sea-ink: var(--wf-ink);
+  --wf-sea-amplitude: 2.4vh;
+  --wf-sea-opacity-far: 0.10;
+  --wf-sea-opacity-near: 0.28;
   --wf-tap-target: 44px;
 
   /* ---------- 圆角：2 个（menu / key）；其余为 0 ---------- */
@@ -131,6 +142,7 @@
   --wf-radius-key: 5px;
 
   /* ---------- 动效时长与缓动（D4） ---------- */
+  --wf-motion-sea-cycle: 24s;
   --wf-motion-page-enter: 520ms;
   --wf-motion-page-exit: 220ms;
   --wf-motion-theme: 900ms;
@@ -157,28 +169,30 @@
 
 /* ---------- 主题反转：night 只换令牌值，不改结构 ---------- */
 [data-theme="night"] {
+  color-scheme: dark;
   --wf-ink: var(--wf-night-ink);
   --wf-muted-ink: var(--wf-night-muted);
   --wf-hairline: var(--wf-night-hairline);
   --wf-paper: var(--wf-night-paper);
   --wf-star: var(--wf-moonlight);
   --wf-veil-rgb: 46 45 43;
-  --wf-grain-image: url("../images/grain-dark.png");
-  --wf-grain-opacity: 0.08;
+  --wf-grain-image: var(--wf-grain-image-night);
+  --wf-grain-opacity: var(--wf-grain-opacity-night);
 }
 
 /* auto 模式：无 data-theme 或 data-theme="auto" 时跟随系统；显式 day/night 优先 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="day"]):not([data-theme="night"]),
   :root[data-theme="auto"] {
+    color-scheme: dark;
     --wf-ink: var(--wf-night-ink);
     --wf-muted-ink: var(--wf-night-muted);
     --wf-hairline: var(--wf-night-hairline);
     --wf-paper: var(--wf-night-paper);
     --wf-star: var(--wf-moonlight);
     --wf-veil-rgb: 46 45 43;
-    --wf-grain-image: url("../images/grain-dark.png");
-    --wf-grain-opacity: 0.08;
+    --wf-grain-image: var(--wf-grain-image-night);
+    --wf-grain-opacity: var(--wf-grain-opacity-night);
   }
 }
 
@@ -207,6 +221,7 @@
 /* 减少动效：令牌归零，位移/缩放/视差由消费方禁用（D4 / 规范「动效时序与降级」） */
 @media (prefers-reduced-motion: reduce) {
   :root {
+    --wf-motion-sea-cycle: 0ms;
     --wf-motion-page-enter: 0ms;
     --wf-motion-page-exit: 0ms;
     --wf-motion-theme: 0ms;
