@@ -5,6 +5,7 @@ date: 2026-08-02
 params:
   repo: "https://github.com/waitforit-example/meadow-tiler"
   demo: "https://example.com/meadow-tiler/"
+tags: ["Big data", "Grace"]
 ---
 
 A single-file WebGL2 renderer: fixed ground, wind-shaped grass, a narrow stream, and a deterministic star field. It was written for this theme's scene layer and is published as a standalone module.

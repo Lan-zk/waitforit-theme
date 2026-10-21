@@ -1,6 +1,6 @@
 /* 安歇草地与溪流（WebGL2）：静态地形/星点/远景草一次烘焙，水面片元场与实例化草叶每逻辑帧绘制；
  * 24fps 上限；reduce/saveData/后台/离页暂停；双昼夜画布由 CSS 交叉淡化；无 WebGL2 时退回纸面。
- * 几何、风场、颜色与尺寸仍由 CSS 令牌与固定 PRNG 决定，数据源与 Canvas 2D 版本一致。 */
+ * 几何、风场、颜色与尺寸由 CSS 令牌与固定 PRNG 决定。 */
 (function () {
   "use strict";
 
@@ -81,7 +81,7 @@
     night: readPalette("night")
   };
 
-  // ---------- 几何（与 Canvas 2D 版本逐行一致） ----------
+  // ---------- 固定几何与共享岸线覆盖 ----------
   var width = 0;
   var height = 0;
   var cssWidth = 0;
@@ -167,7 +167,7 @@
       });
     }
     // 贴岸草簇扎根于浅水过渡带，弯入水面，打断连续的清晰分界。
-    var banks = Math.round((small ? 90 : 200) * palettes.day.density);
+    var banks = Math.round((small ? 120 : 240) * palettes.day.density);
     for (var j = 0; j < banks; j += 1) {
       var d = 0.12 + random() * 0.88;
       var bank = streamCreek(d);
@@ -175,13 +175,13 @@
       if (random() > 0.45 + 0.4 * Math.sin(d * 18 + side * 0.7)) {
         continue;
       }
-      var rootX = bank.x + side * (bank.half + (random() - 0.15) * shoreWidth(d));
+      var rootX = bank.x + side * (bank.half + (0.10 + random() * 0.90) * shoreWidth(d));
       grass.push({
         x: rootX, y: bank.y, depth: d,
-        length: palettes.day.grassHeight * (4 + d * 26) * scale * (0.7 + random() * 0.6),
-        lean: -side * (3 + d * 7) * scale,
+        length: palettes.day.grassHeight * (3 + d * 22) * scale * (0.6 + random() * 0.65),
+        lean: -side * (4 + d * 9) * scale,
         breadth: (0.4 + random() * 0.7) * scale * (0.3 + d),
-        opacity: 0.3 + random() * 0.45,
+        opacity: 0.25 + random() * 0.35,
         active: true
       });
     }
@@ -255,7 +255,9 @@
     "  float mixv = clamp((creek.z - abs(px - creek.x)) / shore + 0.45 + irr, 0.0, 1.0);\n" +
     "  float coverage = mixv * mixv * (3.0 - 2.0 * mixv);\n" +
     "  float waterShade = 1.0 + mix(-0.10, 0.28, uNight) * coverage;\n" +
-    "  float shade = strength * fog * fold * waterShade * uInkAlpha;\n" +
+    "  float bankDistance = (abs(px - creek.x) - creek.z) / max(shore, 1.0);\n" +
+    "  float wetMargin = exp(-bankDistance * bankDistance * 3.0);\n" +
+    "  float shade = strength * fog * (fold * waterShade + wetMargin * mix(0.045, -0.025, uNight)) * uInkAlpha;\n" +
     "  fragColor = vec4(mix(uPaper, uInk, shade), 1.0);\n" +
     "}";
 
@@ -330,49 +332,81 @@
 
   var VS_FULL = "#version 300 es\nvoid main(){ vec2 p[3] = vec2[3](vec2(-1.0, -1.0), vec2(3.0, -1.0), vec2(-1.0, 3.0)); gl_Position = vec4(p[gl_VertexID], 0.0, 1.0); }";
 
+  // Original stream material: downstream swell advection, displaced crests and sheltered shallows.
   var FS_WATER = "#version 300 es\n" + COMMON +
-    "uniform vec4 uBounds;\nuniform float uStep;\nuniform vec2 uRippleSize;\nuniform float uPhase;\nuniform float uWindStrength;\nuniform float uWindDirection;\nuniform float uAmplitude;\nuniform float uAspect;\nuniform float uAlphaFar;\nuniform float uAlphaNear;\nuniform float uNight;\nuniform vec3 uPaper;\nuniform vec3 uInk;\nuniform float uInkAlpha;\nout vec4 fragColor;\n" +
-    "float windAt(float xn, float d){ float travel = uPhase * uWindDirection - xn * 2.6 + d * 1.4; return uWindStrength * (0.18 + (0.5 + 0.5 * sin(travel)) * (0.62 + 0.2 * sin(travel * 0.47 + 0.8)) + 0.06 * sin(travel * 1.8 + d)); }\n" +
-    "void main(){\n" +
+    "uniform vec4 uBounds;\n" +
+    "uniform float uStep;\n" +
+    "uniform vec2 uRippleSize;\n" +
+    "uniform float uPhase;\n" +
+    "uniform float uWindStrength;\n" +
+    "uniform float uWindDirection;\n" +
+    "uniform float uAmplitude;\n" +
+    "uniform float uAspect;\n" +
+    "uniform float uAlphaFar;\n" +
+    "uniform float uAlphaNear;\n" +
+    "uniform float uNight;\n" +
+    "uniform vec3 uPaper;\n" +
+    "uniform vec3 uInk;\n" +
+    "uniform float uInkAlpha;\n" +
+    "out vec4 fragColor;\n" +
+    "float windAt(float xn, float d) {\n" +
+    "  float travel = uPhase * uWindDirection - xn * 2.6 + d * 1.4;\n" +
+    "  return uWindStrength * (0.18 + (0.5 + 0.5 * sin(travel)) * (0.62 + 0.2 * sin(travel * 0.47 + 0.8)) + 0.06 * sin(travel * 1.8 + d));\n" +
+    "}\n" +
+    "void main() {\n" +
     "  float px = floor(gl_FragCoord.x);\n" +
     "  float rowY = uRippleSize.y - 1.0 - floor(gl_FragCoord.y);\n" +
     "  float depth = max(0.0, (rowY * uStep + uBounds.y - uHorizon) / (uSize.y - uHorizon));\n" +
     "  vec3 creek = creekAt(depth);\n" +
-    "  float distanceToCreek = 1.6 / (depth + 0.12);\n" +
-    "  float wind = windAt(creek.x / uSize.x, depth);\n" +
-    "  float force = uAmplitude * (0.65 + wind * 0.35);\n" +
-    "  float time = uPhase * uWindStrength;\n" +
-    "  float flow = time * 0.16;\n" +
-    "  float z = distanceToCreek + flow;\n" +
-    "  float detail = min(1.0, depth * 7.0);\n" +
-    "  float worldX = (px * uStep + uBounds.x - creek.x) / uSize.x * uAspect * distanceToCreek;\n" +
-    "  float drift = time * uWindDirection;\n" +
-    "  float a = worldX * 9.0 + z * 18.0 - drift * 0.3;\n" +
-    "  float b = worldX * -13.0 + z * 29.0 + drift * 0.23 + 1.7;\n" +
-    "  float c = worldX * 21.0 + z * 47.0 - drift * 0.51 + 2.8;\n" +
-    "  float warp = force * (sin(a) * 0.42 + sin(b) * 0.24);\n" +
-    "  float ca = cos(a + warp * distanceToCreek * 0.35);\n" +
-    "  float cb = cos(b + warp * distanceToCreek * 0.5);\n" +
-    "  float cc = cos(c + warp * distanceToCreek * 0.7);\n" +
-    "  float cd = cos(worldX * -43.0 + z * 83.0 + warp * 2.0 - drift * 0.8);\n" +
-    "  float ce = cos(worldX * 71.0 + z * 143.0 + warp * 3.0 + drift * 0.65);\n" +
-    "  float nx = force * (ca * 0.17 - cb * 0.18 + cc * 0.12 - cd * 0.055 * detail + ce * 0.025 * detail);\n" +
-    "  float nz = force * (ca * 0.32 + cb * 0.23 + cc * 0.13 + cd * 0.075 * detail + ce * 0.035 * detail);\n" +
-    "  float facing = (nz * 0.92 + nx * 0.38) / sqrt(1.0 + nx * nx + nz * nz);\n" +
-    "  float reflection = exp(-((nx - 0.08) * (nx - 0.08) * 30.0 + (nz - 0.22) * (nz - 0.22) * 38.0));\n" +
-    "  float glint = pow(reflection, 5.0) * (0.35 + 0.65 * pow(max(0.0, sin(b * 0.53 + c * 0.21)), 2.0));\n" +
-    "  float shade = 0.46 + facing * 0.7 - reflection * reflection * 0.24 - glint * 0.3;\n" +
-    "  float fieldValue = max(0.015, min(0.95, shade));\n" +
-    "  float strength = uAlphaFar + (uAlphaNear - uAlphaFar) * sqrt(depth);\n" +
-    "  float themed = (uNight > 0.5) ? strength * (0.03 + (1.0 - fieldValue) * 0.55 + max(0.0, 0.3 - fieldValue) * 2.6) : strength * fieldValue * 1.3;\n" +
-    "  float shore = uShoreScaled * (0.3 + max(0.0, depth) * 0.7);\n" +
+    "  float lateral = px * uStep + uBounds.x - creek.x;\n" +
+    "  float shore = uShoreScaled * (0.3 + depth * 0.7);\n" +
     "  float irr = sin(depth * 47.0 + (px * uStep + uBounds.x) / uSize.x * 13.0) * 0.16 + sin(depth * 119.0) * 0.08;\n" +
-    "  float mixv = clamp((creek.z - abs(px * uStep + uBounds.x - creek.x)) / shore + 0.45 + irr, 0.0, 1.0);\n" +
+    "  float mixv = clamp((creek.z - abs(lateral)) / shore + 0.45 + irr, 0.0, 1.0);\n" +
     "  float bankFade = mixv * mixv * (3.0 - 2.0 * mixv);\n" +
+    "  float distanceToCreek = 1.6 / (depth + 0.12);\n" +
+    "  float worldX = lateral / uSize.x * uAspect * distanceToCreek;\n" +
+    "  // Derivatives run before the coverage branch so edge quads retain valid footprints.\n" +
+    "  float footprint = max(fwidth(worldX), fwidth(distanceToCreek));\n" +
+    "  if (bankFade < 0.001) { fragColor = vec4(0.0); return; }\n" +
+    "  float shallow = smoothstep(0.0, max(shore * 1.5, 1.0), creek.z - abs(lateral));\n" +
+    "  float wind = windAt(creek.x / uSize.x, depth);\n" +
+    "  float force = uAmplitude * (0.65 + wind * 0.35) * mix(0.42, 1.0, shallow);\n" +
+    "  float time = uPhase * uWindStrength;\n" +
+    "  // Every wave uses the same downstream coordinate so crests travel instead of blinking.\n" +
+    "  float travel = time * mix(0.10, 0.25, shallow);\n" +
+    "  float z = distanceToCreek + travel;\n" +
+    "  // One height-intersection estimate gives broad crests volume without a ray-marching pass.\n" +
+    "  float lift = force * (sin(worldX * 7.4 + z * 10.8) * 0.035 + sin(worldX * -10.6 + z * 17.2 + 1.7) * 0.018);\n" +
+    "  float hit = 1.0 - lift * 0.80;\n" +
+    "  worldX *= hit;\n" +
+    "  z = distanceToCreek * hit + travel;\n" +
+    "  float warp = sin(worldX * 5.2 + z * 3.7) * 0.25 + sin(z * 8.1 - worldX * 3.2) * 0.12;\n" +
+    "  float a = worldX * 7.4 + z * 10.8 + warp;\n" +
+    "  float b = worldX * -10.6 + z * 17.2 + 1.7 + warp * 0.7;\n" +
+    "  float c = worldX * 18.2 + z * 26.6 + 2.8 + warp * 1.3;\n" +
+    "  float d = worldX * -31.0 + z * 49.0 + warp * 1.7;\n" +
+    "  float e = worldX * 57.0 + z * 83.0 + warp * 2.1;\n" +
+    "  // Filter fine waves in the distance instead of letting them turn into horizontal alias bands.\n" +
+    "  float detail = min(1.0, depth * 7.0) * (1.0 - smoothstep(0.015, 0.07, footprint));\n" +
+    "  vec2 slope = cos(a) * vec2(7.4, 10.8) * 0.025 + cos(b) * vec2(-10.6, 17.2) * 0.014 + cos(c) * vec2(18.2, 26.6) * 0.006;\n" +
+    "  slope += detail * (cos(d) * vec2(-31.0, 49.0) * 0.0018 + cos(e) * vec2(57.0, 83.0) * 0.00055);\n" +
+    "  slope *= force;\n" +
+    "  vec3 normal = normalize(vec3(-slope.x, 1.0, -slope.y));\n" +
+    "  vec3 view = normalize(vec3(0.04, 0.30 + depth * 0.48, 1.0));\n" +
+    "  vec3 light = normalize(vec3(-0.26, 0.90, -0.34));\n" +
+    "  vec3 halfLight = normalize(view + light);\n" +
+    "  float fresnel = 0.02 + 0.78 * pow(1.0 - max(0.0, dot(normal, view)), 5.0);\n" +
+    "  float skyReflection = pow(max(0.0, dot(normal, halfLight)), 12.0);\n" +
+    "  float glint = pow(max(0.0, dot(normal, halfLight)), mix(45.0, 95.0, depth));\n" +
+    "  float facing = dot(normal, normalize(vec3(-0.40, 0.35, 0.70)));\n" +
+    "  float swell = (sin(a) * 0.55 + sin(b) * 0.28 + sin(c) * 0.14) * force;\n" +
+    "  float fieldValue = clamp(0.36 + facing * 0.52 + swell * 0.09 - skyReflection * 0.28 - glint * 0.24 - fresnel * 0.08, 0.015, 0.95);\n" +
+    "  float strength = uAlphaFar + (uAlphaNear - uAlphaFar) * sqrt(depth);\n" +
+    "  float themed = uNight > 0.5 ? strength * (0.02 + (1.0 - fieldValue) * 0.22 + skyReflection * 0.32 + glint * 0.90 + fresnel * 0.08) : strength * fieldValue * 1.10;\n" +
     "  float alpha = bankFade * (1.0 - exp(-depth * 10.0));\n" +
     "  vec3 color = mix(uPaper, uInk, themed * uInkAlpha);\n" +
     "  fragColor = vec4(color * alpha, alpha);\n" +
-    "}";
+    "}\n";
 
   var VS_QUAD = "#version 300 es\nlayout(location = 0) in vec2 aPos;\nlayout(location = 1) in vec2 aUv;\nout vec2 vUv;\nvoid main(){ vUv = aUv; gl_Position = vec4(aPos, 0.0, 1.0); }";
   var FS_QUAD = "#version 300 es\nprecision highp float;\nuniform sampler2D uTex;\nin vec2 vUv;\nout vec4 fragColor;\nvoid main(){ fragColor = texture(uTex, vUv); }";

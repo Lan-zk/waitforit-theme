@@ -10,6 +10,7 @@
 - **CNT-04** **非顶层**目录必须写 `_index.md` 才成为 section（顶层目录天然是 section）；这是"section 模板不生效"最常见的原因。⟦D⟧ SRC-55
 - **CNT-05** taxonomy/term 页**自动生成**，不需要 `content/` 文件就有页面；只有当要给定 term 加标题/元数据/图片时才建 `content/<taxonomy>/<term>/_index.md`。⟦D⟧ SRC-60
 - **CNT-06** 默认 taxonomies 是 `tags`、`categories`；只要有该项数据就生成 taxonomy 与 term 页，**没有对应模板时 0.168.0 会各报一条 WARN**（E7），`--panicOnWarning` 下失败。主题必须提供 `taxonomy.html` + `term.html`，或由站点在配置里禁用 taxonomy。⟦D⟧ SRC-60；⟦E⟧ E7
+- **CNT-28** 标签使用顶层 `tags` 字符串数组；`.GetTerms "tags"` 按 front matter 声明顺序返回 term pages。输出 `.LinkTitle` 与 `.RelPermalink`，不自行拼接标签 URL；taxonomy 是扁平主题集合，不是嵌套目录。⟦D⟧ SRC-108、SRC-60
 
 ## 2. 页面集合 API（列表页选哪个）
 

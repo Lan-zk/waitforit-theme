@@ -2,13 +2,14 @@
 {{ define "main" }}
 <article class="wf-column wf-entry">
   <h1 class="wf-entry-title">{{ .Title }}</h1>
-  {{- with .Date }}<p class="wf-entry-meta">{{ . | time.Format "2006" }}</p>{{ end }}
+  {{- if not .Date.IsZero }}<p class="wf-entry-meta">{{ .Date | time.Format "2006" }}</p>{{ end }}
   {{- if or .Params.repo .Params.demo }}
   <p class="wf-entry-links">
     {{- with .Params.repo }}<a class="wf-action-link" href="{{ . }}">{{ T "waitforit.projects.repo" }}{{ partial "star.html" (dict "class" "wf-action-link__star") }}</a>{{ end }}
     {{- with .Params.demo }}<a class="wf-action-link" href="{{ . }}">{{ T "waitforit.projects.demo" }}{{ partial "star.html" (dict "class" "wf-action-link__star") }}</a>{{ end }}
   </p>
   {{- end }}
+  {{ partial "tags.html" . }}
   <div class="wf-prose">{{ .Content }}</div>
 </article>
 {{ end }}

@@ -3,7 +3,8 @@
 # 模板缺键时渲染空串（CNT-18），所以每个键在中英文两边的集合必须一致。
 
 [waitforit]
-  hero = "Words at rest beside still waters."
+  hero = "He makes me lie down in green pastures\nhe leads me beside quiet waters"
+  heroSource = "Psalms 23:2"
   skip = "Skip to content"
 
   [waitforit.nav]
@@ -29,9 +30,6 @@
     empty = "Nothing here yet."
     read = "Read all"
 
-  [waitforit.home]
-    recent = "Recent"
-
   [waitforit.projects]
     repo = "Repository"
     demo = "Demo"
@@ -42,7 +40,7 @@
     next = "Next page"
 
   [waitforit.footer]
-    note = "Set in type, kept in quiet."
+    brand = "Rest"
 
   [waitforit.404]
     title = "404"
@@ -54,3 +52,8 @@
     copy = "Copy"
     success = "Copied."
     error = "Copy unavailable. Code selected; use your system copy command."
+
+  [waitforit.tags]
+    title = "Tags"
+    all = "All tags"
+    page = "Page"

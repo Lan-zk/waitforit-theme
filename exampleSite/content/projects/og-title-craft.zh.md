@@ -4,6 +4,7 @@ description: "构建期生成分享图，支持中英文标题折行与统一纸
 date: 2026-05-06
 params:
   repo: "https://github.com/waitforit-example/og-title-craft"
+tags: ["大数据", "恩典"]
 ---
 
 一条构建期图片管线，用来生成逐页分享图：1200×630、统一的纸纹底、衬线标题，以及按字符宽度折行的中英文标题。

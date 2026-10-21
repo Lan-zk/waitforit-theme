@@ -1,0 +1,8 @@
+{
+  "before": 4,
+  "during": 7,
+  "stableWhileLost": true,
+  "restored": 18,
+  "resumed": true,
+  "errors": []
+}

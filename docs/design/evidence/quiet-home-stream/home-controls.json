@@ -1,0 +1,147 @@
+{
+  "passed": 12,
+  "total": 12,
+  "results": [
+    {
+      "name": "home-1440-en",
+      "ok": true,
+      "detail": {
+        "children": 1,
+        "links": 0,
+        "scroll": 0,
+        "extraHeight": 0,
+        "markHidden": true,
+        "languageCount": 1,
+        "logoLeft": 75,
+        "controlsRight": 1365,
+        "width": 1440,
+        "target": "/zh/"
+      }
+    },
+    {
+      "name": "home-1440-zh/",
+      "ok": true,
+      "detail": {
+        "children": 1,
+        "links": 0,
+        "scroll": 0,
+        "extraHeight": 0,
+        "markHidden": true,
+        "languageCount": 1,
+        "logoLeft": 75,
+        "controlsRight": 1365,
+        "width": 1440,
+        "target": "/"
+      }
+    },
+    {
+      "name": "reading-1440",
+      "ok": true,
+      "detail": {
+        "target": "/blog/boundary-data/",
+        "label": "EN",
+        "width": 104,
+        "languageCount": 1
+      }
+    },
+    {
+      "name": "home-835-en",
+      "ok": true,
+      "detail": {
+        "children": 1,
+        "links": 0,
+        "scroll": 0,
+        "extraHeight": 0,
+        "markHidden": true,
+        "languageCount": 1,
+        "logoLeft": 75,
+        "controlsRight": 760,
+        "width": 835,
+        "target": "/zh/"
+      }
+    },
+    {
+      "name": "home-835-zh/",
+      "ok": true,
+      "detail": {
+        "children": 1,
+        "links": 0,
+        "scroll": 0,
+        "extraHeight": 0,
+        "markHidden": true,
+        "languageCount": 1,
+        "logoLeft": 75,
+        "controlsRight": 760,
+        "width": 835,
+        "target": "/"
+      }
+    },
+    {
+      "name": "reading-835",
+      "ok": true,
+      "detail": {
+        "target": "/blog/boundary-data/",
+        "label": "EN",
+        "width": 104,
+        "languageCount": 1
+      }
+    },
+    {
+      "name": "home-390-en",
+      "ok": true,
+      "detail": {
+        "children": 1,
+        "links": 0,
+        "scroll": 0,
+        "extraHeight": 0,
+        "markHidden": true,
+        "languageCount": 1,
+        "logoLeft": 28,
+        "controlsRight": 362,
+        "width": 390,
+        "target": "/zh/"
+      }
+    },
+    {
+      "name": "home-390-zh/",
+      "ok": true,
+      "detail": {
+        "children": 1,
+        "links": 0,
+        "scroll": 0,
+        "extraHeight": 0,
+        "markHidden": true,
+        "languageCount": 1,
+        "logoLeft": 28,
+        "controlsRight": 362,
+        "width": 390,
+        "target": "/"
+      }
+    },
+    {
+      "name": "reading-390",
+      "ok": true,
+      "detail": {
+        "target": "/blog/boundary-data/",
+        "label": "EN",
+        "width": 100,
+        "languageCount": 1
+      }
+    },
+    {
+      "name": "missing-translation-home",
+      "ok": true,
+      "detail": "EN-only fixture links to the Chinese home"
+    },
+    {
+      "name": "no-js-native-switch",
+      "ok": true,
+      "detail": "http://127.0.0.1:8846/blog/boundary-data/"
+    },
+    {
+      "name": "console-errors",
+      "ok": true,
+      "detail": []
+    }
+  ]
+}

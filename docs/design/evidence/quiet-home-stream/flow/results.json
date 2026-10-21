@@ -1,0 +1,282 @@
+[
+  {
+    "width": 1440,
+    "theme": "day",
+    "passed": true,
+    "coherentTracks": 6,
+    "texture": [
+      289,
+      254
+    ],
+    "matches": [
+      {
+        "phaseDelta": 0.20943951023931956,
+        "patches": [
+          {
+            "cx": 143,
+            "cy": 172,
+            "stationaryCorrelation": -0.016115463404588044,
+            "dx": -4,
+            "dy": 6,
+            "correlation": 0.9657081639702941
+          },
+          {
+            "cx": 123,
+            "cy": 198,
+            "stationaryCorrelation": -0.23755476002296777,
+            "dx": -2,
+            "dy": 6,
+            "correlation": 0.98279175878693
+          },
+          {
+            "cx": 124,
+            "cy": 223,
+            "stationaryCorrelation": 0.12150936859851279,
+            "dx": 7,
+            "dy": 9,
+            "correlation": 0.9498715201801876
+          }
+        ]
+      },
+      {
+        "phaseDelta": 0.23561944901923443,
+        "patches": [
+          {
+            "cx": 143,
+            "cy": 172,
+            "stationaryCorrelation": -0.2012486750871108,
+            "dx": -6,
+            "dy": 6,
+            "correlation": 0.9597155700660068
+          },
+          {
+            "cx": 123,
+            "cy": 198,
+            "stationaryCorrelation": -0.13047834722206267,
+            "dx": -4,
+            "dy": 8,
+            "correlation": 0.9522116284108512
+          },
+          {
+            "cx": 124,
+            "cy": 223,
+            "stationaryCorrelation": 0.09311671109787521,
+            "dx": 8,
+            "dy": 10,
+            "correlation": 0.926378054703375
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "theme": "night",
+    "passed": true,
+    "coherentTracks": 5,
+    "texture": [
+      289,
+      254
+    ],
+    "matches": [
+      {
+        "phaseDelta": 0.23556708914167476,
+        "patches": [
+          {
+            "cx": 143,
+            "cy": 172,
+            "stationaryCorrelation": -0.21507368822762143,
+            "dx": -2,
+            "dy": 6,
+            "correlation": 0.9853027180013687
+          },
+          {
+            "cx": 123,
+            "cy": 198,
+            "stationaryCorrelation": 0.17405939408473883,
+            "dx": -5,
+            "dy": 7,
+            "correlation": 0.99704200092945
+          },
+          {
+            "cx": 124,
+            "cy": 223,
+            "stationaryCorrelation": 0.14033537443505775,
+            "dx": 10,
+            "dy": 10,
+            "correlation": 0.993090816291231
+          }
+        ]
+      },
+      {
+        "phaseDelta": 0.24431118869416613,
+        "patches": [
+          {
+            "cx": 143,
+            "cy": 172,
+            "stationaryCorrelation": -0.17066362409597055,
+            "dx": -7,
+            "dy": 6,
+            "correlation": 0.9851059607878188
+          },
+          {
+            "cx": 123,
+            "cy": 198,
+            "stationaryCorrelation": -0.04782546435515006,
+            "dx": -4,
+            "dy": 8,
+            "correlation": 0.9952133342997328
+          },
+          {
+            "cx": 124,
+            "cy": 223,
+            "stationaryCorrelation": 0.35698158073932945,
+            "dx": 5,
+            "dy": 7,
+            "correlation": 0.72658637227424
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "theme": "day",
+    "passed": true,
+    "coherentTracks": 6,
+    "texture": [
+      160,
+      380
+    ],
+    "matches": [
+      {
+        "phaseDelta": 0.21813124991425123,
+        "patches": [
+          {
+            "cx": 83,
+            "cy": 258,
+            "stationaryCorrelation": 0.5148150846953672,
+            "dx": -4,
+            "dy": 9,
+            "correlation": 0.9650308388399155
+          },
+          {
+            "cx": 72,
+            "cy": 296,
+            "stationaryCorrelation": -0.17490115283955643,
+            "dx": -2,
+            "dy": 10,
+            "correlation": 0.9907332457246342
+          },
+          {
+            "cx": 66,
+            "cy": 334,
+            "stationaryCorrelation": 0.2613451087524701,
+            "dx": 2,
+            "dy": 14,
+            "correlation": 0.9519767298943962
+          }
+        ]
+      },
+      {
+        "phaseDelta": 0.20943951023931962,
+        "patches": [
+          {
+            "cx": 83,
+            "cy": 258,
+            "stationaryCorrelation": 0.0265848247452715,
+            "dx": -3,
+            "dy": 9,
+            "correlation": 0.9473794513350582
+          },
+          {
+            "cx": 72,
+            "cy": 296,
+            "stationaryCorrelation": -0.12375729608299672,
+            "dx": -2,
+            "dy": 10,
+            "correlation": 0.982867468166006
+          },
+          {
+            "cx": 66,
+            "cy": 334,
+            "stationaryCorrelation": 0.3666778331069357,
+            "dx": 4,
+            "dy": 14,
+            "correlation": 0.9697768624129813
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "width": 390,
+    "theme": "night",
+    "passed": true,
+    "coherentTracks": 5,
+    "texture": [
+      160,
+      380
+    ],
+    "matches": [
+      {
+        "phaseDelta": 0.20943951023931945,
+        "patches": [
+          {
+            "cx": 83,
+            "cy": 258,
+            "stationaryCorrelation": 0.005628509713127805,
+            "dx": -4,
+            "dy": 9,
+            "correlation": 0.9897026234750453
+          },
+          {
+            "cx": 72,
+            "cy": 296,
+            "stationaryCorrelation": 0.12763347160831606,
+            "dx": -2,
+            "dy": 9,
+            "correlation": 0.9702803182979205
+          },
+          {
+            "cx": 66,
+            "cy": 334,
+            "stationaryCorrelation": 0.4374013430287545,
+            "dx": 4,
+            "dy": 14,
+            "correlation": 0.8861553133264828
+          }
+        ]
+      },
+      {
+        "phaseDelta": 0.21818360979181117,
+        "patches": [
+          {
+            "cx": 83,
+            "cy": 258,
+            "stationaryCorrelation": 0.29427482894378093,
+            "dx": -3,
+            "dy": 8,
+            "correlation": 0.9386351855491776
+          },
+          {
+            "cx": 72,
+            "cy": 296,
+            "stationaryCorrelation": -0.07869056569728773,
+            "dx": -3,
+            "dy": 11,
+            "correlation": 0.9795766452596134
+          },
+          {
+            "cx": 66,
+            "cy": 334,
+            "stationaryCorrelation": 0.08893761302619992,
+            "dx": -4,
+            "dy": 5,
+            "correlation": 0.582449718300058
+          }
+        ]
+      }
+    ]
+  }
+]

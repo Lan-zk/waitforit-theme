@@ -21,10 +21,7 @@ defaultContentLanguageInSubdir = false
   description = "A fictional personal site for writing, notes, and projects."
 
   [params.waitforit]
-    brand = "The Night Post"
     defaultTheme = "auto"
-    hero = "Words at rest beside still waters."
-    footer = "The Night Post · a fictional personal site"
     [params.waitforit.features]
       scene = true
       transitions = true
@@ -46,6 +43,3 @@ defaultContentLanguageInSubdir = false
       locale = "zh"
       description = "一个虚构的个人站点，收长文、短记与作品。"
     [languages.zh.params.waitforit]
-      brand = "夜邮"
-      hero = "词句安放在静水旁。"
-      footer = "夜邮 · 一个虚构的个人站点"

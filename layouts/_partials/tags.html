@@ -1,0 +1,8 @@
+{{- /* 使用 term page 的链接保留语言、中文与特殊字符路径（CNT-28）；空集合不输出容器。 */}}
+{{- with .GetTerms "tags" }}
+<ul class="wf-tags" aria-label="{{ T "waitforit.tags.title" }}">
+  {{- range . }}
+  <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>
+  {{- end }}
+</ul>
+{{- end }}

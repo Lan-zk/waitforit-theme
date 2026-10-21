@@ -1,0 +1,6 @@
+<div class="wf-index-heading">
+  <h1 class="wf-entry-title">{{ .Title }}</h1>
+  {{- with site.GetPage "/tags" }}
+    {{- if .Pages }}<a class="wf-action-link" href="{{ .RelPermalink }}">{{ T "waitforit.tags.all" }}</a>{{ end }}
+  {{- end }}
+</div>

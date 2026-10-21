@@ -1,6 +1,5 @@
 ---
 title: "Photography"
-description: "Photographs, planned."
 ---
 
-A small photographic record is planned. This section opens when the first set is ready.
+Geometric test charts and fictional notes using the generic template; no personal photographs.

@@ -2,8 +2,11 @@
 {{- $repo := .Params.repo }}
 {{- $href := .RelPermalink }}
 {{- with $repo }}{{ $href = . }}{{ end }}
+<article class="wf-project-entry">
 <a class="wf-project-card" href="{{ $href }}">
   <span class="wf-project-card__title">{{ .Title }}</span>
-  {{- with .Date }}<span class="wf-project-card__meta">{{ . | time.Format "2006" }}</span>{{ end }}
+  {{- if not .Date.IsZero }}<span class="wf-project-card__meta">{{ .Date | time.Format "2006" }}</span>{{ end }}
   {{- with .Description }}<span class="wf-project-card__summary">{{ . }}</span>{{ end }}
 </a>
+{{ partial "tags.html" . }}
+</article>

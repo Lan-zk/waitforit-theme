@@ -3,17 +3,6 @@
 {{- $hero := $wf.hero | default (T "waitforit.hero") }}
 <section class="wf-hero" aria-labelledby="wf-hero-sentence">
   <h1 class="wf-hero__sentence" id="wf-hero-sentence">{{ $hero }}</h1>
+  {{- if not $wf.hero }}<p class="wf-hero__source">{{ T "waitforit.heroSource" }}</p>{{ end }}
 </section>
-{{- $sections := slice "blog" "essays" "projects" }}
-{{- with where site.RegularPages "Section" "in" $sections }}
-  {{- with first 5 .ByDate.Reverse }}
-<section class="wf-home-posts" aria-labelledby="wf-home-posts-label">
-  <h2 class="wf-section-label" id="wf-home-posts-label">{{ T "waitforit.home.recent" }}</h2>
-  <div class="wf-index__list">
-    {{- range . }}{{ partial "post-row.html" . }}{{ end }}
-  </div>
-</section>
-  {{- end }}
-{{- end }}
-{{- with .Content }}<div class="wf-column wf-prose">{{ . }}</div>{{ end }}
 {{ end }}

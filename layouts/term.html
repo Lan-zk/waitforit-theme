@@ -1,11 +1,25 @@
 {{ define "main" }}
 <section class="wf-column wf-index">
-  <h1 class="wf-sr-only">{{ .Title }}</h1>
+  <div class="wf-index-heading">
+    <h1 class="wf-entry-title">#{{ .Title }}</h1>
+    {{- with .Parent }}<a class="wf-action-link" href="{{ .RelPermalink }}">{{ T "waitforit.tags.all" }}</a>{{ end }}
+  </div>
   {{- $pages := .Pages.ByDate.Reverse }}
   {{- if $pages }}
-  <div class="wf-index__list">
-    {{- range $pages }}{{ partial "post-row.html" . }}{{ end }}
+  {{- $paginator := .Paginate $pages }}
+  <div class="wf-term-list">
+    {{- range $paginator.Pages }}
+    <div class="wf-term-entry">
+      {{- $type := T "waitforit.tags.page" }}
+      {{- if in (slice "blog" "essays" "projects" "fiction" "photography") .Section }}
+        {{- $type = T (printf "waitforit.nav.%s" .Section) }}
+      {{- end }}
+      <p class="wf-entry-meta">{{ $type }}</p>
+      <div class="wf-index__list">{{ partial "post-row.html" . }}</div>
+    </div>
+    {{- end }}
   </div>
+  {{- partial "pagination.html" $paginator }}
   {{- else }}
   <p class="wf-empty">{{ T "waitforit.list.empty" }}</p>
   {{- end }}

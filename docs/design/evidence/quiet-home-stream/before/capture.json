@@ -1,0 +1,123 @@
+{
+  "url": "http://127.0.0.1:8845/",
+  "date": "2026-10-21T14:40:10.791Z",
+  "waitMs": 350,
+  "records": [
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "theme": "day",
+      "screenshot": "1440-day.png",
+      "base": {},
+      "meta": {
+        "theme": "day",
+        "reduce": true,
+        "scheme": "light",
+        "paper": "#faf9f6",
+        "ink": "#353431",
+        "canvas": [
+          {
+            "theme": "day",
+            "width": 1440,
+            "height": 900
+          },
+          {
+            "theme": "night",
+            "width": 1440,
+            "height": 900
+          }
+        ],
+        "baseAvailable": []
+      }
+    },
+    {
+      "viewport": [
+        1440,
+        900
+      ],
+      "theme": "night",
+      "screenshot": "1440-night.png",
+      "base": {},
+      "meta": {
+        "theme": "night",
+        "reduce": true,
+        "scheme": "light",
+        "paper": "#2e2d2b",
+        "ink": "rgba(240, 240, 240, 0.8)",
+        "canvas": [
+          {
+            "theme": "day",
+            "width": 1440,
+            "height": 900
+          },
+          {
+            "theme": "night",
+            "width": 1440,
+            "height": 900
+          }
+        ],
+        "baseAvailable": []
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "day",
+      "screenshot": "390-day.png",
+      "base": {},
+      "meta": {
+        "theme": "day",
+        "reduce": true,
+        "scheme": "light",
+        "paper": "#faf9f6",
+        "ink": "#353431",
+        "canvas": [
+          {
+            "theme": "day",
+            "width": 390,
+            "height": 844
+          },
+          {
+            "theme": "night",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "baseAvailable": []
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "night",
+      "screenshot": "390-night.png",
+      "base": {},
+      "meta": {
+        "theme": "night",
+        "reduce": true,
+        "scheme": "light",
+        "paper": "#2e2d2b",
+        "ink": "rgba(240, 240, 240, 0.8)",
+        "canvas": [
+          {
+            "theme": "day",
+            "width": 390,
+            "height": 844
+          },
+          {
+            "theme": "night",
+            "width": 390,
+            "height": 844
+          }
+        ],
+        "baseAvailable": []
+      }
+    }
+  ]
+}

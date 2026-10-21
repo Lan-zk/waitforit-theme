@@ -1,0 +1,162 @@
+{
+  "date": "2026-10-21T15:06:43.685Z",
+  "thresholdDelta": 4,
+  "results": [
+    {
+      "width": 1440,
+      "height": 900,
+      "theme": "day",
+      "elapsedMs": 6000,
+      "staticGround": true,
+      "reducedStable": true,
+      "reducedPixels": 0,
+      "reducedDraws": 0,
+      "wind": {
+        "rootsFixed": true,
+        "movingBlades": 5005,
+        "observedBlades": 5070,
+        "neighborPairs": 23402,
+        "neighborAgreement": 0.9972651910093154
+      },
+      "grass": {
+        "total": 85302,
+        "strong": 20859,
+        "max": 55,
+        "meanDelta": 2.709244800825303,
+        "ratio": 0.24453119504818174
+      },
+      "water": {
+        "total": 17790,
+        "strong": 8366,
+        "max": 32,
+        "meanDelta": 3.8284429454749858,
+        "ratio": 0.47026419336706016
+      },
+      "center": {
+        "total": 62133,
+        "strong": 0,
+        "max": 0,
+        "meanDelta": 0,
+        "ratio": 0
+      },
+      "ok": true
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "theme": "night",
+      "elapsedMs": 6000,
+      "staticGround": true,
+      "reducedStable": true,
+      "reducedPixels": 0,
+      "reducedDraws": 0,
+      "wind": {
+        "rootsFixed": true,
+        "movingBlades": 5018,
+        "observedBlades": 5070,
+        "neighborPairs": 23512,
+        "neighborAgreement": 0.9979159578087785
+      },
+      "grass": {
+        "total": 85302,
+        "strong": 19032,
+        "max": 42,
+        "meanDelta": 2.147534641626222,
+        "ratio": 0.2231131743687135
+      },
+      "water": {
+        "total": 17790,
+        "strong": 5679,
+        "max": 39,
+        "meanDelta": 3.945362563237774,
+        "ratio": 0.3192242833052277
+      },
+      "center": {
+        "total": 62133,
+        "strong": 0,
+        "max": 0,
+        "meanDelta": 0,
+        "ratio": 0
+      },
+      "ok": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "day",
+      "elapsedMs": 6000,
+      "staticGround": true,
+      "reducedStable": true,
+      "reducedPixels": 0,
+      "reducedDraws": 0,
+      "wind": {
+        "rootsFixed": true,
+        "movingBlades": 1708,
+        "observedBlades": 1731,
+        "neighborPairs": 10131,
+        "neighborAgreement": 0.9836146481097621
+      },
+      "grass": {
+        "total": 21594,
+        "strong": 6444,
+        "max": 58,
+        "meanDelta": 3.4617949430397332,
+        "ratio": 0.2984162267296471
+      },
+      "water": {
+        "total": 4432,
+        "strong": 1024,
+        "max": 30,
+        "meanDelta": 2.705099277978339,
+        "ratio": 0.23104693140794225
+      },
+      "center": {
+        "total": 31857,
+        "strong": 0,
+        "max": 0,
+        "meanDelta": 0,
+        "ratio": 0
+      },
+      "ok": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "night",
+      "elapsedMs": 6000,
+      "staticGround": true,
+      "reducedStable": true,
+      "reducedPixels": 0,
+      "reducedDraws": 0,
+      "wind": {
+        "rootsFixed": true,
+        "movingBlades": 1707,
+        "observedBlades": 1731,
+        "neighborPairs": 10110,
+        "neighborAgreement": 0.983679525222552
+      },
+      "grass": {
+        "total": 21594,
+        "strong": 6038,
+        "max": 47,
+        "meanDelta": 2.794479948133741,
+        "ratio": 0.2796147077892007
+      },
+      "water": {
+        "total": 4432,
+        "strong": 1621,
+        "max": 39,
+        "meanDelta": 4.038357400722021,
+        "ratio": 0.36574909747292417
+      },
+      "center": {
+        "total": 31857,
+        "strong": 0,
+        "max": 0,
+        "meanDelta": 0,
+        "ratio": 0
+      },
+      "ok": true
+    }
+  ]
+}

@@ -197,3 +197,5 @@
 - **SRC-106** https://gohugo.io/functions/transform/highlightcodeblock/ 与 https://gohugo.io/render-hooks/code-blocks/ — code hook context、Inner/Wrapped、noClasses 与 0.162 的 type/code 边界，核对 2026-10-21。
 
 - **SRC-107** https://gohugo.io/functions/images/text/ 与 https://github.com/gohugoio/hugo/blob/v0.146.0/resources/images/text.go — images.Text的alignx/aligny版本界限、原生字体资源、换行及opentype解析；2026-10-21核对。
+
+- **SRC-108** https://gohugo.io/methods/page/getterms/ — term pages、front matter 顺序与本地化链接输出；2026-10-21 核对。配合 SRC-60 的扁平 taxonomy 与顶层 tags 数组约定。

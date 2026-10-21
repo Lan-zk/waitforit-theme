@@ -1,6 +1,7 @@
 {{ define "main" }}
 <article class="wf-column wf-entry">
   <h1 class="wf-entry-title">{{ .Title }}</h1>
+  {{ partial "tags.html" . }}
   <div class="wf-prose">{{ .Content }}</div>
 </article>
 {{ end }}

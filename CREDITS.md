@@ -103,7 +103,7 @@ reference-site font) are **not** included in this repository or in its build out
 
 ## Original theme assets
 
-The four-point star SVGs, paper-grain PNGs, and cursors under `assets/` are
+The four-point star SVGs, paper-grain PNGs, and shepherd’s-crook cursors under `assets/` are
 original works created for this theme. They contain no copied upstream path data or pixel
 bytes; the comparison method and upstream pin are documented in
 `docs/design/reference/upstream-pin.md`.

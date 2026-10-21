@@ -5,7 +5,56 @@
 (function () {
   "use strict";
 
+  function initReadingEdges() {
+    var main = document.querySelector(".wf-main");
+    var top = document.querySelector(".wf-reading-edge--top");
+    var bottom = document.querySelector(".wf-reading-edge--bottom");
+    if (!main || !top || !bottom) {
+      return;
+    }
+    var queued = false;
+
+    function update() {
+      queued = false;
+      var distance = top.getBoundingClientRect().height || 1;
+      var remaining = main.scrollHeight - main.clientHeight - main.scrollTop;
+      // 首末边界退去模糊；正文尾部另有留白，最后一行始终能进入清晰区。
+      top.style.setProperty("--wf-edge-strength", Math.min(1, Math.max(0, main.scrollTop) / distance).toFixed(3));
+      bottom.style.setProperty("--wf-edge-strength", Math.min(1, Math.max(0, remaining) / distance).toFixed(3));
+    }
+
+    function schedule() {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    }
+
+    main.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("pageshow", schedule);
+    if (typeof ResizeObserver !== "undefined") {
+      var observer = new ResizeObserver(schedule);
+      Array.from(main.children).forEach(function (node) {
+        observer.observe(node);
+      });
+    }
+    // Tab 到边缘链接时，把焦点移入清晰区，避免只看到模糊的焦点目标。
+    main.addEventListener("focusin", function (event) {
+      if (event.target === main) {
+        return;
+      }
+      var rect = event.target.getBoundingClientRect();
+      var edge = top.getBoundingClientRect().height;
+      if (rect.top < edge || rect.bottom > main.clientHeight - edge) {
+        event.target.scrollIntoView({ block: "center", behavior: "instant" });
+      }
+    });
+    schedule();
+  }
+
   function init() {
+    initReadingEdges();
     var trigger = document.querySelector("[data-wf-menu-trigger]");
     var panel = document.getElementById("wf-menu-panel");
     if (!trigger || !panel) {

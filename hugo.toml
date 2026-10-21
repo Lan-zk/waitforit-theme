@@ -11,13 +11,13 @@
 
 [params]
   [params.waitforit]
-    # 品牌名；空则取 site.Title
+    # 页脚短语；空则取本地化的安歇 / Rest
     brand = ""
     # auto | day | night（auto 跟随系统）
     defaultTheme = "auto"
     # 首屏文案；空则取 i18n waitforit.hero
     hero = ""
-    # 页脚文案；空则取 i18n waitforit.footer.note
+    # 可选的页脚补充文案；空则不显示第二行
     footer = ""
     [params.waitforit.features]
       scene = true

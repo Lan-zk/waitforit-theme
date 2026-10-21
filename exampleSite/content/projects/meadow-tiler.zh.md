@@ -5,6 +5,7 @@ date: 2026-08-02
 params:
   repo: "https://github.com/waitforit-example/meadow-tiler"
   demo: "https://example.com/meadow-tiler/"
+tags: ["大数据", "恩典"]
 ---
 
 单文件 WebGL2 渲染器：固定的地形、随风弯曲的草、一条窄溪，以及确定性的星点。它为这个主题的场景层而写，也作为独立模块发布。

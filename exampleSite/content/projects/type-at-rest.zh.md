@@ -4,6 +4,7 @@ description: "一套把长文排进纸墨里的小型静态站点工具。"
 date: 2025-11-18
 params:
   repo: "https://github.com/waitforit-example/type-at-rest"
+tags: ["大数据", "恩典"]
 ---
 
 一组面向长文阅读的样式片段与排版默认值：一个固定框架、两种声音、用细线代替方框、没有强调色。

@@ -1,6 +1,6 @@
 {{ define "main" }}
 <section class="wf-column wf-index">
-  <h1 class="wf-sr-only">{{ .Title }}</h1>
+  {{ partial "index-heading.html" . }}
   {{- $pages := .Pages.ByDate.Reverse }}
   {{- if $pages }}
   {{- $paginator := $.Paginate $pages }}

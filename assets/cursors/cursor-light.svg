@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <!-- Star cursor glyph (white for the night theme); CSS hotspot is 16 16. -->
-  <path d="M30.60 16.00L23.00 17.62L19.00 16.00L23.00 14.38Z M16.00 30.60L14.38 23.00L16.00 19.00L17.62 23.00Z M1.40 16.00L9.00 14.38L13.00 16.00L9.00 17.62Z M16.00 1.40L17.62 9.00L16.00 13.00L14.38 9.00Z M22.58 22.58L18.93 20.42L17.70 17.70L20.42 18.93Z M9.42 22.58L11.58 18.93L14.30 17.70L13.07 20.42Z M9.42 9.42L13.07 11.58L14.30 14.30L11.58 13.07Z M22.58 9.42L20.42 13.07L17.70 14.30L18.93 11.58Z M20.20 16.00L16.00 20.20L11.80 16.00L16.00 11.80Z M16.00 14.10L14.10 16.00L16.00 17.90L17.90 16.00Z" fill="#ffffff"/>
-  <circle cx="16" cy="16" r="0.6" fill="#ffffff"/>
+  <!-- Original shepherd's crook; the crown is the click hotspot at 23 3. -->
+  <path d="M9 29L16 9C17.5 4 20.5 2.5 24 3.5C28.5 4.8 29.5 10 26.5 12.5C24.5 14 22.5 13.4 21.8 11.7" fill="none" stroke="#2e2d2b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9 29L16 9C17.5 4 20.5 2.5 24 3.5C28.5 4.8 29.5 10 26.5 12.5C24.5 14 22.5 13.4 21.8 11.7" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

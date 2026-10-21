@@ -1,21 +1,25 @@
-{{- /* 语言切换（D8 / CNT-19）：仅多语言站点渲染；当前页有对应翻译就链到翻译页，没有就落到该语言首页。
-   两个语言用内联链接，不引入 disclosure/ARIA menu。
-   版本中立写法（D20）：迭代 site.Home.AllTranslations 而不是 site.Languages；语言显示名/语言标签
-   取每语言 [languages.<lang>.params] 的 label / locale，缺省回退 .Lang。 */}}
+{{- /* 两种语言用一个原生链接直接切换；更多语言用原生 disclosure，均无需 JS。 */}}
 {{- $homes := site.Home.AllTranslations }}
 {{- if gt (len $homes) 1 }}
 <nav class="wf-lang" aria-label="{{ T "waitforit.lang.label" }}">
-  <ul class="wf-lang-list">
-    {{- $current := site.Language.Lang }}
-    {{- range $home := $homes }}
-      {{- $code := $home.Language.Lang }}
+  {{- if gt (len $homes) 2 }}<details class="wf-lang-picker"><summary class="wf-lang-link">{{ upper site.Language.Lang }}</summary><ul class="wf-lang-list">{{ end }}
+  {{- $current := site.Language.Lang }}
+  {{- range $home := $homes }}
+    {{- $code := $home.Language.Lang }}
+    {{- if ne $code $current }}
       {{- $locale := $home.Language.Params.locale | default $code }}
       {{- $href := $home.RelPermalink }}
       {{- range $translation := $.AllTranslations }}
         {{- if eq $translation.Language.Lang $code }}{{ $href = $translation.RelPermalink }}{{ end }}
       {{- end }}
-    <li class="wf-lang-item"><a class="wf-lang-link" href="{{ $href }}" hreflang="{{ $locale }}" lang="{{ $locale }}"{{ if eq $code $current }} aria-current="true"{{ end }}>{{ $home.Language.Params.label | default (upper $code) }}</a></li>
+      {{- $label := $home.Language.Params.label | default (upper $code) }}
+      {{- $short := upper $code }}
+      {{- if eq $code "zh" }}{{ $short = "中文" }}{{ end }}
+      {{- if gt (len $homes) 2 }}<li class="wf-lang-item">{{ end }}
+      <a class="wf-lang-link" href="{{ $href }}" hreflang="{{ $locale }}" lang="{{ $locale }}" aria-label="{{ T "waitforit.lang.label" }}: {{ $label }}">{{ $short }}</a>
+      {{- if gt (len $homes) 2 }}</li>{{ end }}
     {{- end }}
-  </ul>
+  {{- end }}
+  {{- if gt (len $homes) 2 }}</ul></details>{{ end }}
 </nav>
 {{- end }}

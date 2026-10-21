@@ -20,11 +20,11 @@ try {
     for(const theme of ['day','night']) {
       await navigateAndWait(cdp,base);
       await ev(`localStorage.setItem('wf-theme',${JSON.stringify(theme)});true`);await reloadAndWait(cdp);
-      const frame=await ev(`(()=>{const h=document.querySelector('.wf-hero__sentence').getBoundingClientRect(),m=document.querySelector('main'),r=m.getBoundingClientRect(),p=document.querySelector('.wf-home-posts').getBoundingClientRect();return{heroCenter:(h.top+h.bottom)/2,viewport:innerHeight,postsBelow:p.top>=r.bottom-1,overflow:document.documentElement.scrollWidth>innerWidth||m.scrollWidth>m.clientWidth,fonts:performance.getEntriesByType('resource').filter(e=>e.name.includes('.ttf')).map(e=>e.name)};})()`);
-      check(`home-${width}-${theme}`,Math.abs(frame.heroCenter-450)<60&&frame.postsBelow&&!frame.overflow&&frame.fonts.length===0,frame);
+      const frame=await ev(`(()=>{const h=document.querySelector('.wf-hero__sentence').getBoundingClientRect(),m=document.querySelector('main'),r=m.getBoundingClientRect();return{heroCenter:(h.top+h.bottom)/2,viewport:innerHeight,sloganOnly:m.children.length===1&&Boolean(m.querySelector('.wf-hero'))&&m.querySelectorAll('a').length===0,overflow:document.documentElement.scrollWidth>innerWidth||m.scrollWidth>m.clientWidth,fonts:performance.getEntriesByType('resource').filter(e=>e.name.includes('.ttf')).map(e=>e.name)};})()`);
+      check(`home-${width}-${theme}`,Math.abs(frame.heroCenter-450)<60&&frame.sloganOnly&&!frame.overflow&&frame.fonts.length===0,frame);
       const shot=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(out,`home-${width}-${theme}.png`),Buffer.from(shot.data,'base64'));
-      const scroll=await ev(`(()=>{const m=document.querySelector('main');m.scrollTop=500;const p=document.querySelector('.wf-home-posts').getBoundingClientRect(),r=m.getBoundingClientRect();return{top:m.scrollTop,visible:p.top<r.bottom&&p.bottom>r.top,links:document.querySelectorAll('.wf-home-posts a').length};})()`);
-      check(`home-scroll-${width}-${theme}`,scroll.top>0&&scroll.visible&&scroll.links>=4,scroll);
+      const scroll=await ev(`(()=>{const m=document.querySelector('main');m.scrollTop=500;return{top:m.scrollTop,links:m.querySelectorAll('a').length,scrollHeight:m.scrollHeight,clientHeight:m.clientHeight};})()`);
+      check(`home-slogan-only-${width}-${theme}`,scroll.top===0&&scroll.links===0&&scroll.scrollHeight<=scroll.clientHeight+1,scroll);
     }
   }
   const seen=[];

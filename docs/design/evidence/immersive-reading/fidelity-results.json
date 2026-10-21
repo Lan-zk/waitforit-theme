@@ -1,0 +1,223 @@
+{
+  "base": "http://127.0.0.1:8844/",
+  "date": "2026-10-21T14:07:03.926Z",
+  "passed": 23,
+  "total": 23,
+  "results": [
+    {
+      "name": "home-1440-day",
+      "ok": true,
+      "detail": {
+        "heroCenter": 430,
+        "viewport": 900,
+        "postsBelow": true,
+        "overflow": false,
+        "fonts": []
+      }
+    },
+    {
+      "name": "home-scroll-1440-day",
+      "ok": true,
+      "detail": {
+        "top": 500,
+        "visible": true,
+        "links": 25
+      }
+    },
+    {
+      "name": "home-1440-night",
+      "ok": true,
+      "detail": {
+        "heroCenter": 430,
+        "viewport": 900,
+        "postsBelow": true,
+        "overflow": false,
+        "fonts": []
+      }
+    },
+    {
+      "name": "home-scroll-1440-night",
+      "ok": true,
+      "detail": {
+        "top": 500,
+        "visible": true,
+        "links": 25
+      }
+    },
+    {
+      "name": "home-390-day",
+      "ok": true,
+      "detail": {
+        "heroCenter": 430,
+        "viewport": 900,
+        "postsBelow": true,
+        "overflow": false,
+        "fonts": []
+      }
+    },
+    {
+      "name": "home-scroll-390-day",
+      "ok": true,
+      "detail": {
+        "top": 500,
+        "visible": true,
+        "links": 25
+      }
+    },
+    {
+      "name": "home-390-night",
+      "ok": true,
+      "detail": {
+        "heroCenter": 430,
+        "viewport": 900,
+        "postsBelow": true,
+        "overflow": false,
+        "fonts": []
+      }
+    },
+    {
+      "name": "home-scroll-390-night",
+      "ok": true,
+      "detail": {
+        "top": 500,
+        "visible": true,
+        "links": 25
+      }
+    },
+    {
+      "name": "og-resource-signature-check/",
+      "ok": true,
+      "detail": {
+        "title": "Notes from the tide desk",
+        "image": "https://example.com/images/og-default_hu_a99b0db616b4d13d.e88be7cf564df51198fd1349ca3447826bc4734ef32750d3f3325fda3e13a634.png",
+        "width": "1200",
+        "height": "630"
+      }
+    },
+    {
+      "name": "og-title-safe-signature-check/",
+      "ok": true,
+      "detail": {
+        "minX": 307,
+        "maxX": 891,
+        "minY": 331,
+        "maxY": 439,
+        "count": 8705
+      }
+    },
+    {
+      "name": "og-resource-blog/first-post/",
+      "ok": true,
+      "detail": {
+        "title": "The Lamp Left On",
+        "image": "https://example.com/images/og-default_hu_bbc544c0005b7929.9c671ba9698ea22f599a242e3fbcddf31993311b54ae3cbc6cf085da7894be2d.png",
+        "width": "1200",
+        "height": "630"
+      }
+    },
+    {
+      "name": "og-title-safe-blog/first-post/",
+      "ok": true,
+      "detail": {
+        "minX": 319,
+        "maxX": 881,
+        "minY": 359,
+        "maxY": 424,
+        "count": 6478
+      }
+    },
+    {
+      "name": "og-resource-og-long-check/",
+      "ok": true,
+      "detail": {
+        "title": "An extraordinarily long fictional dispatch about the harbour, the lamps, the changing tide, and the patient notes that continue across the far edge of the sea",
+        "image": "https://example.com/images/og-default_hu_8d77bfc7c51bc839.6eb11937ff795ff9ca4e017ac7b965db818906a5f7441473da2100ba9ea80b35.png",
+        "width": "1200",
+        "height": "630"
+      }
+    },
+    {
+      "name": "og-title-safe-og-long-check/",
+      "ok": true,
+      "detail": {
+        "minX": 269,
+        "maxX": 928,
+        "minY": 287,
+        "maxY": 493,
+        "count": 23023
+      }
+    },
+    {
+      "name": "og-resource-zh/og-long-check/",
+      "ok": true,
+      "detail": {
+        "title": "一份来自虚构海港的长记录：关于潮水、灯光、等待的人，以及那些越过遥远海面仍然值得耐心记下的小事",
+        "image": "https://example.com/images/og-default_hu_fe52c9018255bcfd.2a6c32b1a1c83107cc380bff7a45f1f1655a5d9d4463b4affaa279242e7d5b5c.png",
+        "width": "1200",
+        "height": "630"
+      }
+    },
+    {
+      "name": "og-title-safe-zh/og-long-check/",
+      "ok": true,
+      "detail": {
+        "minX": 165,
+        "maxX": 1034,
+        "minY": 312,
+        "maxY": 476,
+        "count": 17430
+      }
+    },
+    {
+      "name": "og-resource-og-edge-check/",
+      "ok": true,
+      "detail": {
+        "title": "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW — A fictional boundary title",
+        "image": "https://example.com/images/og-default_hu_9332c52201a1f7ce.3ab2125d00d24caf0d319d03fac7779e23ab88dc5537f9862a3485fe3b4f37ba.png",
+        "width": "1200",
+        "height": "630"
+      }
+    },
+    {
+      "name": "og-title-safe-og-edge-check/",
+      "ok": true,
+      "detail": {
+        "minX": 168,
+        "maxX": 1030,
+        "minY": 263,
+        "maxY": 509,
+        "count": 35508
+      }
+    },
+    {
+      "name": "full-long-title-in-meta",
+      "ok": true,
+      "detail": 339
+    },
+    {
+      "name": "og-resource-og-check/",
+      "ok": true,
+      "detail": {
+        "title": "A cover from the fictional tide desk",
+        "image": "https://example.com/og-check/cover.04de8a4bc38bb27423f1b7d708f37240a15bf36cbc93f9a4e3a1469471473228.png",
+        "width": "1200",
+        "height": "630"
+      }
+    },
+    {
+      "name": "local-cover-priority",
+      "ok": true,
+      "detail": "https://example.com/og-check/cover.04de8a4bc38bb27423f1b7d708f37240a15bf36cbc93f9a4e3a1469471473228.png"
+    },
+    {
+      "name": "unique-per-page-images",
+      "ok": true,
+      "detail": 5
+    },
+    {
+      "name": "build-fonts-unpublished",
+      "ok": true,
+      "detail": []
+    }
+  ]
+}

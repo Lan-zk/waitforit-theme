@@ -1,11 +1,12 @@
 {{ define "main" }}
 <section class="wf-column wf-index">
-  <h1 class="wf-sr-only">{{ .Title }}</h1>
-  {{- $pages := .Pages.ByDate.Reverse }}
-  {{- if $pages }}
-  <div class="wf-index__list">
-    {{- range $pages }}{{ partial "post-row.html" . }}{{ end }}
-  </div>
+  <h1 class="wf-entry-title">{{ .Title }}</h1>
+  {{- if .Pages }}
+  <ul class="wf-tag-index">
+    {{- range .Pages.ByTitle }}
+    <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle }} <span class="wf-tag-index__count">({{ len .Pages }})</span></a></li>
+    {{- end }}
+  </ul>
   {{- else }}
   <p class="wf-empty">{{ T "waitforit.list.empty" }}</p>
   {{- end }}

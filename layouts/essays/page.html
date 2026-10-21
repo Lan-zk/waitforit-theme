@@ -2,7 +2,8 @@
 {{ define "main" }}
 <article class="wf-column wf-entry">
   <h1 class="wf-entry-title">{{ .Title }}</h1>
-  {{- with .Date }}<p class="wf-entry-meta">{{ . | time.Format ":date_long" }}</p>{{ end }}
+  {{- if not .Date.IsZero }}<p class="wf-entry-meta">{{ .Date | time.Format ":date_long" }}</p>{{ end }}
+  {{ partial "tags.html" . }}
   <div class="wf-prose">{{ .Content }}</div>
 </article>
 {{ end }}

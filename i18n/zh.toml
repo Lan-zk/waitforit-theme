@@ -2,7 +2,8 @@
 # 键集合必须与 i18n/en.toml 完全一致；站点同名键覆盖主题值。
 
 [waitforit]
-  hero = "词句安放在静水旁。"
+  hero = "他使我躺卧在青草地上\n领我在可安歇的水边"
+  heroSource = "诗篇 23:2"
   skip = "跳到正文"
 
   [waitforit.nav]
@@ -28,9 +29,6 @@
     empty = "这里还没有内容。"
     read = "全部阅读"
 
-  [waitforit.home]
-    recent = "最近"
-
   [waitforit.projects]
     repo = "仓库"
     demo = "演示"
@@ -41,7 +39,7 @@
     next = "下一页"
 
   [waitforit.footer]
-    note = "以铅字排出，安静收存。"
+    brand = "安歇"
 
   [waitforit.404]
     title = "404"
@@ -53,3 +51,8 @@
     copy = "复制"
     success = "已复制。"
     error = "未能复制。代码已选中，请使用系统复制命令。"
+
+  [waitforit.tags]
+    title = "标签"
+    all = "全部标签"
+    page = "页面"

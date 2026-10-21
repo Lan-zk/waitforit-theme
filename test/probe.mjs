@@ -49,8 +49,8 @@ export const USAGE = `waitforit-theme 浏览器验收探针（零依赖 CDP，No
 检查项（每项输出 {name, ok, detail}）:
   no-horizontal-overflow  documentElement.scrollWidth <= clientWidth
   design-tokens           --wf-ink/--wf-paper/--wf-veil-rgb/--wf-frame-block/--wf-motion-theme 实读非空
-  hit-targets             chrome、文章行与独立动作链接命中区域 >= 44x44（不含段内链接）
-  reader-frame            正文滚动区域不与 chrome 相交，跳过链接可将焦点交给正文
+  hit-targets             chrome >= 44x44；文字标签桌面 >=24x24、触屏 >=44x44
+  reader-frame            正文覆盖视窗全高，跳过链接可将焦点交给正文
   menu-toggle             菜单开合、移动端模态与双向 Tab 循环、Escape 回焦
   theme-persistence       localStorage wf-theme=night 刷新后 data-theme=night；非法值回落 auto 且无脚本错误
   reduced-motion          prefers-reduced-motion: reduce 下 --wf-motion-theme=0ms 且场景静态（无持续 rAF）
@@ -498,7 +498,7 @@ async function fetchBrowserWebSocketUrl(browser) {
   return browser.wsPath ? `ws://127.0.0.1:${browser.port}${browser.wsPath}` : null;
 }
 
-export async function launchBrowser({ browserPath, width, height }) {
+export async function launchBrowser({ browserPath, width, height, hideScrollbars = true }) {
   const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'wf-probe-profile-'));
   const args = [
     '--headless=new',
@@ -510,7 +510,7 @@ export async function launchBrowser({ browserPath, width, height }) {
     // Linux/CI 无 GPU 时允许软件 WebGL；Windows 保持系统软件后端（WARP），与迁移前证据口径一致。
     ...(process.platform === 'linux' || process.env.WF_SOFTWARE_WEBGL === '1' ? ['--enable-unsafe-swiftshader'] : []),
     '--disable-dev-shm-usage',
-    '--hide-scrollbars',
+    ...(hideScrollbars ? ['--hide-scrollbars'] : []),
     `--window-size=${width},${height}`,
     'about:blank',
   ];
@@ -826,6 +826,7 @@ const COLLECT_INTERACTIVES = `(() => {
         label: labelOf(el),
         width: Math.round(rect.width * 10) / 10,
         height: Math.round(rect.height * 10) / 10,
+        minimum: el.closest('.wf-tags') && !matchMedia('(pointer: coarse)').matches ? 24 : ${HIT_TARGET_PX},
       });
     }
   }
@@ -972,13 +973,13 @@ async function checkHitTargets(cdp) {
     await pressEscape(cdp);
     await sleep(300);
   }
-  const offenders = items.filter((item) => item.width < HIT_TARGET_PX || item.height < HIT_TARGET_PX);
+  const offenders = items.filter((item) => item.width < item.minimum || item.height < item.minimum);
   const smallest = items.length > 0 ? Math.min(...items.map((item) => Math.min(item.width, item.height))) : null;
   let detail;
   if (items.length === 0) {
     detail = '未找到可见的 chrome 交互控件（header/footer/nav 内没有可见的 a[href]/button）';
   } else if (offenders.length === 0) {
-    detail = `${items.length} 个可见控件全部 >= ${HIT_TARGET_PX}x${HIT_TARGET_PX}（最小边 ${smallest}px）`;
+    detail = `${items.length} 个控件满足 chrome/触屏44px、桌面文字标签24px（最小边 ${smallest}px）`;
   } else {
     detail = `${items.length} 个可见控件中有 ${offenders.length} 个小于 ${HIT_TARGET_PX}px: ` +
       offenders
@@ -999,8 +1000,11 @@ async function checkReaderFrame(cdp) {
     skip.focus();
     skip.click();
     return {
-      separated: rect.top >= header.bottom - 1 && rect.bottom <= footer.top + 1,
-      scrollable: getComputedStyle(main).overflowY === 'auto',
+      fullViewport: Math.abs(rect.top) <= 1 && Math.abs(rect.bottom - innerHeight) <= 1,
+      policyOk: document.body.classList.contains('wf-is-home')
+        ? getComputedStyle(main).overflowY === 'hidden' && main.scrollHeight <= main.clientHeight + 1
+        : getComputedStyle(main).overflowY === 'auto',
+      mode: document.body.classList.contains('wf-is-home') ? 'single-slogan' : 'native-scroll',
       skipFirst: first === skip,
       skipFocus: document.activeElement === main,
       top: rect.top, bottom: rect.bottom, headerBottom: header.bottom, footerTop: footer.top,
@@ -1008,8 +1012,8 @@ async function checkReaderFrame(cdp) {
   })()`);
   return {
     name: 'reader-frame',
-    ok: result.separated && result.scrollable && result.skipFirst && result.skipFocus,
-    detail: `main=${result.top}..${result.bottom}, chrome=${result.headerBottom}/${result.footerTop}; 原生滚动=${result.scrollable}; 首个焦点为 skip=${result.skipFirst}, skip 激活后焦点在 main=${result.skipFocus}`,
+    ok: result.fullViewport && result.policyOk && result.skipFirst && result.skipFocus,
+    detail: `main=${result.top}..${result.bottom}, chrome=${result.headerBottom}/${result.footerTop}; 阅读模式=${result.mode}, 合约符合=${result.policyOk}; 首个焦点为 skip=${result.skipFirst}, skip 激活后焦点在 main=${result.skipFocus}`,
   };
 }
 

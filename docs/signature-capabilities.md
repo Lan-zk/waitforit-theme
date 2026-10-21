@@ -10,7 +10,7 @@ scene = true           # 默认开启；false 不输出画布或场景脚本
 transitions = true   # 默认 false；exampleSite 开启，供审核
 ```
 
-背景为原创 WebGL2 单色低伏草地、溪流与固定星点。固定地形、岸线和草根，中近景尖叶随同一空间风场弯曲、压低与回弹；共享12秒基础相位，标称草摆12 CSS px。五尺度交叉水波在随河道弯曲的透视坐标内向下游缓慢流动，坡面反射与局部高光呈现波光；风同时影响细波移动和强弱。前景溪宽26.5vw、波幅参数0.4vh；25px浅水过渡随远近收窄，贴岸草伸入水面。草叶/天空按CSS像素绘制，宽度最多1440；水面单独采样到等效视口宽度最多900。静态地形、远景草、固定星点在尺寸或令牌变化时烘焙一次；水面为片元着色器场并按线性过滤放大；中近景草叶实例化后画进 2× 离屏层再降采样。共用昼夜几何，24逻辑帧/秒上限；小屏重定位溪流。星点夜间更明显，不闪烁、不移动。首页地面55vh，veil从顶部透明到48vh完整保护，再于68vh淡出；阅读页保留完整径向纸光。
+背景为原创 WebGL2 单色低伏草地、溪流与固定星点。固定地形、岸线和草根，中近景尖叶随同一空间风场弯曲、压低与回弹；共享12秒基础相位，标称草摆12 CSS px。五尺度交叉水波共享随河道弯曲的下游平流坐标，波峰高度近似位移，宽波、细波与反光一起向近处推进，坡面反射与局部高光呈现波光；风同时影响细波移动和强弱。前景溪宽26.5vw、波幅参数0.4vh；25px浅水过渡随远近收窄，贴岸草伸入水面。草叶/天空按CSS像素绘制，宽度最多1440；水面单独采样到等效视口宽度最多900。静态地形、远景草、固定星点在尺寸或令牌变化时烘焙一次；水面为片元着色器场并按线性过滤放大；中近景草叶实例化后画进 2× 离屏层再降采样。共用昼夜几何，24逻辑帧/秒上限；小屏重定位溪流。星点夜间更明显，不闪烁、不移动。首页地面55vh，veil从顶部透明到48vh完整保护，再于68vh淡出；阅读页保留完整径向纸光。
 
 减少动效、省流、后台与离页时停止循环；reduce/saveData呈现确定性首帧，偏好恢复后继续。省流检测以浏览器暴露的 `navigator.connection.saveData` 为准；不能承诺自动识别全部 OS 省电模式。`features.scene=false` 不输出画布与场景脚本；旧 `features.sea` 已移除。无 JS、WebGL2 不可用、场景初始化失败或上下文丢失时，正文/导航和纸光颗粒底面仍可用，不承诺静态景观；上下文恢复后景观继续。
 
@@ -48,3 +48,8 @@ node test/signature.mjs --url http://127.0.0.1:8798/ --out /tmp/wf-signature-evi
 实现依据：[Hugo code hook](https://gohugo.io/render-hooks/code-blocks/)、[HighlightCodeBlock](https://gohugo.io/functions/transform/highlightcodeblock/)、[原生跨文档转场](https://developer.chrome.com/docs/web-platform/view-transitions/cross-document)。版本边界与实测见 Hugo 技能 TPL-22 及 P3 证据目录。
 
 首页首屏保留给居中主句和低伏草地/窄溪；文章列表与附加正文通过原生滚动继续访问，不删除内容。当前场景验收见 `docs/design/evidence/resting-lamb-scene/README.md`；P3海面与OG历史见 `docs/design/evidence/p3-fidelity/README.md`。
+
+
+## D36 溪流材质与首页更新（2026-10-21）
+
+首页只保留slogan与出处，内容入口收进菜单；footer标识隐藏，双语一个原生链接切换。WebGL2溪流新增五尺度交叉宽/细波的导数过滤、法向与视线相关反光；浅水区域波幅和流速减小，岸线覆盖固定，湿润边与较短岸草连接草地和水体。溪流走向、CSS参数、24fps与降级保持。D37进一步统一各组波的下游平流并近似波峰高度，连续帧相关性追踪流向。验收见docs/design/evidence/quiet-home-stream/，不以软件WebGL结果代表真实GPU。
