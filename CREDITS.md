@@ -21,6 +21,9 @@ this file relicenses third-party work.
 - What was not reused: no Earendil CSS, JavaScript, WebGL/GLSL shader code, copy, logo,
   image, SVG path data, or font bytes are included in this repository or in its build
   output. The comparison was structural only.
+- The theme's WebGL2 scene renderer and its GLSL are original to this repository (D32);
+  no upstream shader code was adapted, and the shaders stay inline in
+  `assets/js/scene.js`.
 
 ## Fonts
 

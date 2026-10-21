@@ -1,6 +1,6 @@
 # 参考系统 → 主题转译矩阵
 
-> 当前场景已按 D26 改为 Resting Lamb 的单色低伏草地与窄溪，地形/岸线静止，仅草梢与水纹缓动；不再追求 Earendil 波面保真。当前契约见根 DESIGN.md，新证据见 [resting-lamb-scene](evidence/resting-lamb-scene/README.md)。下文 P1–P3 海面参数与对照作为历史保留；“字体为唯一观感偏差”等旧表述已由 D26 的场景语义调整补充。
+> 当前场景已按 D26 改为 Resting Lamb 的单色低伏草地与窄溪，地形/岸线静止，仅草梢与水纹缓动；渲染器在 D32 起为 WebGL2（静态烘焙 + 水面片元场 + 实例化草叶），新证据见 [webgl-scene](evidence/webgl-scene/README.md)。当前契约见根 DESIGN.md。下文 P1–P3 海面参数、Canvas 2D 实现描述与对照作为历史保留；“字体为唯一观感偏差”等旧表述已由 D26 的场景语义调整补充。
 
 
 > 状态：`design-contract` 任务 2.1 交付物（证据文档，不新增权威）。设计契约的权威顺序见 `decisions.md` D16（:261）：根 `DESIGN.md`（8 章 + YAML frontmatter）是唯一权威，`.impeccable/design.json` 是其机器可读 sidecar，`assets/css/tokens.css` 是浏览器实际消费的 `--wf-*` 令牌；本文件逐条记录「做什么、不做什么、为什么」，三者冲突时回改它们，而不是改本文件。

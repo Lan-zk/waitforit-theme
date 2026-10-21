@@ -1,6 +1,6 @@
 # Resting Lamb 场景实现与预览（2026-10-21）
 
-按用户确认的调整说明实施；主规范已同步，活动变更为 `openspec/changes/resting-lamb-scene/`，尚未归档。原海面与 P3 证据保留为历史。
+按用户确认的调整说明实施；主规范已同步。本目录记录**迁移前 Canvas 2D 渲染器**的实现与证据（历史）；当前渲染器见 D32 与 `docs/design/evidence/webgl-scene/`。`openspec/changes/resting-lamb-scene/` 仍为活动变更、尚未归档；原海面与 P3 证据保留为历史。
 
 ## 最新覆盖
 

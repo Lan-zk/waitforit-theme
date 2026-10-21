@@ -4,6 +4,8 @@
 
 维护规则：一条决策只在这里写一次；改主意时追加新条目并注明 `supersedes`，不改写历史。状态含义：**已确认**＝用户明确拍板；**默认采用**＝已提出且用户未反对，可在对应阶段开始前改；**硬约束**＝许可或安全原因不可选；**待定**＝需要用户提供信息。
 
+阅读提示（2026-10-21）：本文件是追加式历史，旧条目中的实现性描述可能已被后续决策取代。**场景渲染器以 D32 为准**；D2/D8/D8-R 及 D26–D31 中「Canvas 2D 渲染、不引入 shader、WebGL 移到 v0.2、Canvas 2D 静态缓存」等实现性条款已被 D32 取代，这些条目中的视觉、材质、16 项参数、统一风场、24fps、字体、OG、导航与降级条款仍有效。
+
 依据：上一阶段的 Earendil 拆解与 Hugo 研究在旧仓库 `waitforit-site/reload/`（`_research/earendil/NOTES.md`、`_research/earendil/sources.md`、`_research/earendil-website/`、`_research/hugo/NOTES.md`、`earendil-hugo.html`、`poc/`）。本文件只留结论与理由，不复制证据。
 
 ## D1 独立主题仓库，内容隔离

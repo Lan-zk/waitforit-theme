@@ -2,6 +2,8 @@
 
 用户要求按 `docs/design/resting-lamb-scene-brief.md` 实际实现并看效果。本轮完成原创Canvas 2D单色低伏草地与偏右窄溪，取代海面。当前活动变更 `resting-lamb-scene` 已实现并同步主规范；未归档、提交或推送。
 
+> 历史交接：场景渲染器随后由 D32 / 已归档变更 `2026-10-21-webgl-scene` 迁移为 WebGL2；最新交接见 `docs/handoff/2026-10-21-webgl-scene.md`。本文描述的 Canvas 2D 实现仅作历史记录。
+
 视觉/代码以根 DESIGN.md、sidecar、assets/css/tokens.css 与 assets/js/scene.js 为准；D26/D27/D28/D29追加记录场景替换、波面复用/溪流扩宽，以及统一风场/岸边融合与本地调参工具。唯一开关改为 params.waitforit.features.scene，无sea兼容键。默认hero与虚构首页文案改为安静草地语义；未改品牌轮廓、字体、正文/菜单/OG/复制/原生导航机制。
 
 scene.js 用固定种子共用昼夜几何、缓存地形与远景草；中近景草簇与水波由同一12秒基础相位的空间风场驱动。草摆标称7px，草根固定、草叶弯曲和轻微压低；风力同时影响水波采样偏移与坡度强度，不再使用独立草/水周期。溪流约20vw/0.45vh，浅水过渡标称18px并随深度收窄，贴岸草疏密错落并伸入水面，去掉整齐无草带。内部宽度≤640、最多24逻辑帧/秒，暂停/偏好恢复/Canvas失败和原纸光保护保持。

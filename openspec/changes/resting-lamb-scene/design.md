@@ -1,3 +1,5 @@
+> 状态提示（2026-10-21）：本变更记录的是 Canvas 2D 场景替换；渲染器随后由已归档变更 `2026-10-21-webgl-scene`（D32）迁移为 WebGL2。视觉、参数、动效与降级条款仍有效，一切实现性渲染器描述以 D32 为准。
+
 ## Context
 
 动机与范围见 proposal；视觉输入为 docs/design/resting-lamb-scene-brief.md。当前原创海面逐帧计算全屏透视场，已有双 Canvas、纸光、静态颗粒、固定框架与暂停机制。构建管线保持本地资源指纹/SRI（AST-01/02/04/16），partial 保持新路径（TPL-03）。

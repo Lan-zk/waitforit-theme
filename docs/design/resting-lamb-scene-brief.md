@@ -1,5 +1,7 @@
 # Resting Lamb：场景与动效调整说明
 
+> 2026-10-21 更新：渲染器随后由 D32 / 已归档变更 `openspec/changes/archive/2026-10-21-webgl-scene/` 迁移为 WebGL2。本文中一切 Canvas 2D 实现描述（含“不要引入 WebGL”）均已失效；构图、参数、动效、降级与验收条款仍由后续 DESIGN.md 与 D26–D32 承接。
+
 > 本文记录首轮实施方案；后续用户参数及材质/星空修订以 DESIGN.md、D30/D31 和 `evidence/resting-lamb-scene/natural-landscape/` 为准。
 
 日期：2026-10-21。代码核对基线：`7d5baaf`。面向后续实施 agent。

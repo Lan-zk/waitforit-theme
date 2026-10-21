@@ -30,6 +30,7 @@
 - `scripts/check-assets.mjs`：独立 shader 文件门禁信息改为“GLSL 内联在 scene.js”（行为不变）。
 - 测试：`test/scene-visibility.mjs`（探针/清楚 mask/上下文丢失）、`test/signature.mjs`（clear 计帧、截图代替 toDataURL、WebGL2 上下文与失败模拟）、`test/scene-performance.mjs`（clear 计帧 + 主线程提交耗时）、`test/scene-tuner.mjs`（iframe 截图代替 toDataURL）；`test/probe.mjs` 在 Linux/CI 加 `--enable-unsafe-swiftshader`。Windows CRLF 与异步下载的测试可移植性修正不属于渲染行为变更，已写入 D32。
 - 新增 `test/scene-capture.mjs`、`test/scene-diff.mjs`（零依赖 PNG 解码）与证据目录。
+- 文档防误读（本轮补充）：`docs/decisions.md` 顶部写明“场景渲染器以 D32 为准”，D2/D8-R/D26–D31 的 Canvas 2D/不引入 shader 等实现性条款已被 D32 取代；`resting-lamb-scene-brief.md`、`transfer-matrix.md`、旧交接、旧活动变更与旧证据目录均补 D32 取代标注；`resting-lamb-scene` 的 delta 已对齐当前 WebGL2 主规范并保留 RENAMED 历史提示，避免误归档回退；`CREDITS.md` 注明 WebGL2/GLSL 为原创。
 
 ## 限制与未完成
 
