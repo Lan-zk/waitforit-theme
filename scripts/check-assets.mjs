@@ -309,7 +309,7 @@ function checkDecoration() {
   }
   const shaders = walk(ROOT, (f) => ['.glsl', '.frag', '.vert'].includes(extname(f).toLowerCase()));
   for (const file of shaders) {
-    fail('decoration', `${rel(file)} 是 shader 文件；v1 不引入 WebGL/GLSL（D8-R）`);
+    fail('decoration', `${rel(file)} 是独立 shader 文件；GLSL 必须内联在 assets/js/scene.js（D32、AST-16）`);
   }
   report('decoration', true, `SVG ${svgs.length} 个、资产 ${assetFiles.length} 个，均通过白名单/哈希边界`);
 }

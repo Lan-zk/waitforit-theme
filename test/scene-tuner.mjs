@@ -11,6 +11,12 @@ const browser = await launchBrowser({ browserPath: findBrowser().path, width: 14
 const cdp = new CdpSession(browser.pageWs), checks = [];
 const check = (name, ok, detail) => { checks.push({ name, ok, detail }); };
 const ev = code => evaluateInPage(cdp, code);
+// WebGL 画布不启用 preserveDrawingBuffer，改用 iframe 区域截图判断画面变化。
+const canvasShot = async () => {
+  const rect = await ev(`(() => { const frame = document.querySelector('iframe'); const r = frame.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; })()`);
+  const shot = await cdp.send('Page.captureScreenshot', { format: 'png', fromSurface: true, clip: { x: rect.x, y: rect.y, width: rect.width, height: rect.height, scale: 1 } });
+  return shot.data;
+};
 try {
   await cdp.connect();
   for (const domain of ['Page', 'Runtime', 'Network', 'Log']) { await cdp.send(domain + '.enable'); }
@@ -25,9 +31,10 @@ try {
   check('actual-theme-preview', initial.sliders === 15 && initial.canvas === 1440 && initial.viewport === 1440, initial);
   check('defaults-match-theme-tokens', await ev(`Object.entries(JSON.parse(document.getElementById('json').value).css).every(([key,value])=>getComputedStyle(document.documentElement).getPropertyValue(key).trim()===value)`));
   await ev(`document.getElementById('still').click();true`); await sleep(200);
-  const before = await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`);
+  const before = await canvasShot();
   await ev(`for(const [id,value] of [['stream-width','36'],['grass-density','1.8'],['stream-bend','12']]){const el=document.getElementById(id);el.value=value;el.dispatchEvent(new Event('input'));}true`); await sleep(300);
-  const changed = await ev(`({image:document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL(),width:document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--wf-stream-width')})`);
+  const changed = await ev(`({width:document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--wf-stream-width')})`);
+  changed.image = await canvasShot();
   check('live-canvas-change', before !== changed.image && changed.width === '36vw', { changed: before !== changed.image, width: changed.width });
   await ev(`document.getElementById('viewport').value='mobile';document.getElementById('viewport').dispatchEvent(new Event('change'));document.getElementById('theme').value='night';document.getElementById('theme').dispatchEvent(new Event('change'));true`); await sleep(1100);
   const mode = await ev(`({width:document.querySelector('iframe').contentWindow.innerWidth,height:document.querySelector('iframe').contentWindow.innerHeight,theme:document.querySelector('iframe').contentDocument.documentElement.dataset.theme})`);
@@ -39,7 +46,15 @@ try {
   check('json-roundtrip', await ev(`document.getElementById('json').value`) === exported);
   await ev(`document.getElementById('download').click();true`); await sleep(300);
   const downloaded = path.join(out, 'resting-lamb-scene.json');
-  check('json-download', fs.existsSync(downloaded) && fs.readFileSync(downloaded, 'utf8') === exported);
+  // 浏览器下载是异步的；等待文件落盘后再比较。Windows 上可能以 CRLF 往返，比较前归一化换行。
+  let downloadedText = null;
+  for (let attempt = 0; attempt < 30 && downloadedText === null; attempt += 1) {
+    await sleep(100);
+    if (fs.existsSync(downloaded)) {
+      downloadedText = fs.readFileSync(downloaded, 'utf8').replace(/\r\n/g, '\n');
+    }
+  }
+  check('json-download', downloadedText !== null && downloadedText === exported, { exists: downloadedText !== null, exportedLength: exported.length, downloadedLength: downloadedText === null ? null : downloadedText.length });
   const invalid = JSON.parse(exported); invalid.css['--wf-stream-width'] = 'url(secret)';
   await ev(`document.getElementById('json').value=${JSON.stringify(JSON.stringify(invalid))};document.getElementById('import').click();true`);
   check('invalid-import-preserves-parameters', await ev(`document.getElementById('status').textContent.startsWith('未应用')&&document.querySelector('iframe').contentDocument.documentElement.style.getPropertyValue('--wf-stream-width')==='36vw'`));
@@ -48,10 +63,11 @@ try {
   await cdp.send('Browser.grantPermissions', { permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'], origin: new URL(url).origin });
   await cdp.send('Page.bringToFront');
   await ev(`document.getElementById('copy').focus();document.getElementById('copy').click();true`); await sleep(200);
-  check('clipboard-export', await ev(`navigator.clipboard.readText()`) === exported);
+  const clipboardJson = (await ev(`navigator.clipboard.readText()`)).replace(/\r\n/g, '\n');
+  check('clipboard-export', clipboardJson === exported, { exportedLength: exported.length, clipboardLength: clipboardJson.length });
   await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }); await sleep(400);
-  const frozen = await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`); await sleep(400);
-  check('reduced-motion-with-inline-cycle', frozen === await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`));
+  const frozen = await canvasShot(); await sleep(400);
+  check('reduced-motion-with-inline-cycle', frozen === await canvasShot());
   await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
   await ev(`document.getElementById('viewport').value='desktop';document.getElementById('viewport').dispatchEvent(new Event('change'));document.getElementById('theme').value='day';document.getElementById('theme').dispatchEvent(new Event('change'));document.getElementById('reset').click();document.querySelector('aside').scrollTop=0;true`); await sleep(1200);
   const shot = await cdp.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });

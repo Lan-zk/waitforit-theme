@@ -1,18 +1,18 @@
 # P3 签名能力
 
-P3能力已同步至 `openspec/specs/signature-experience/`，变更归档于 `openspec/changes/archive/2026-10-21-signature-capabilities/`。Resting Lamb 场景替换已实现并同步主规范，活动变更为 `openspec/changes/resting-lamb-scene/`，新证据见 `docs/design/evidence/resting-lamb-scene/`。构建最低支持 Hugo 0.146.0，基线 0.168.0；主题构建不需要 Node、Chrome、extended 或网络。
+P3能力已同步至 `openspec/specs/signature-experience/`，变更归档于 `openspec/changes/archive/2026-10-21-signature-capabilities/`。Resting Lamb 场景替换已实现并同步主规范，活动变更为 `openspec/changes/resting-lamb-scene/`，新证据见 `docs/design/evidence/resting-lamb-scene/`。场景渲染器已迁移到 WebGL2（已归档变更 `openspec/changes/archive/2026-10-21-webgl-scene/`，决策 D32），证据见 `docs/design/evidence/webgl-scene/`。构建最低支持 Hugo 0.146.0，基线 0.168.0；主题构建不需要 Node、Chrome、extended 或网络。
 
 ## 配置与内容
 
 ```toml
 [params.waitforit.features]
-scene = true           # 默认开启；false 不加载 Canvas 或场景脚本
+scene = true           # 默认开启；false 不输出画布或场景脚本
 transitions = true   # 默认 false；exampleSite 开启，供审核
 ```
 
-背景为原创 Canvas 2D 单色低伏草地、溪流与固定星点。固定地形、岸线和草根，中近景尖叶随同一空间风场弯曲、压低与回弹；共享12秒基础相位，标称草摆12 CSS px。五尺度交叉水波在随河道弯曲的透视坐标内向下游缓慢流动，坡面反射与局部高光呈现波光；风同时影响细波移动和强弱。前景溪宽26.5vw、波幅参数0.4vh；25px浅水过渡随远近收窄，贴岸草伸入水面。草叶/天空按CSS像素绘制，宽度最多1440；水面单独采样到等效视口宽度最多900。静态地形、远景草、固定星点缓存，共用昼夜几何，24逻辑帧/秒上限；小屏重定位溪流。星点夜间更明显，不闪烁、不移动。首页地面55vh，veil从顶部透明到48vh完整保护，再于68vh淡出；阅读页保留完整径向纸光。
+背景为原创 WebGL2 单色低伏草地、溪流与固定星点。固定地形、岸线和草根，中近景尖叶随同一空间风场弯曲、压低与回弹；共享12秒基础相位，标称草摆12 CSS px。五尺度交叉水波在随河道弯曲的透视坐标内向下游缓慢流动，坡面反射与局部高光呈现波光；风同时影响细波移动和强弱。前景溪宽26.5vw、波幅参数0.4vh；25px浅水过渡随远近收窄，贴岸草伸入水面。草叶/天空按CSS像素绘制，宽度最多1440；水面单独采样到等效视口宽度最多900。静态地形、远景草、固定星点在尺寸或令牌变化时烘焙一次；水面为片元着色器场并按线性过滤放大；中近景草叶实例化后画进 2× 离屏层再降采样。共用昼夜几何，24逻辑帧/秒上限；小屏重定位溪流。星点夜间更明显，不闪烁、不移动。首页地面55vh，veil从顶部透明到48vh完整保护，再于68vh淡出；阅读页保留完整径向纸光。
 
-减少动效、省流、后台与离页时停止循环；reduce/saveData呈现确定性首帧，偏好恢复后继续。省流检测以浏览器暴露的 `navigator.connection.saveData` 为准；不能承诺自动识别全部 OS 省电模式。`features.scene=false` 不输出画布与场景脚本；旧 `features.sea` 已移除。无 JS、Canvas 不可用或场景脚本失败时，正文/导航和纸光颗粒底面仍可用，不承诺静态景观。
+减少动效、省流、后台与离页时停止循环；reduce/saveData呈现确定性首帧，偏好恢复后继续。省流检测以浏览器暴露的 `navigator.connection.saveData` 为准；不能承诺自动识别全部 OS 省电模式。`features.scene=false` 不输出画布与场景脚本；旧 `features.sea` 已移除。无 JS、WebGL2 不可用、场景初始化失败或上下文丢失时，正文/导航和纸光颗粒底面仍可用，不承诺静态景观；上下文恢复后景观继续。
 
 Markdown 围栏自动使用单色高亮和文字复制按钮。语言缺失或不支持时显示纯文本。行号选项被关闭，长行在代码内横滚。复制保留缩进、符号和尾换行；安全上下文/权限不允许 Clipboard 时，选中代码并显示本地化提示。禁用或加载不到代码脚本时按钮保持隐藏。
 

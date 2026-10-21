@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>water-parity · webgl-scene spike</title>
+<link rel="stylesheet" href="../../../assets/css/tokens.css">
+<style>
+  :root { color-scheme: light; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 16px 20px 18px;
+    background: var(--wf-paper);
+    color: var(--wf-ink);
+    font-family: var(--wf-font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  h1 {
+    margin: 0 0 2px;
+    font-family: var(--wf-font-serif);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  p { margin: 0; }
+
+  .note { color: var(--wf-muted-ink); }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 10px;
+  }
+
+  .toolbar button {
+    font: inherit;
+    color: var(--wf-ink);
+    background: transparent;
+    border: 1px solid var(--wf-hairline);
+    border-radius: var(--wf-radius-key);
+    padding: 2px 10px;
+    cursor: pointer;
+  }
+
+  .toolbar button[data-active="true"] {
+    outline: 1px solid var(--wf-ink);
+    outline-offset: -1px;
+  }
+
+  .panes {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  figure { margin: 0; }
+
+  figcaption { color: var(--wf-muted-ink); margin-bottom: 3px; }
+
+  canvas {
+    display: block;
+    width: 680px;
+    height: 425px;
+    border: 1px solid var(--wf-hairline);
+  }
+
+  .panel {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  .params { color: var(--wf-muted-ink); }
+  .params b { color: var(--wf-ink); font-weight: 400; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th, td {
+    text-align: right;
+    padding: 2px 6px;
+    border-bottom: 1px solid var(--wf-hairline);
+    white-space: nowrap;
+  }
+
+  th:first-child, td:first-child,
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+
+  th { font-weight: 400; color: var(--wf-muted-ink); }
+
+  .status { margin-top: 6px; color: var(--wf-muted-ink); }
+
+  .error { color: var(--wf-ink); }
+</style>
+</head>
+<body>
+
+<h1>水面场：Canvas 2D vs WebGL2（phase 0）</h1>
+<p class="note">1440×900 内部画布；水面场按 scene.js <code>paintRipples()</code> 逐项复刻，D30 参数，固定相位 0（对应 reduce 静帧）。左侧含 <code>putImageData</code> 后 1.6× 放大合成；右侧为 289×254 FBO + LINEAR 放大。</p>
+
+<div class="toolbar" role="group" aria-label="主题">
+  <span class="note">显示主题</span>
+  <button type="button" data-theme-button="day" data-active="true">day</button>
+  <button type="button" data-theme-button="night">night</button>
+</div>
+
+<div class="panes">
+  <figure>
+    <figcaption>Canvas 2D：ImageData → putImageData(289×254) → drawImage 放大（clip 到 stream path）</figcaption>
+    <canvas id="pane-2d" width="1440" height="900" aria-label="Canvas 2D 水面合成"></canvas>
+  </figure>
+  <figure>
+    <figcaption>WebGL2：片元着色器场 → 289×254 FBO → LINEAR 合成（premultiplied）</figcaption>
+    <canvas id="pane-gl" width="1440" height="900" aria-label="WebGL2 水面合成"></canvas>
+  </figure>
+</div>
+
+<div class="panel">
+  <div>
+    <table>
+      <thead>
+        <tr><th>主题</th><th>区域</th><th>mean</th><th>p99</th><th>max</th><th>&gt;2</th><th>像素</th></tr>
+      </thead>
+      <tbody data-metrics></tbody>
+    </table>
+    <p class="status" data-status>计算中…</p>
+  </div>
+  <div class="params">
+    <p><b>参数</b>：stream-width <b data-param="streamWidth"></b>；origin <b data-param="origin"></b>；drift <b data-param="drift"></b>；bend <b data-param="bend"></b>；curve <b data-param="curve"></b>；shore <b data-param="shore"></b>；amplitude <b data-param="amplitude"></b>；wind <b data-param="wind"></b>；horizon <b data-param="horizon"></b>；alpha <b data-param="alpha"></b></p>
+    <p><b>几何</b>：streamBounds <b data-param="bounds"></b>；ripple <b data-param="ripple"></b>；rippleStep <b data-param="step"></b>；phase <b>0</b></p>
+    <p><b>指标</b>：逐像素取 RGB 最大通道绝对差；<code>water</code> 区域为 <code>waterCoverage &gt; 0</code> 的像素。</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var W = 1440;
+  var H = 900;
+  var sceneCanvas = document.getElementById("pane-2d");
+  var glCanvas = document.getElementById("pane-gl");
+  var statusEl = document.querySelector("[data-status]");
+  var metricsBody = document.querySelector("[data-metrics]");
+
+  function fail(message) {
+    statusEl.textContent = "失败：" + message;
+    statusEl.className = "status error";
+    window.spikeWaterResult = { page: "water-parity", error: String(message) };
+    window.spikeWaterReady = true;
+  }
+
+  function readNumber(name) {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+  }
+
+  function parseColor(value) {
+    var match = /rgba?\(([^)]+)\)/.exec(value);
+    if (!match) {
+      throw new Error("无法解析颜色: " + value);
+    }
+    var parts = match[1].split(/[,\s/]+/).filter(Boolean).map(Number);
+    return [parts[0], parts[1], parts[2], parts.length > 3 ? parts[3] : 1];
+  }
+
+  function readTokens(mode) {
+    var probe = document.createElement("div");
+    probe.setAttribute("data-theme", mode);
+    probe.className = "token-probe";
+    probe.style.position = "fixed";
+    probe.style.visibility = "hidden";
+    probe.style.pointerEvents = "none";
+    document.body.appendChild(probe);
+    var style = getComputedStyle(probe);
+    var read = function (name) {
+      return style.getPropertyValue(name).trim();
+    };
+    var readColor = function (name) {
+      var el = document.createElement("span");
+      el.style.color = "var(" + name + ")";
+      probe.appendChild(el);
+      var value = parseColor(getComputedStyle(el).color);
+      el.remove();
+      return value;
+    };
+    var data = {
+      paper: readColor("--wf-paper"),
+      ink: readColor("--wf-ink"),
+      night: mode === "night",
+      streamWidth: parseFloat(read("--wf-stream-width")) / 100,
+      origin: parseFloat(read("--wf-stream-origin")) / 100,
+      drift: parseFloat(read("--wf-stream-drift")) / 100,
+      bend: parseFloat(read("--wf-stream-bend")) / 100,
+      curve: parseFloat(read("--wf-stream-curve")),
+      shore: parseFloat(read("--wf-shore-softness")),
+      amplitude: parseFloat(read("--wf-stream-amplitude")) / 100 / 0.004,
+      windStrength: parseFloat(read("--wf-wind-strength")),
+      windDirection: parseFloat(read("--wf-wind-direction")),
+      horizon: parseFloat(read("--wf-horizon")) / 100,
+      alphaFar: parseFloat(read("--wf-scene-opacity-far")),
+      alphaNear: parseFloat(read("--wf-scene-opacity-near"))
+    };
+    probe.remove();
+    data.inkA = Math.round(data.ink[3] * 255);
+    data.paperStyle = "rgb(" + data.paper[0] + ", " + data.paper[1] + ", " + data.paper[2] + ")";
+    return data;
+  }
+
+  var day = readTokens("day");
+  var night = readTokens("night");
+  var geo = {
+    width: W,
+    height: H,
+    horizonY: H * day.horizon
+  };
+
+  function stream(depth, tokens) {
+    return {
+      x: W * (tokens.origin + depth * tokens.drift + Math.sin(depth * tokens.curve) * tokens.bend),
+      y: geo.horizonY + (H - geo.horizonY) * depth,
+      half: W * (0.0025 + tokens.streamWidth * 0.5 * Math.pow(Math.max(0, depth), 1.4)) *
+        (1 + Math.sin(depth * 27) * 0.07 + Math.sin(depth * 61) * 0.035)
+    };
+  }
+
+  function shoreWidth(depth, tokens) {
+    return tokens.shore * (0.3 + Math.max(0, depth) * 0.7);
+  }
+
+  function waterCoverage(x, depth, creek, tokens) {
+    var shore = shoreWidth(depth, tokens);
+    var irregularity = Math.sin(depth * 47 + x / W * 13) * 0.16 + Math.sin(depth * 119) * 0.08;
+    var mix = Math.max(0, Math.min(1, (creek.half - Math.abs(x - creek.x)) / shore + 0.45 + irregularity));
+    return mix * mix * (3 - 2 * mix);
+  }
+
+  function windAt(xNorm, depth) {
+    var travel = 0 * day.windDirection - xNorm * 2.6 + depth * 1.4;
+    return day.windStrength * (0.18 + (0.5 + 0.5 * Math.sin(travel)) * (0.62 + 0.2 * Math.sin(travel * 0.47 + 0.8)) +
+      0.06 * Math.sin(travel * 1.8 + depth));
+  }
+
+  // 与 buildGeometry() 同一路径与包围盒（side=-1 从 0→1，side=+1 从 1→0）。
+  function buildGeometry(tokens) {
+    var path = new Path2D();
+    var left = W;
+    var right = 0;
+    for (var side = -1; side <= 1; side += 2) {
+      for (var step = 0; step <= 100; step += 1) {
+        var depth = side === -1 ? step / 100 : 1 - step / 100;
+        var point = stream(depth, tokens);
+        var px = point.x + (point.half + shoreWidth(depth, tokens) * 0.8) * side;
+        left = Math.min(left, px);
+        right = Math.max(right, px);
+        if (side === -1 && step === 0) {
+          path.moveTo(px, point.y);
+        } else {
+          path.lineTo(px, point.y);
+        }
+      }
+    }
+    path.closePath();
+    left = Math.max(0, Math.min(W - 1, left));
+    right = Math.max(left + 1, Math.min(W, right));
+    var bounds = {
+      x: Math.floor(left),
+      y: Math.floor(geo.horizonY),
+      width: Math.ceil(right) - Math.floor(left),
+      height: H - Math.floor(geo.horizonY)
+    };
+    var stepPx = Math.max(1, W / 900);
+    return {
+      path: path,
+      bounds: bounds,
+      step: stepPx,
+      rippleWidth: Math.ceil(bounds.width / stepPx),
+      rippleHeight: Math.ceil(bounds.height / stepPx)
+    };
+  }
+
+  var geometry = buildGeometry(day);
+
+  function buildField() {
+    var bounds = geometry.bounds;
+    var rippleWidth = geometry.rippleWidth;
+    var rippleHeight = geometry.rippleHeight;
+    var step = geometry.step;
+    var aspect = Math.max(1, W / H);
+    var field = new Float32Array(rippleWidth * rippleHeight);
+    for (var y = 0; y < rippleHeight; y += 1) {
+      var depth = Math.max(0, (y * step + bounds.y - geo.horizonY) / (H - geo.horizonY));
+      var creek = stream(depth, day);
+      var distance = 1.6 / (depth + 0.12);
+      var wind = windAt(creek.x / W, depth);
+      var force = day.amplitude * (0.65 + wind * 0.35);
+      var z = distance;
+      var detail = Math.min(1, depth * 7);
+      var start = Math.max(0, Math.floor((creek.x - creek.half - shoreWidth(depth, day) * 0.8 - bounds.x) / step));
+      var end = Math.min(rippleWidth, Math.ceil((creek.x + creek.half + shoreWidth(depth, day) * 0.8 - bounds.x) / step));
+      for (var x = start; x < end; x += 1) {
+        var worldX = (x * step + bounds.x - creek.x) / W * aspect * distance;
+        var a = worldX * 9 + z * 18;
+        var b = worldX * -13 + z * 29 + 1.7;
+        var c = worldX * 21 + z * 47 + 2.8;
+        var warp = force * (Math.sin(a) * 0.42 + Math.sin(b) * 0.24);
+        var ca = Math.cos(a + warp * distance * 0.35);
+        var cb = Math.cos(b + warp * distance * 0.5);
+        var cc = Math.cos(c + warp * distance * 0.7);
+        var cd = Math.cos(worldX * -43 + z * 83 + warp * 2);
+        var ce = Math.cos(worldX * 71 + z * 143 + warp * 3);
+        var nx = force * (ca * 0.17 - cb * 0.18 + cc * 0.12 - cd * 0.055 * detail + ce * 0.025 * detail);
+        var nz = force * (ca * 0.32 + cb * 0.23 + cc * 0.13 + cd * 0.075 * detail + ce * 0.035 * detail);
+        var facing = (nz * 0.92 + nx * 0.38) / Math.sqrt(1 + nx * nx + nz * nz);
+        var reflection = Math.exp(-((nx - 0.08) * (nx - 0.08) * 30 + (nz - 0.22) * (nz - 0.22) * 38));
+        var glint = Math.pow(reflection, 5) * (0.35 + 0.65 * Math.pow(Math.max(0, Math.sin(b * 0.53 + c * 0.21)), 2));
+        var shade = 0.46 + facing * 0.7 - reflection * reflection * 0.24 - glint * 0.3;
+        field[y * rippleWidth + x] = Math.max(0.015, Math.min(0.95, shade));
+      }
+    }
+    return field;
+  }
+
+  var field = buildField();
+
+  function colorize(tokens) {
+    var bounds = geometry.bounds;
+    var rippleWidth = geometry.rippleWidth;
+    var rippleHeight = geometry.rippleHeight;
+    var step = geometry.step;
+    var data = new Uint8ClampedArray(rippleWidth * rippleHeight * 4);
+    for (var py = 0; py < rippleHeight; py += 1) {
+      var depth = Math.max(0, (py * step + bounds.y - geo.horizonY) / (H - geo.horizonY));
+      var creek = stream(depth, tokens);
+      var strength = tokens.alphaFar + (tokens.alphaNear - tokens.alphaFar) * Math.sqrt(depth);
+      var from = Math.max(0, Math.floor((creek.x - creek.half - shoreWidth(depth, tokens) * 0.8 - bounds.x) / step));
+      var to = Math.min(rippleWidth, Math.ceil((creek.x + creek.half + shoreWidth(depth, tokens) * 0.8 - bounds.x) / step));
+      for (var px = from; px < to; px += 1) {
+        var index = py * rippleWidth + px;
+        var value = field[index];
+        var shade = strength * (tokens.night
+          ? 0.03 + (1 - value) * 0.55 + Math.max(0, 0.3 - value) * 2.6
+          : value * 1.3) * tokens.inkA / 255;
+        var offset = index * 4;
+        data[offset] = tokens.paper[0] + (tokens.ink[0] - tokens.paper[0]) * shade;
+        data[offset + 1] = tokens.paper[1] + (tokens.ink[1] - tokens.paper[1]) * shade;
+        data[offset + 2] = tokens.paper[2] + (tokens.ink[2] - tokens.paper[2]) * shade;
+        data[offset + 3] = 255 * waterCoverage(px * step + bounds.x, depth, creek, tokens) * (1 - Math.exp(-depth * 10));
+      }
+    }
+    return data;
+  }
+
+  function composite2d(data, tokens) {
+    var canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = tokens.paperStyle;
+    ctx.fillRect(0, 0, W, H);
+    var ripples = document.createElement("canvas");
+    ripples.width = geometry.rippleWidth;
+    ripples.height = geometry.rippleHeight;
+    var rippleContext = ripples.getContext("2d");
+    rippleContext.putImageData(new ImageData(data, geometry.rippleWidth, geometry.rippleHeight), 0, 0);
+    ctx.save();
+    ctx.clip(geometry.path);
+    ctx.drawImage(ripples, geometry.bounds.x, geometry.bounds.y,
+      geometry.rippleWidth * geometry.step, geometry.rippleHeight * geometry.step);
+    ctx.restore();
+    return { canvas: canvas, image: ctx.getImageData(0, 0, W, H).data };
+  }
+
+  // ---------- WebGL2 ----------
+  var gl = glCanvas.getContext("webgl2", {
+    alpha: false,
+    antialias: false,
+    depth: false,
+    stencil: false,
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false
+  });
+  if (!gl) {
+    fail("WebGL2 不可用");
+    return;
+  }
+
+  var vertexSource = [
+    "#version 300 es",
+    "void main() {",
+    "  float x = float((gl_VertexID & 1) * 4 - 1);",
+    "  float y = float((gl_VertexID >> 1) * 4 - 1);",
+    "  gl_Position = vec4(x, y, 0.0, 1.0);",
+    "}"
+  ].join("\n");
+
+  var fieldFragment = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform vec2 uRipple;",
+    "uniform vec4 uBounds;",
+    "uniform float uHorizon;",
+    "uniform float uWidth;",
+    "uniform float uHeight;",
+    "uniform float uStep;",
+    "uniform float uOrigin;",
+    "uniform float uDrift;",
+    "uniform float uBend;",
+    "uniform float uCurve;",
+    "uniform float uStreamWidth;",
+    "uniform float uShore;",
+    "uniform float uAmplitude;",
+    "uniform float uWindStrength;",
+    "uniform float uWindDirection;",
+    "uniform float uAlphaFar;",
+    "uniform float uAlphaNear;",
+    "uniform vec3 uPaper;",
+    "uniform vec3 uInk;",
+    "uniform float uInkA;",
+    "uniform float uNight;",
+    "out vec4 outColor;",
+    "",
+    "vec2 streamAt(float depth) {",
+    "  float halfWidth = uWidth * (0.0025 + uStreamWidth * 0.5 * pow(max(0.0, depth), 1.4)) *",
+    "    (1.0 + sin(depth * 27.0) * 0.07 + sin(depth * 61.0) * 0.035);",
+    "  return vec2(uWidth * (uOrigin + depth * uDrift + sin(depth * uCurve) * uBend), halfWidth);",
+    "}",
+    "",
+    "float shoreWidthAt(float depth) {",
+    "  return uShore * (0.3 + max(0.0, depth) * 0.7);",
+    "}",
+    "",
+    "float coverageAt(float x, float depth, vec2 creek) {",
+    "  float shore = shoreWidthAt(depth);",
+    "  float irregularity = sin(depth * 47.0 + x / uWidth * 13.0) * 0.16 + sin(depth * 119.0) * 0.08;",
+    "  float mixValue = clamp((creek.y - abs(x - creek.x)) / shore + 0.45 + irregularity, 0.0, 1.0);",
+    "  return mixValue * mixValue * (3.0 - 2.0 * mixValue);",
+    "}",
+    "",
+    "float windAt(float xNorm, float depth) {",
+    "  float travel = 0.0 * uWindDirection - xNorm * 2.6 + depth * 1.4;",
+    "  return uWindStrength * (0.18 + (0.5 + 0.5 * sin(travel)) * (0.62 + 0.2 * sin(travel * 0.47 + 0.8)) +",
+    "    0.06 * sin(travel * 1.8 + depth));",
+    "}",
+    "",
+    "void main() {",
+    "  float x = floor(gl_FragCoord.x);",
+    "  float y = floor(gl_FragCoord.y);",
+    "  float depth = max(0.0, (y * uStep + uBounds.y - uHorizon) / (uHeight - uHorizon));",
+    "  vec2 creek = streamAt(depth);",
+    "  float shore = shoreWidthAt(depth);",
+    "  float start = max(0.0, floor((creek.x - creek.y - shore * 0.8 - uBounds.x) / uStep));",
+    "  float end = min(uRipple.x, ceil((creek.x + creek.y + shore * 0.8 - uBounds.x) / uStep));",
+    "  if (x < start || x >= end) {",
+    "    outColor = vec4(0.0);",
+    "    return;",
+    "  }",
+    "  float distanceToCreek = 1.6 / (depth + 0.12);",
+    "  float wind = windAt(creek.x / uWidth, depth);",
+    "  float force = uAmplitude * (0.65 + wind * 0.35);",
+    "  float z = distanceToCreek;",
+    "  float detail = min(1.0, depth * 7.0);",
+    "  float aspect = max(1.0, uWidth / uHeight);",
+    "  float worldX = (x * uStep + uBounds.x - creek.x) / uWidth * aspect * distanceToCreek;",
+    "  float a = worldX * 9.0 + z * 18.0;",
+    "  float b = worldX * -13.0 + z * 29.0 + 1.7;",
+    "  float c = worldX * 21.0 + z * 47.0 + 2.8;",
+    "  float warp = force * (sin(a) * 0.42 + sin(b) * 0.24);",
+    "  float ca = cos(a + warp * distanceToCreek * 0.35);",
+    "  float cb = cos(b + warp * distanceToCreek * 0.5);",
+    "  float cc = cos(c + warp * distanceToCreek * 0.7);",
+    "  float cd = cos(worldX * -43.0 + z * 83.0 + warp * 2.0);",
+    "  float ce = cos(worldX * 71.0 + z * 143.0 + warp * 3.0);",
+    "  float nx = force * (ca * 0.17 - cb * 0.18 + cc * 0.12 - cd * 0.055 * detail + ce * 0.025 * detail);",
+    "  float nz = force * (ca * 0.32 + cb * 0.23 + cc * 0.13 + cd * 0.075 * detail + ce * 0.035 * detail);",
+    "  float facing = (nz * 0.92 + nx * 0.38) / sqrt(1.0 + nx * nx + nz * nz);",
+    "  float reflection = exp(-((nx - 0.08) * (nx - 0.08) * 30.0 + (nz - 0.22) * (nz - 0.22) * 38.0));",
+    "  float glint = pow(reflection, 5.0) * (0.35 + 0.65 * pow(max(0.0, sin(b * 0.53 + c * 0.21)), 2.0));",
+    "  float shade = 0.46 + facing * 0.7 - reflection * reflection * 0.24 - glint * 0.3;",
+    "  float value = clamp(shade, 0.015, 0.95);",
+    "  float strength = uAlphaFar + (uAlphaNear - uAlphaFar) * sqrt(depth);",
+    "  float waterShade = strength * (uNight > 0.5",
+    "    ? 0.03 + (1.0 - value) * 0.55 + max(0.0, 0.3 - value) * 2.6",
+    "    : value * 1.3) * (uInkA / 255.0);",
+    "  float coverage = coverageAt(x * uStep + uBounds.x, depth, creek);",
+    "  float alpha = coverage * (1.0 - exp(-depth * 10.0));",
+    "  vec3 rgb = (uPaper + (uInk - uPaper) * waterShade) / 255.0;",
+    "  outColor = vec4(rgb * alpha, alpha);",
+    "}"
+  ].join("\n");
+
+  var compositeFragment = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform sampler2D uField;",
+    "uniform vec4 uRect;",
+    "uniform vec2 uViewport;",
+    "out vec4 outColor;",
+    "void main() {",
+    "  vec2 p = gl_FragCoord.xy;",
+    "  float jsY = uViewport.y - p.y;",
+    "  float u = (p.x - uRect.x) / uRect.z;",
+    "  float v = (jsY - uRect.y) / uRect.w;",
+    "  if (u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0) {",
+    "    outColor = vec4(0.0);",
+    "    return;",
+    "  }",
+    "  outColor = texture(uField, vec2(u, v));",
+    "}"
+  ].join("\n");
+
+  var displayFragment = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform sampler2D uTex;",
+    "uniform vec2 uViewport;",
+    "out vec4 outColor;",
+    "void main() {",
+    "  outColor = texture(uTex, gl_FragCoord.xy / uViewport);",
+    "}"
+  ].join("\n");
+
+  function compile(type, source) {
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      throw new Error(gl.getShaderInfoLog(shader));
+    }
+    return shader;
+  }
+
+  function program(fragmentSource) {
+    var prog = gl.createProgram();
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vertexSource));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fragmentSource));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      throw new Error(gl.getProgramInfoLog(prog));
+    }
+    return prog;
+  }
+
+  function texture(width, height, filter) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return tex;
+  }
+
+  function framebuffer(tex) {
+    var fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+      throw new Error("FBO 不完整");
+    }
+    return fbo;
+  }
+
+  var fieldProgram;
+  var compositeProgram;
+  var displayProgram;
+  try {
+    fieldProgram = program(fieldFragment);
+    compositeProgram = program(compositeFragment);
+    displayProgram = program(displayFragment);
+  } catch (error) {
+    fail("着色器/程序初始化失败: " + error.message);
+    return;
+  }
+
+  var fieldWidth = geometry.rippleWidth;
+  var fieldHeight = geometry.rippleHeight;
+  var fieldTexture = texture(fieldWidth, fieldHeight, gl.LINEAR);
+  var fieldFbo = framebuffer(fieldTexture);
+
+  function uniform(prog, name) {
+    return gl.getUniformLocation(prog, name);
+  }
+
+  var fieldUniforms = {
+    ripple: uniform(fieldProgram, "uRipple"),
+    bounds: uniform(fieldProgram, "uBounds"),
+    horizon: uniform(fieldProgram, "uHorizon"),
+    width: uniform(fieldProgram, "uWidth"),
+    height: uniform(fieldProgram, "uHeight"),
+    step: uniform(fieldProgram, "uStep"),
+    origin: uniform(fieldProgram, "uOrigin"),
+    drift: uniform(fieldProgram, "uDrift"),
+    bend: uniform(fieldProgram, "uBend"),
+    curve: uniform(fieldProgram, "uCurve"),
+    streamWidth: uniform(fieldProgram, "uStreamWidth"),
+    shore: uniform(fieldProgram, "uShore"),
+    amplitude: uniform(fieldProgram, "uAmplitude"),
+    windStrength: uniform(fieldProgram, "uWindStrength"),
+    windDirection: uniform(fieldProgram, "uWindDirection"),
+    alphaFar: uniform(fieldProgram, "uAlphaFar"),
+    alphaNear: uniform(fieldProgram, "uAlphaNear"),
+    paper: uniform(fieldProgram, "uPaper"),
+    ink: uniform(fieldProgram, "uInk"),
+    inkA: uniform(fieldProgram, "uInkA"),
+    night: uniform(fieldProgram, "uNight")
+  };
+
+  function renderField(tokens) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fieldFbo);
+    gl.viewport(0, 0, fieldWidth, fieldHeight);
+    gl.useProgram(fieldProgram);
+    gl.uniform2f(fieldUniforms.ripple, fieldWidth, fieldHeight);
+    gl.uniform4f(fieldUniforms.bounds, geometry.bounds.x, geometry.bounds.y, geometry.bounds.width, geometry.bounds.height);
+    gl.uniform1f(fieldUniforms.horizon, geo.horizonY);
+    gl.uniform1f(fieldUniforms.width, W);
+    gl.uniform1f(fieldUniforms.height, H);
+    gl.uniform1f(fieldUniforms.step, geometry.step);
+    gl.uniform1f(fieldUniforms.origin, tokens.origin);
+    gl.uniform1f(fieldUniforms.drift, tokens.drift);
+    gl.uniform1f(fieldUniforms.bend, tokens.bend);
+    gl.uniform1f(fieldUniforms.curve, tokens.curve);
+    gl.uniform1f(fieldUniforms.streamWidth, tokens.streamWidth);
+    gl.uniform1f(fieldUniforms.shore, tokens.shore);
+    gl.uniform1f(fieldUniforms.amplitude, tokens.amplitude);
+    gl.uniform1f(fieldUniforms.windStrength, tokens.windStrength);
+    gl.uniform1f(fieldUniforms.windDirection, tokens.windDirection);
+    gl.uniform1f(fieldUniforms.alphaFar, tokens.alphaFar);
+    gl.uniform1f(fieldUniforms.alphaNear, tokens.alphaNear);
+    gl.uniform3f(fieldUniforms.paper, tokens.paper[0], tokens.paper[1], tokens.paper[2]);
+    gl.uniform3f(fieldUniforms.ink, tokens.ink[0], tokens.ink[1], tokens.ink[2]);
+    gl.uniform1f(fieldUniforms.inkA, tokens.inkA);
+    gl.uniform1f(fieldUniforms.night, tokens.night ? 1 : 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  function makeTarget(width, height, filter) {
+    var tex = texture(width, height, filter);
+    return { texture: tex, fbo: framebuffer(tex), width: width, height: height };
+  }
+
+  function bindTarget(target) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
+    gl.viewport(0, 0, target.width, target.height);
+  }
+
+  function renderComposite(target, tokens) {
+    bindTarget(target);
+    gl.clearColor(tokens.paper[0] / 255, tokens.paper[1] / 255, tokens.paper[2] / 255, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFuncSeparate(gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.useProgram(compositeProgram);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, fieldTexture);
+    gl.uniform1i(uniform(compositeProgram, "uField"), 0);
+    gl.uniform4f(uniform(compositeProgram, "uRect"), geometry.bounds.x, geometry.bounds.y,
+      geometry.rippleWidth * geometry.step, geometry.rippleHeight * geometry.step);
+    gl.uniform2f(uniform(compositeProgram, "uViewport"), W, H);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.disable(gl.BLEND);
+  }
+
+  function readPixels(target) {
+    var raw = new Uint8Array(target.width * target.height * 4);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
+    gl.readPixels(0, 0, target.width, target.height, gl.RGBA, gl.UNSIGNED_BYTE, raw);
+    var flipped = new Uint8ClampedArray(raw.length);
+    var rowBytes = target.width * 4;
+    for (var y = 0; y < target.height; y += 1) {
+      flipped.set(raw.subarray((target.height - 1 - y) * rowBytes, (target.height - y) * rowBytes), y * rowBytes);
+    }
+    return flipped;
+  }
+
+  function display(target) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, W, H);
+    gl.clearColor(day.paper[0] / 255, day.paper[1] / 255, day.paper[2] / 255, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.disable(gl.BLEND);
+    gl.useProgram(displayProgram);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, target.texture);
+    gl.uniform1i(uniform(displayProgram, "uTex"), 0);
+    gl.uniform2f(uniform(displayProgram, "uViewport"), W, H);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  // 仅 waterCoverage > 0 的像素。
+  function buildCoverageMask(tokens) {
+    var mask = new Uint8Array(W * H);
+    for (var y = 0; y < H; y += 1) {
+      var depth = Math.max(0, (y - geo.horizonY) / (H - geo.horizonY));
+      if (depth <= 0) {
+        continue;
+      }
+      var creek = stream(depth, tokens);
+      var shore = shoreWidth(depth, tokens) * 0.8;
+      var left = Math.max(0, Math.floor(creek.x - creek.half - shore - 2));
+      var right = Math.min(W, Math.ceil(creek.x + creek.half + shore + 2));
+      for (var x = left; x < right; x += 1) {
+        if (waterCoverage(x, depth, creek, tokens) > 0) {
+          mask[y * W + x] = 1;
+        }
+      }
+    }
+    return mask;
+  }
+
+  function compare(canvasPixels, glPixels, mask) {
+    var histogram = new Uint32Array(256);
+    var sum = 0;
+    var max = 0;
+    var over2 = 0;
+    var over8 = 0;
+    var count = 0;
+    for (var i = 0; i < canvasPixels.length; i += 4) {
+      if (mask && !mask[i >> 2]) {
+        continue;
+      }
+      var diff = Math.abs(canvasPixels[i] - glPixels[i]);
+      var g = Math.abs(canvasPixels[i + 1] - glPixels[i + 1]);
+      var b = Math.abs(canvasPixels[i + 2] - glPixels[i + 2]);
+      if (g > diff) { diff = g; }
+      if (b > diff) { diff = b; }
+      histogram[diff] += 1;
+      sum += diff;
+      if (diff > max) { max = diff; }
+      if (diff > 2) { over2 += 1; }
+      if (diff > 8) { over8 += 1; }
+      count += 1;
+    }
+    var percentile = function (p) {
+      var target = Math.floor(count * p);
+      var seen = 0;
+      for (var v = 0; v < histogram.length; v += 1) {
+        seen += histogram[v];
+        if (seen > target) { return v; }
+      }
+      return 255;
+    };
+    return {
+      pixels: count,
+      mean: count ? sum / count : 0,
+      p99: percentile(0.99),
+      max: max,
+      over2Ratio: count ? over2 / count : 0,
+      over8Ratio: count ? over8 / count : 0
+    };
+  }
+
+  function metricsRow(theme, area, values) {
+    var row = document.createElement("tr");
+    var cells = [theme, area, values.mean.toFixed(3), values.p99, values.max,
+      (values.over2Ratio * 100).toFixed(3) + "%", values.pixels];
+    for (var i = 0; i < cells.length; i += 1) {
+      var cell = document.createElement("td");
+      cell.textContent = cells[i];
+      row.appendChild(cell);
+    }
+    return row;
+  }
+
+  var targets = {};
+  var metrics = {};
+  var coverageMasks = { day: buildCoverageMask(day), night: buildCoverageMask(night) };
+  var displayTheme = "day";
+
+  try {
+    var themes = { day: day, night: night };
+    var themeNames = ["day", "night"];
+    for (var t = 0; t < themeNames.length; t += 1) {
+      var name = themeNames[t];
+      var tokens = themes[name];
+      var data = colorize(tokens);
+      var composited = composite2d(data, tokens);
+      renderField(tokens);
+      var target = makeTarget(W, H, gl.NEAREST);
+      renderComposite(target, tokens);
+      var glPixels = readPixels(target);
+      targets[name] = target;
+      metrics[name] = {
+        all: compare(composited.image, glPixels, null),
+        water: compare(composited.image, glPixels, coverageMasks[name])
+      };
+      if (name === "day") {
+        var ctx = sceneCanvas.getContext("2d");
+        ctx.putImageData(new ImageData(composited.image, W, H), 0, 0);
+      }
+    }
+    display(targets.day);
+
+    metricsBody.innerHTML = "";
+    metricsBody.appendChild(metricsRow("day", "all", metrics.day.all));
+    metricsBody.appendChild(metricsRow("day", "water", metrics.day.water));
+    metricsBody.appendChild(metricsRow("night", "all", metrics.night.all));
+    metricsBody.appendChild(metricsRow("night", "water", metrics.night.water));
+
+    var paramsEls = document.querySelectorAll("[data-param]");
+    var paramText = {
+      streamWidth: day.streamWidth,
+      origin: day.origin,
+      drift: day.drift,
+      bend: day.bend,
+      curve: day.curve,
+      shore: day.shore,
+      amplitude: day.amplitude,
+      wind: day.windStrength + " / " + day.windDirection,
+      horizon: day.horizon,
+      alpha: day.alphaFar + " / " + day.alphaNear,
+      bounds: geometry.bounds.x + ", " + geometry.bounds.y + " · " + geometry.bounds.width + "×" + geometry.bounds.height,
+      ripple: fieldWidth + "×" + fieldHeight,
+      step: geometry.step
+    };
+    for (var p = 0; p < paramsEls.length; p += 1) {
+      var key = paramsEls[p].getAttribute("data-param");
+      paramsEls[p].textContent = paramText[key];
+    }
+
+    var rendererInfo = gl.getExtension("WEBGL_debug_renderer_info");
+    var renderer = rendererInfo ? gl.getParameter(rendererInfo.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    window.spikeWaterResult = {
+      page: "water-parity",
+      date: new Date().toISOString(),
+      viewport: [window.innerWidth, window.innerHeight],
+      scene: { width: W, height: H, horizonY: geo.horizonY, bounds: geometry.bounds,
+        ripple: { width: fieldWidth, height: fieldHeight, step: geometry.step }, phase: 0 },
+      params: {
+        streamWidth: day.streamWidth, origin: day.origin, drift: day.drift, bend: day.bend,
+        curve: day.curve, shore: day.shore, amplitude: day.amplitude,
+        windStrength: day.windStrength, windDirection: day.windDirection,
+        horizon: day.horizon, alphaFar: day.alphaFar, alphaNear: day.alphaNear
+      },
+      metrics: metrics,
+      environment: {
+        userAgent: navigator.userAgent,
+        webglRenderer: renderer,
+        glVersion: gl.getParameter(gl.VERSION),
+        antialias: gl.getContextAttributes().antialias,
+        devicePixelRatio: window.devicePixelRatio
+      }
+    };
+    window.spikeWaterReady = true;
+    statusEl.textContent = "完成：day all mean=" + metrics.day.all.mean.toFixed(3) +
+      " / max=" + metrics.day.all.max + "；water p99=" + metrics.day.water.p99 +
+      "。window.spikeWaterResult 已就绪。";
+  } catch (error) {
+    fail(error.message);
+  }
+
+  var buttons = document.querySelectorAll("[data-theme-button]");
+  for (var b = 0; b < buttons.length; b += 1) {
+    buttons[b].addEventListener("click", function (event) {
+      var name = event.currentTarget.getAttribute("data-theme-button");
+      if (!targets[name]) { return; }
+      displayTheme = name;
+      display(targets[name]);
+      for (var i = 0; i < buttons.length; i += 1) {
+        buttons[i].setAttribute("data-active", buttons[i] === event.currentTarget ? "true" : "false");
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

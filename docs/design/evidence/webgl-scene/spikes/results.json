@@ -1,0 +1,326 @@
+{
+  "date": "2026-10-21T07:22:08.651Z",
+  "viewport": [
+    1440,
+    900
+  ],
+  "deviceScaleFactor": 1,
+  "media": {
+    "prefersReducedMotion": "reduce",
+    "prefersColorScheme": "light"
+  },
+  "origin": "http://127.0.0.1:8842",
+  "baseURL": "http://127.0.0.1:8842/docs/design/spikes/",
+  "consoleErrors": [],
+  "externalResources": [],
+  "pages": [
+    {
+      "page": "water-parity.html",
+      "screenshot": "water-parity-1440.png",
+      "bytes": 54190,
+      "ready": true,
+      "result": {
+        "page": "water-parity",
+        "date": "2026-10-21T07:22:06.651Z",
+        "viewport": [
+          1440,
+          900
+        ],
+        "scene": {
+          "width": 1440,
+          "height": 900,
+          "horizonY": 495.00000000000006,
+          "bounds": {
+            "x": 798,
+            "y": 495,
+            "width": 461,
+            "height": 405
+          },
+          "ripple": {
+            "width": 289,
+            "height": 254,
+            "step": 1.6
+          },
+          "phase": 0
+        },
+        "params": {
+          "streamWidth": 0.265,
+          "origin": 0.665,
+          "drift": 0.135,
+          "bend": 0.095,
+          "curve": 5.3,
+          "shore": 25,
+          "amplitude": 1,
+          "windStrength": 1,
+          "windDirection": 1,
+          "horizon": 0.55,
+          "alphaFar": 0.13,
+          "alphaNear": 0.3
+        },
+        "metrics": {
+          "day": {
+            "all": {
+              "pixels": 1296000,
+              "mean": 0.03332175925925926,
+              "p99": 1,
+              "max": 3,
+              "over2Ratio": 0.00007175925925925926,
+              "over8Ratio": 0
+            },
+            "water": {
+              "pixels": 73201,
+              "mean": 0.5880520757913144,
+              "p99": 2,
+              "max": 3,
+              "over2Ratio": 0.0012704744470703952,
+              "over8Ratio": 0
+            }
+          },
+          "night": {
+            "all": {
+              "pixels": 1296000,
+              "mean": 0.040554012345679014,
+              "p99": 1,
+              "max": 3,
+              "over2Ratio": 0.00020601851851851852,
+              "over8Ratio": 0
+            },
+            "water": {
+              "pixels": 73201,
+              "mean": 0.7142115544869606,
+              "p99": 2,
+              "max": 3,
+              "over2Ratio": 0.003647491154492425,
+              "over8Ratio": 0
+            }
+          }
+        },
+        "environment": {
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+          "webglRenderer": "ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "antialias": false,
+          "devicePixelRatio": 1
+        }
+      },
+      "meta": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "scroll": [
+          1440,
+          900
+        ],
+        "title": "water-parity · webgl-scene spike",
+        "resources": [
+          {
+            "name": "http://127.0.0.1:8842/assets/css/tokens.css",
+            "type": "link"
+          },
+          {
+            "name": "http://127.0.0.1:8842/favicon.ico",
+            "type": "other"
+          }
+        ],
+        "canvases": [
+          {
+            "id": "pane-2d",
+            "width": 1440,
+            "height": 900,
+            "css": [
+              678,
+              423
+            ]
+          },
+          {
+            "id": "pane-gl",
+            "width": 1440,
+            "height": 900,
+            "css": [
+              678,
+              423
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "page": "grass-aa.html",
+      "screenshot": "grass-aa-1440.png",
+      "bytes": 88166,
+      "ready": true,
+      "result": {
+        "page": "grass-aa",
+        "date": "2026-10-21T07:22:07.864Z",
+        "viewport": [
+          1440,
+          900
+        ],
+        "canvas": {
+          "width": 720,
+          "height": 420
+        },
+        "blades": 400,
+        "phase": 0,
+        "crop": {
+          "x": 176,
+          "y": 352,
+          "size": 64,
+          "scale": 4
+        },
+        "params": {
+          "sway": 12,
+          "grassHeight": 1.3,
+          "windStrength": 1,
+          "windDirection": 1,
+          "alphaFar": 0.13,
+          "alphaNear": 0.3
+        },
+        "metrics": {
+          "AB": {
+            "all": {
+              "pixels": 302400,
+              "mean": 0.08598544973544973,
+              "p99": 3,
+              "max": 16,
+              "over2Ratio": 0.012906746031746031,
+              "identicalRatio": 0.9662599206349206
+            },
+            "edge": {
+              "pixels": 8935,
+              "mean": 2.3160604364857305,
+              "p99": 9,
+              "max": 16,
+              "over2Ratio": 0.36966983771684386,
+              "identicalRatio": 0.13497481813094572
+            }
+          },
+          "AC": {
+            "all": {
+              "pixels": 302400,
+              "mean": 0.09956679894179894,
+              "p99": 4,
+              "max": 23,
+              "over2Ratio": 0.015274470899470899,
+              "identicalRatio": 0.9659325396825397
+            },
+            "edge": {
+              "pixels": 8935,
+              "mean": 2.7843312814773364,
+              "p99": 10,
+              "max": 17,
+              "over2Ratio": 0.4642417459429211,
+              "identicalRatio": 0.12568550643536652
+            }
+          },
+          "BC": {
+            "all": {
+              "pixels": 302400,
+              "mean": 0.11262896825396826,
+              "p99": 5,
+              "max": 25,
+              "over2Ratio": 0.016789021164021162,
+              "identicalRatio": 0.9745568783068783
+            }
+          },
+          "ink": {
+            "A": 0.38556318932580674,
+            "B": 0.3740158323392677,
+            "C": 0.38483669212789096,
+            "AB": 0.011547356986539026,
+            "AC": 0.0007264971979157875
+          }
+        },
+        "msaaSamples": 4,
+        "preferred": "C",
+        "thresholds": {
+          "ink": 0.005,
+          "edgeMean": 3,
+          "edgeP99": 12,
+          "edgeMax": 24
+        },
+        "environment": {
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+          "webglRenderer": "ANGLE (Microsoft, Microsoft Basic Render Driver (0x0000008C) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "glVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "antialias": true,
+          "devicePixelRatio": 1
+        }
+      },
+      "meta": {
+        "viewport": [
+          1440,
+          900
+        ],
+        "scroll": [
+          1440,
+          900
+        ],
+        "title": "grass-aa · webgl-scene spike",
+        "resources": [
+          {
+            "name": "http://127.0.0.1:8842/assets/css/tokens.css",
+            "type": "link"
+          }
+        ],
+        "canvases": [
+          {
+            "id": "pane-a",
+            "width": 720,
+            "height": 420,
+            "css": [
+              428,
+              250
+            ]
+          },
+          {
+            "id": "pane-b",
+            "width": 720,
+            "height": 420,
+            "css": [
+              428,
+              250
+            ]
+          },
+          {
+            "id": "pane-c",
+            "width": 720,
+            "height": 420,
+            "css": [
+              428,
+              250
+            ]
+          },
+          {
+            "id": "crop-a",
+            "width": 256,
+            "height": 256,
+            "css": [
+              254,
+              254
+            ]
+          },
+          {
+            "id": "crop-b",
+            "width": 256,
+            "height": 256,
+            "css": [
+              254,
+              254
+            ]
+          },
+          {
+            "id": "crop-c",
+            "width": 256,
+            "height": 256,
+            "css": [
+              254,
+              254
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -21,9 +21,9 @@ try {
   const go = (p) => navigateAndWait(cdp, url(p), { state });
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
     window.wfDraws=0;
-    // 每次 day 画布复合静态缓存即一逻辑帧；不统计 night 或草叶 path。
-    const draw=CanvasRenderingContext2D.prototype.drawImage;
-    CanvasRenderingContext2D.prototype.drawImage=function(...args){if(this.canvas.matches('[data-wf-canvas="day"]')&&args[0].width===this.canvas.width&&args[0].height===this.canvas.height){window.wfDraws++;}return draw.apply(this,args);};
+    // 每逻辑帧 day 画布只对默认帧缓冲 clear 一次；以此计帧，不统计离屏 FBO 与 night。
+    const clear=WebGL2RenderingContext.prototype.clear;
+    WebGL2RenderingContext.prototype.clear=function(...args){if(this.canvas&&this.canvas.matches&&this.canvas.matches('[data-wf-canvas="day"]')&&this.getParameter(this.FRAMEBUFFER_BINDING)===null){window.wfDraws++;}return clear.apply(this,args);};
     window.wfTransition=null;
     addEventListener('pagereveal',event=>{
       window.wfTransition={active:!!event.viewTransition};
@@ -34,10 +34,19 @@ try {
   ` });
   await cdp.send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
   await go('signature-check/');
-  const before = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),hidden:document.hidden,reduce:matchMedia('(prefers-reduced-motion: reduce)').matches,cycle:getComputedStyle(document.documentElement).getPropertyValue('--wf-motion-wind-cycle'),size:[document.querySelector('canvas').width,document.querySelector('canvas').height],context:!!document.querySelector('canvas').getContext('2d')})`);
-  await sleep(1100);
-  const after = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),hidden:document.hidden,reduce:matchMedia('(prefers-reduced-motion: reduce)').matches,cycle:getComputedStyle(document.documentElement).getPropertyValue('--wf-motion-wind-cycle'),size:[document.querySelector('canvas').width,document.querySelector('canvas').height],context:!!document.querySelector('canvas').getContext('2d')})`);
-  check('scene-time-and-budget', before.image !== after.image && after.draws > before.draws && after.draws - before.draws <= 28, { drawsIn1100ms: after.draws - before.draws, changed: before.image !== after.image, initial: {hidden:before.hidden,reduce:before.reduce,cycle:before.cycle,size:before.size,context:before.context} });
+  // 场景是否在动：用截图代替 WebGL canvas.toDataURL（不启用 preserveDrawingBuffer）。
+  const sceneState = async () => ev(`({draws:wfDraws,hidden:document.hidden,reduce:matchMedia('(prefers-reduced-motion: reduce)').matches,cycle:getComputedStyle(document.documentElement).getPropertyValue('--wf-motion-wind-cycle'),size:[document.querySelector('canvas').width,document.querySelector('canvas').height],context:!!document.querySelector('canvas').getContext('webgl2')})`);
+  const sceneShot = async () => (await cdp.send('Page.captureScreenshot', { format: 'png', fromSurface: true, captureBeyondViewport: false })).data;
+  const imageBefore = await sceneShot();
+  const initial = await sceneState();
+  // 在页面内计时，避免 CDP 往返/截图延迟混入帧间隔。
+  const budget = await ev(`new Promise((resolve) => {
+    const draws0 = wfDraws;
+    const start = performance.now();
+    setTimeout(() => resolve({ draws: wfDraws - draws0, elapsedMs: performance.now() - start }), 1100);
+  })`);
+  const imageAfter = await sceneShot();
+  check('scene-time-and-budget', imageBefore !== imageAfter && budget.draws > 0 && budget.draws <= 28, { drawsIn1100ms: budget.draws, observedMs: budget.elapsedMs, changed: imageBefore !== imageAfter, initial: {hidden:initial.hidden,reduce:initial.reduce,cycle:initial.cycle,size:initial.size,context:initial.context} });
   await ev(`Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));true`);
   const paused = await ev('wfDraws'); await sleep(250);
   check('hidden-pause', await ev('wfDraws') === paused, { draws: paused, mechanism: 'visibilitychange with deterministic hidden state' });
@@ -52,7 +61,7 @@ try {
   await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await ev('wfReduced');
   await ev(`new Promise((resolve,reject)=>{let last=wfDraws,quiet=0;const start=performance.now();const timer=setInterval(()=>{quiet=wfDraws===last?quiet+50:0;last=wfDraws;if(quiet>=300){clearInterval(timer);resolve(true);}else if(performance.now()-start>3000){clearInterval(timer);reject(new Error('scene did not settle after reduce'));}},50);})`);
-  const reduce = await ev(`({draws:wfDraws,image:document.querySelector('canvas').toDataURL(),name:getComputedStyle(document.querySelector('main')).viewTransitionName})`); await sleep(250);
+  const reduce = await ev(`({draws:wfDraws,name:getComputedStyle(document.querySelector('main')).viewTransitionName})`); await sleep(250);
   check('live-reduce-freeze', await ev('wfDraws') === reduce.draws && reduce.name === 'none', reduce.name);
   await cdp.send('Emulation.setEmulatedMedia', { features: [{name:'prefers-reduced-motion',value:'no-preference'}] });
   await sleep(250);
@@ -62,7 +71,8 @@ try {
   check('save-data-freeze', await ev('wfDraws') === save, { initialDraws: save });
   await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: saveData.identifier });
   await reloadAndWait(cdp, { state });
-  const original = fs.readFileSync(new URL('../exampleSite/content/signature-check.md', import.meta.url), 'utf8').match(/```js[^\n]*\n([\s\S]*?)```/)[1];
+  // Windows 工作区可能以 CRLF 检出内容；页面源码经 Hugo 统一为 LF，比较前归一化换行。
+  const original = fs.readFileSync(new URL('../exampleSite/content/signature-check.md', import.meta.url), 'utf8').match(/```js[^\n]*\n([\s\S]*?)```/)[1].replace(/\r\n/g, '\n');
   const source = await ev(`document.querySelector('[data-wf-source]').value`);
   check('copy-source-whitespace', source === original, { length: source.length, expected: original.length, finalNewline: source.endsWith('\n') });
   await cdp.send('Browser.grantPermissions', { origin: new URL(base).origin, permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'] });
@@ -71,7 +81,8 @@ try {
   await cdp.send('Input.dispatchMouseEvent', { type:'mouseReleased', button:'left', clickCount:1, ...copyTarget });
   await sleep(100);
   const clipboard = await ev('navigator.clipboard.readText()');
-  check('real-clipboard-pointer-copy', clipboard === original, { length: clipboard.length, exact: clipboard === original });
+  // Windows 剪贴板以 CRLF 往返；页面源码为 LF，比较前只归一化换行。
+  check('real-clipboard-pointer-copy', clipboard.replace(/\r\n/g, '\n') === original, { length: clipboard.length, exact: clipboard.replace(/\r\n/g, '\n') === original });
   await ev(`window.wfCopied=null;Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.wfCopied=text;}}});document.querySelector('[data-wf-copy]').focus();true`);
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' });
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });

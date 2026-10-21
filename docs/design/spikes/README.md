@@ -1,6 +1,6 @@
-# P1 原型 spikes（design-contract 4.1 / 4.2 / 4.3）
+# P1 原型 spikes（design-contract 4.1 / 4.2 / 4.3 + webgl-scene P1）
 
-三个可独立打开的静态原型，验证设计契约里最不确定的三处：字体 A/B、纸光场景分层、动效时长来源。
+五个可独立打开的静态原型：三个验证设计契约里最不确定的三处（字体 A/B、纸光场景分层、动效时长来源），两个验证 webgl-scene 迁移的水面公式移植与草叶抗锯齿。
 原型按 design.md D11：纯静态 HTML + 内联 CSS/JS，无构建、无运行时网络请求；视觉值唯一来源是 `assets/css/tokens.css`，页面里一律 `var(--wf-*)`，无颜色字面量。
 
 ## 文件清单
@@ -10,6 +10,8 @@
 | `font-ab.html` | 17,792 | 4.1 字体组合 A/B/C/D 对比 |
 | `surface.html` | 20,442 | 4.2 Canvas 线场 + 径向纸光 + 颗粒，day/night 交叉淡化 |
 | `motion.html` | 24,577 | 4.3 动效时长令牌实测与 `?motion-entrance` 覆盖 |
+| `water-parity.html` | 33,293 | webgl-scene P1：水面场 Canvas 2D vs WebGL2 并排与逐像素指标 |
+| `grass-aa.html` | 28,655 | webgl-scene P1：草叶 AA，Canvas 2D fill vs MSAA 4x vs 2× 超采样 |
 | `shots/` | 1,579,879（16 张） | 1440×900 / 390×844 截图，单张 ≤165,222 B |
 
 无 `fonts/` 目录、无临时探针页：A/B 对照字体（Source Serif 4）用后即删，见文末。
@@ -26,6 +28,8 @@ python -m http.server 8731 --bind 127.0.0.1
 - 4.1 `http://127.0.0.1:8731/docs/design/spikes/font-ab.html`（`?combo=a|b|c|d` 直开单组合）
 - 4.2 `http://127.0.0.1:8731/docs/design/spikes/surface.html`（`?theme=day|night|auto`，默认 auto；`&crossfade=demo` 自动切换夜色并采样）
 - 4.3 `http://127.0.0.1:8731/docs/design/spikes/motion.html`（`?motion-entrance=1200ms` 覆盖令牌；`?menu=open` 初始打开移动菜单）
+- webgl-scene P1 `http://127.0.0.1:8731/docs/design/spikes/water-parity.html`（水面场 Canvas 2D vs WebGL2，day/night 切换）
+- webgl-scene P1 `http://127.0.0.1:8731/docs/design/spikes/grass-aa.html`（草叶 AA：A/B/C + 4× 局部）
 
 每页顶部面板用 `getComputedStyle(document.documentElement)` 实读令牌，不是常量。
 
@@ -134,3 +138,54 @@ reduced-motion 档用 CDP 的 `prefers-reduced-motion: reduce` 模拟（等价�
 - 截图协议依赖临时 CDP 脚本（`$env:TEMP`），仓库内不保留该脚本；README 已记录完整 Chrome 参数与 CDP 调用顺序，1440 档可用单命令复现，390 档需 CDP 或 `--force-device-scale-factor` 等替代手段（headless 最小窗口限制无法绕开）。
 - surface 交叉淡化只让纸光通道、场景与颗粒透明度做 900ms 过渡；`--wf-ink`/`--wf-paper` 令牌本身在 tokens.css 里是瞬时切换（设计如此），中间帧文字对比度由令牌决定，不在本 spike 处理范围。
 - font-ab 的 B/D 组在临时字体删除后不再看到 SS4 字面，这是字体门禁的预期状态，不是缺陷。
+
+## webgl-scene 迁移 spike 结论（P1，2026-10-21）
+
+两个页面服务于已归档变更 `openspec/changes/archive/2026-10-21-webgl-scene/` 的 P1 门禁：先量化水面着色器移植与草叶 AA 的偏差，再决定生产渲染器是否按 design D4/D6 推进。页面内 GLSL 全部内联，不新增 `.glsl/.frag/.vert`；`node scripts/check-assets.mjs` 退出 0。
+
+打开方式（仓库根）：
+
+```powershell
+python -m http.server 8842 --bind 127.0.0.1
+```
+
+- `http://127.0.0.1:8842/docs/design/spikes/water-parity.html`
+- `http://127.0.0.1:8842/docs/design/spikes/grass-aa.html`
+
+两页在 headless Chrome 155（`test/probe.mjs` 启动，`--disable-gpu` → ANGLE/Microsoft Basic Render Driver 软件渲染）、1440×900、DPR1、reduce + light 下采集；无外部请求、无 console error。证据在 `docs/design/evidence/webgl-scene/spikes/`：`water-parity-1440.png`、`grass-aa-1440.png`、`results.json`（含两页 `window.spikeWaterResult` / `window.spikeGrassResult`、环境与资源清单）。软件渲染只用于公式与 AA 对比，不作性能结论。
+
+### 水面（water-parity）
+
+1440×900；streamBounds 798/495 · 461×405；ripple 289×254、step 1.6；phase 0。比较最终合成（纸底 + 水面 alpha 混合），day/night 各一次：
+
+| 主题 | 区域 | mean | p99 | max | >2 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| day | all | 0.033 | 1 | 3 | 0.007% |
+| day | water | 0.588 | 2 | 3 | 0.127% |
+| night | all | 0.041 | 1 | 3 | 0.021% |
+| night | water | 0.714 | 2 | 3 | 0.365% |
+
+结论：GLSL 场与 Canvas 2D `paintRipples()` 在 8-bit 合成层面等价——最大差 3/255、均值 <1，差异只来自纹理放大与混合舍入，不是公式或坐标偏差。两侧都在纯纸底上合成水面（不含地形底图；地形层在 P2 单独对照）。P3 可按“同分辨率 289×254 FBO + LINEAR 放大 + premultiplied 合成”推进，不改公式；`clip(streamPath)` 可以删（alpha 在裁剪边之前已归零）。
+
+### 草叶 AA（grass-aa）
+
+720×420、400 片、phase 0。为得到局部 AA 样本，生成时跳过 scene.js 的水道/密度剔除；`x/depth/length/lean/breadth/opacity` 的随机数消费顺序与草叶参数公式保持。A = Canvas 2D fill；B = 实例化 + MSAA 4x（`antialias:true`，本机 `SAMPLES=4`）；C = 同一实例化渲染到 2× FBO 后 LINEAR 降采样。逐像素取 RGB 最大通道绝对差：
+
+| 比较 | 区域 | mean | p99 | max | >2 | 完全一致 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| A↔B | all | 0.086 | 3 | 16 | 1.291% | 96.63% |
+| A↔B | edge | 2.316 | 9 | 16 | 36.97% | 13.50% |
+| A↔C | all | 0.100 | 4 | 23 | 1.527% | 96.59% |
+| A↔C | edge | 2.784 | 10 | 17 | 46.42% | 12.57% |
+
+草带平均墨量（每像素平均 ink，越大越深）：A 0.3856、B 0.3740、C 0.3848；Δ(A−B)=0.0115（约 −3.0%），Δ(A−C)=0.0007（约 −0.19%）。截图下半部 4× 局部可见 B 的弱草叶略淡，C 更接近 A。
+
+判定阈值（本 spike 固定）：墨量差 |Δ|≤0.005（约 1.3%）、edge mean≤3.0、p99≤12、max≤24。B 因墨量差 0.0115 不达标；C 全部达标（0.0007 / 2.784 / 10 / 17）。**选择 C：草叶层用 2× 离屏 FBO + LINEAR 降采样**；B（MSAA 4x）作为实现简化或显存受限时的备选，代价是约 3% 墨量偏浅。生产上只对草层做 2×（base/water 保持 1×），以控制填充率与显存；全屏 2× 的成本需在 P2 用真实 GPU 复测。
+
+剩余风险：
+
+- B 的 MSAA 采样位置与解析依赖驱动，WARP 之外的 GPU 可能给出不同墨量；C 的 2× 也只在 WARP 验证过。
+- 2× 草层在 1440×900 × 两个昼夜上下文下的显存/填充预算未测（本 spike 只有 720×420 单上下文）；P2 需实测，必要时限制到草带范围。
+- alpha-to-coverage 未实现（对不透明纯色填充不适用）；解析覆盖率仍未验证。
+- C 的 2×2 采样相位与 Skia 解析覆盖率仍有 17/255 量级的边缘差；若 T2 的 4× 放大评审要求更严，可再评估 4× 超采样或解析覆盖率。
+- 真实手机/跨引擎（P4）与 headful GPU 性能不在本 spike 范围。

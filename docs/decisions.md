@@ -419,3 +419,11 @@ signature-capabilities 的13项任务已完成。先同步 asset-licensing 的�
 ### D31 · 溪流材质、清晰草叶与固定星点（2026-10-21）
 
 用户要求根据 Earendil 实站提高水面、草地的真实感并增加天空星点。保留 D30 的16项参数和统一风场。水面采用原创多尺度方向波的坡度反射与局部高光，草叶用独立的尖端曲面；将草叶/星点画布与水面采样分辨率分离，避免低分辨率放大草簇。天空是确定性固定点，夜间更明显，不闪烁、不移动；它们不是交互星形SVG。首页纸光在顶部露出星点，文字附近仍受保护。沿用 Canvas 2D、24fps上限和静态降级，具体性能以本轮实测记录为准。参考截图仅存 `docs/design/reference/2026-10-21-landscape/`。
+
+## D32 · WebGL2 场景渲染器（2026-10-21）
+
+日期：2026-10-21。状态：用户要求在保持效果、样式、动效不变的前提下把场景从 Canvas 2D 迁移到 WebGL2；实现与证据见 `openspec/changes/archive/2026-10-21-webgl-scene/` 与 `docs/design/evidence/webgl-scene/`。supersedes D2/D8-R 中“Canvas 2D、不引入 shader、WebGL 移到 v0.2”的条款，D26–D31 中“Canvas 2D 渲染器与静态缓存实现”的描述，以及 `docs/design/resting-lamb-scene-brief.md` 的“不使用 WebGL”限制；视觉参数、材质语义、24fps、统一风场、昼夜/尺寸、降级与暂停条款继续有效。
+
+决定：`assets/js/scene.js` 改为单文件、零依赖的 WebGL2 渲染器；day/night 各一个上下文，保留双画布与 CSS 900ms 交叉淡化。静态地形、固定星点与远端草叶在尺寸/令牌/主题变化时以 4x MSAA 烘焙为纹理，解析后释放 MSAA 缓冲；水面在 289×254 FBO 用片元着色器复刻原公式，按线性过滤 + 预乘 alpha 放大；中近景草叶实例化，风在顶点着色器求值，先画入 2× 离屏层再线性降采样。抗锯齿选型来自 P1 spike：MSAA 4x 草层约损失 3% 墨量，不采用；2× 超采样层墨量与 Canvas 2D 基线差 0.19%，采用。默认帧缓冲关闭 MSAA。GLSL 内联在 `scene.js`，不新增 shader 文件、不引入渲染库或远程资源（AST-16）；shader 为原创，asset-licensing 继续禁止复制上游 GLSL。内部栅格仍为 CSS 像素且上限 1440，不引入 DPR；24 逻辑帧上限、时间步长封顶、hidden/pagehide/pageshow、reduce/saveData 确定性静帧、`wf:scene-update`、`features.scene` 与无 JS 行为保持不变。WebGL2 不可用、初始化失败或上下文丢失时静默退回纸面 + 纸光 + 颗粒，不启动 RAF、不产生 console error；`webglcontextrestored` 重建资源后继续。
+
+测试与契约：Canvas 2D 内部探针（path/clip/toDataURL）替换为只读 `?wf-scene-probe=1` 探针（phase/frames/staticBuilds/tips/staticImage）、默认帧缓冲 clear 计帧与截图对比。T2 视觉等价基线：确定性静态首帧 1440/390 × 昼夜与迁移前差异 mean 0.23–0.37/255、p99 5–6、>2 比例 3.1–5.4%，静态底色层 near-identical（mean ≤0.007、p99 0）；4× 草/水/星点对照与 9 秒昼夜录像见证据目录。`scene-visibility` 四组 + 上下文丢失恢复通过，`signature` 38/38，调参 15/15，资产门禁 5/5；Windows 工作区的 CRLF 与异步下载测试可移植性修正不属于渲染行为变更。性能：同机 headless 软件后端下主线程每逻辑帧提交中位 0.2ms（迁移前 Canvas 2D 中位 39.6ms），逻辑帧 18.6fps（迁移前 11.2fps）；headless/软件渲染不代表真机，真实设备与跨引擎验收仍属 P4。本机网络受限，Hugo 0.146.0 未能在本机复核（0.168.0 严格构建与弃用审计通过）；模板与配置未改动，风险留待 CI 或用户环境复核。

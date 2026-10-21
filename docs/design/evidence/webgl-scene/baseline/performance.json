@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-21T15:13:14.4610407+08:00",
+  "commit": "8db387cd01080a0425b0df6344c108f0b6ddb55a",
+  "intent": "Canvas 2D 迁移前基线；本机环境受限，仅作同环境相对参考，不作为真机性能结论",
+  "viewport": [
+    1440,
+    900
+  ],
+  "headlessSoftware": {
+    "launch": "test/probe.mjs（headless + --disable-gpu，软件渲染）",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "durationMs": 10000,
+    "logicalFrames": 112,
+    "medianMs": 39.6,
+    "p95Ms": 44.7,
+    "note": "与仓库 evidence/performance.json（macOS UA，5.1ms）不可比；本机软件渲染下逻辑帧 11.2fps"
+  },
+  "headfulGpu": {
+    "launch": "Chrome headful 1440x900，GPU 启用，前台窗口，禁用遮挡节流",
+    "renderer": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics (0x00009A49) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "durationMs": 10000,
+    "logicalFrames": 25,
+    "medianMs": 59.9,
+    "p95Ms": 91.7,
+    "rafGapMedianMs": 383.6,
+    "rafGapP95Ms": 583.8,
+    "longTasks": 28,
+    "longTaskTotalMs": 2594,
+    "note": "rAF 间隔中位 383.6ms 表明本机窗口/合成环境异常（远程或遮挡节流），不能代表普通 GPU 浏览；数据仅记录"
+  },
+  "profilerHeadlessSoftware": {
+    "windowSeconds": 8,
+    "logicalFrames": 79,
+    "msPerLogicalFrame": {
+      "paintRipples": 21.67,
+      "fill": 8.24,
+      "drawGrass": 6.06,
+      "waterCoverage": 4.93,
+      "windAt": 2.13,
+      "paint": 1.18
+    },
+    "note": "V8 CPU profiler（headless 软件渲染）；用于归属每帧 CPU 大头，不用作绝对性能"
+  },
+  "limitation": "本机 headless 与 headful 均无法产生可信的 24fps 驾驶环境；迁移收益以主线程提交耗时与 P4 真机结论为准"
+}

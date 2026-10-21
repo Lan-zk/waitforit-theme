@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>grass-aa · webgl-scene spike</title>
+<link rel="stylesheet" href="../../../assets/css/tokens.css">
+<style>
+  :root { color-scheme: light; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 14px 20px 16px;
+    background: var(--wf-paper);
+    color: var(--wf-ink);
+    font-family: var(--wf-font-mono);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  h1 {
+    margin: 0 0 2px;
+    font-family: var(--wf-font-serif);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  p { margin: 0; }
+
+  .note { color: var(--wf-muted-ink); }
+
+  .panes {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+
+  figure { margin: 0; }
+
+  figcaption { color: var(--wf-muted-ink); margin-bottom: 3px; }
+
+  .pane canvas {
+    display: block;
+    width: 430px;
+    height: auto;
+    border: 1px solid var(--wf-hairline);
+  }
+
+  .crops {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+
+  .crops canvas {
+    display: block;
+    width: 256px;
+    height: 256px;
+    border: 1px solid var(--wf-hairline);
+  }
+
+  .panel {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th, td {
+    text-align: right;
+    padding: 2px 6px;
+    border-bottom: 1px solid var(--wf-hairline);
+    white-space: nowrap;
+  }
+
+  th:first-child, td:first-child,
+  th:nth-child(2), td:nth-child(2) { text-align: left; }
+
+  th { font-weight: 400; color: var(--wf-muted-ink); }
+
+  .params { color: var(--wf-muted-ink); }
+  .params b { color: var(--wf-ink); font-weight: 400; }
+
+  .status { margin-top: 6px; color: var(--wf-muted-ink); }
+  .error { color: var(--wf-ink); }
+  .crop-legend { margin-top: 2px; color: var(--wf-muted-ink); }
+</style>
+</head>
+<body>
+
+<h1>草叶抗锯齿：Canvas 2D vs 实例化 MSAA vs 2× 超采样</h1>
+<p class="note">720×420 局部草地，400 片草叶；与 scene.js <code>buildGeometry()</code> 同一 PRNG（seed 271021）与草叶参数，固定相位 0。A 为 Canvas 2D <code>quadraticCurveTo</code> fill 基线；B/实例化三角形带 + MSAA 4x；C/同一实例化绘制到 2× FBO 后 LINEAR 降采样。三者同一背景、同一 ink、同一绘制顺序。</p>
+
+<div class="panes">
+  <figure class="pane">
+    <figcaption>A · Canvas 2D fill（基线）</figcaption>
+    <canvas id="pane-a" width="720" height="420" aria-label="Canvas 2D 草叶基线"></canvas>
+  </figure>
+  <figure class="pane">
+    <figcaption>B · WebGL2 实例化 + MSAA（antialias: true）</figcaption>
+    <canvas id="pane-b" width="720" height="420" aria-label="WebGL2 MSAA 草叶"></canvas>
+  </figure>
+  <figure class="pane">
+    <figcaption>C · WebGL2 实例化 + 2× FBO → LINEAR 降采样</figcaption>
+    <canvas id="pane-c" width="720" height="420" aria-label="WebGL2 2x 超采样草叶"></canvas>
+  </figure>
+</div>
+
+<div class="panel">
+  <div>
+    <table>
+      <thead>
+        <tr><th>比较</th><th>区域</th><th>mean</th><th>p99</th><th>max</th><th>&gt;2</th><th>一致</th></tr>
+      </thead>
+      <tbody data-metrics></tbody>
+    </table>
+    <p class="status" data-status>计算中…</p>
+  </div>
+  <div class="params">
+    <p><b>草叶</b>：<b data-param="blades"></b> 片；画布 <b data-param="canvas"></b>；相位 <b>0</b></p>
+    <p><b>墨量</b>：A <b data-param="inkA"></b>；B <b data-param="inkB"></b>；C <b data-param="inkC"></b>（每像素平均 ink，越大越深）</p>
+    <p><b>Δ墨量</b>：A−B <b data-param="inkAB"></b>；A−C <b data-param="inkAC"></b></p>
+    <p><b>采样</b>：B MSAA samples <b data-param="samples"></b>；C 2×（1440×840）</p>
+    <p><b>判定</b>：墨量差 ≤0.005 且边缘 mean ≤3.0、p99 ≤12、max ≤24；不满足则记录升级需求。</p>
+    <p><b>说明</b>：alpha-to-coverage 对不透明纯色填充不适用（MSAA 已提供覆盖率）；解析覆盖率作为备选未实现。</p>
+  </div>
+</div>
+
+<div class="crops">
+  <figure>
+    <figcaption>A · 4× 局部</figcaption>
+    <canvas id="crop-a" width="256" height="256" aria-label="A 4 倍局部"></canvas>
+  </figure>
+  <figure>
+    <figcaption>B · 4× 局部</figcaption>
+    <canvas id="crop-b" width="256" height="256" aria-label="B 4 倍局部"></canvas>
+  </figure>
+  <figure>
+    <figcaption>C · 4× 局部</figcaption>
+    <canvas id="crop-c" width="256" height="256" aria-label="C 4 倍局部"></canvas>
+  </figure>
+</div>
+<p class="crop-legend">4× 放大采用最近邻采样，区域为 A 中草叶密度最高的 64×64 窗口，坐标见 <code>window.spikeGrassResult.crop</code>。</p>
+
+<script>
+(function () {
+  "use strict";
+
+  var W = 720;
+  var H = 420;
+  var BLADE_COUNT = 400;
+  var cropSize = 64;
+
+  var canvasA = document.getElementById("pane-a");
+  var canvasB = document.getElementById("pane-b");
+  var canvasC = document.getElementById("pane-c");
+  var statusEl = document.querySelector("[data-status]");
+  var metricsBody = document.querySelector("[data-metrics]");
+
+  function fail(message) {
+    statusEl.textContent = "失败：" + message;
+    statusEl.className = "status error";
+    window.spikeGrassResult = { page: "grass-aa", error: String(message) };
+    window.spikeGrassReady = true;
+  }
+
+  function parseColor(value) {
+    var match = /rgba?\(([^)]+)\)/.exec(value);
+    if (!match) {
+      throw new Error("无法解析颜色: " + value);
+    }
+    var parts = match[1].split(/[,\s/]+/).filter(Boolean).map(Number);
+    return [parts[0], parts[1], parts[2], parts.length > 3 ? parts[3] : 1];
+  }
+
+  function readTokens() {
+    var probe = document.createElement("div");
+    probe.style.position = "fixed";
+    probe.style.visibility = "hidden";
+    probe.style.pointerEvents = "none";
+    document.body.appendChild(probe);
+    var style = getComputedStyle(probe);
+    var read = function (name) {
+      return style.getPropertyValue(name).trim();
+    };
+    var readColor = function (name) {
+      var el = document.createElement("span");
+      el.style.color = "var(" + name + ")";
+      probe.appendChild(el);
+      var value = parseColor(getComputedStyle(el).color);
+      el.remove();
+      return value;
+    };
+    var tokens = {
+      paper: readColor("--wf-paper"),
+      ink: readColor("--wf-ink"),
+      sway: parseFloat(read("--wf-grass-sway")),
+      grassHeight: parseFloat(read("--wf-grass-height")),
+      windStrength: parseFloat(read("--wf-wind-strength")),
+      windDirection: parseFloat(read("--wf-wind-direction")),
+      alphaFar: parseFloat(read("--wf-scene-opacity-far")),
+      alphaNear: parseFloat(read("--wf-scene-opacity-near"))
+    };
+    probe.remove();
+    tokens.paperStyle = "rgb(" + tokens.paper[0] + ", " + tokens.paper[1] + ", " + tokens.paper[2] + ")";
+    tokens.inkStyle = "rgb(" + tokens.ink[0] + ", " + tokens.ink[1] + ", " + tokens.ink[2] + ")";
+    tokens.paperLum = 0.299 * tokens.paper[0] + 0.587 * tokens.paper[1] + 0.114 * tokens.paper[2];
+    return tokens;
+  }
+
+  var tokens = readTokens();
+  var horizonY = H * 0.55;
+
+  function edge(x) {
+    return horizonY + H * (Math.sin(x / W * 4.8 + 0.6) * 0.018 + Math.cos(x / W * 8.2) * 0.007);
+  }
+
+  // 与 buildGeometry() 相同的 LCG 与草叶参数；只保留 720×420 局部区域内的 400 片。
+  var seed = 271021;
+  function random() {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 4294967296;
+  }
+
+  var blades = [];
+  while (blades.length < BLADE_COUNT) {
+    var x = random() * W;
+    var depth = Math.pow(random(), 0.8);
+    var y = edge(x) + (H - edge(x)) * depth;
+    var length = tokens.grassHeight * (2 + Math.pow(depth, 1.35) * 29) * (0.4 + random() * 1.15);
+    var lean = (random() - 0.5) * 17 * depth;
+    var breadth = (0.3 + random() * 0.65) * (0.25 + depth);
+    var opacity = 0.28 + random() * 0.72;
+    blades.push({ x: x, y: y, depth: depth, length: length, lean: lean, breadth: breadth, opacity: opacity });
+  }
+  blades.sort(function (a, b) { return a.y - b.y; });
+
+  function windAt(xNorm, depth) {
+    var travel = 0 * tokens.windDirection - xNorm * 2.6 + depth * 1.4;
+    return tokens.windStrength * (0.18 + (0.5 + 0.5 * Math.sin(travel)) * (0.62 + 0.2 * Math.sin(travel * 0.47 + 0.8)) +
+      0.06 * Math.sin(travel * 1.8 + depth));
+  }
+
+  // drawGrass() 的逐叶 alpha 与形状，moving=true（reduce 静态首帧同样走 moving 分支）。
+  function bladeAlpha(blade) {
+    var depth = blade.depth;
+    var strength = tokens.alphaFar + (tokens.alphaNear - tokens.alphaFar) * depth;
+    var footerFade = 1 - 0.65 * Math.exp(-Math.pow((blade.y / H - 0.90) / 0.07, 2));
+    return strength * blade.opacity * footerFade * Math.min(1, depth * 8) * 0.95;
+  }
+
+  function bladeShape(blade) {
+    var depth = blade.depth;
+    var wind = windAt(blade.x / W, depth);
+    var sway = wind * tokens.windDirection * tokens.sway * (0.35 + depth * 0.65);
+    var tip = blade.x + blade.lean + sway;
+    var top = blade.y - blade.length * (1 - wind * 0.1);
+    var bend = blade.x + blade.lean * 0.18 + sway * 0.3;
+    return {
+      rootX: blade.x,
+      rootY: blade.y,
+      tipX: tip,
+      tipY: top,
+      bendX: bend,
+      bendY: top + blade.length * 0.3,
+      rightBendX: bend + blade.breadth,
+      rightBendY: top + blade.length * 0.48,
+      rightRootX: blade.x + blade.breadth,
+      rightRootY: blade.y
+    };
+  }
+
+  // ---------- A: Canvas 2D ----------
+  var ctxA = canvasA.getContext("2d");
+  ctxA.fillStyle = tokens.paperStyle;
+  ctxA.fillRect(0, 0, W, H);
+  ctxA.fillStyle = tokens.inkStyle;
+  for (var i = 0; i < blades.length; i += 1) {
+    var shape = bladeShape(blades[i]);
+    ctxA.globalAlpha = bladeAlpha(blades[i]);
+    ctxA.beginPath();
+    ctxA.moveTo(shape.rootX, shape.rootY);
+    ctxA.quadraticCurveTo(shape.bendX, shape.bendY, shape.tipX, shape.tipY);
+    ctxA.quadraticCurveTo(shape.rightBendX, shape.rightBendY, shape.rightRootX, shape.rightRootY);
+    ctxA.closePath();
+    ctxA.fill();
+  }
+  ctxA.globalAlpha = 1;
+  var imageA = ctxA.getImageData(0, 0, W, H);
+
+  // ---------- WebGL 公共着色器 ----------
+  var grassVertex = [
+    "#version 300 es",
+    "precision highp float;",
+    "in vec2 aUnit;",
+    "in vec4 aBlade0;",
+    "in vec4 aBlade1;",
+    "uniform vec2 uCanvas;",
+    "uniform float uScale;",
+    "uniform float uSway;",
+    "uniform float uWindStrength;",
+    "uniform float uWindDirection;",
+    "uniform float uPhase;",
+    "uniform float uAlphaFar;",
+    "uniform float uAlphaNear;",
+    "out float vAlpha;",
+    "void main() {",
+    "  float x = aBlade0.x;",
+    "  float y = aBlade0.y;",
+    "  float depth = aBlade0.z;",
+    "  float length = aBlade0.w;",
+    "  float lean = aBlade1.x;",
+    "  float breadth = aBlade1.y;",
+    "  float opacity = aBlade1.z;",
+    "  float travel = uPhase * uWindDirection - (x / uCanvas.x) * 2.6 + depth * 1.4;",
+    "  float wind = uWindStrength * (0.18 + (0.5 + 0.5 * sin(travel)) * (0.62 + 0.2 * sin(travel * 0.47 + 0.8)) +",
+    "    0.06 * sin(travel * 1.8 + depth));",
+    "  float sway = wind * uWindDirection * uSway * (0.35 + depth * 0.65);",
+    "  float tipX = x + lean + sway;",
+    "  float top = y - length * (1.0 - wind * 0.1);",
+    "  float bendX = x + lean * 0.18 + sway * 0.3;",
+    "  float t = aUnit.x;",
+    "  float u = 1.0 - t;",
+    "  vec2 p0 = vec2(x, y);",
+    "  vec2 c1 = vec2(bendX, top + length * 0.3);",
+    "  vec2 p2 = vec2(tipX, top);",
+    "  vec2 c2 = vec2(bendX + breadth, top + length * 0.48);",
+    "  vec2 q2 = vec2(x + breadth, y);",
+    "  vec2 left = u * u * p0 + 2.0 * t * u * c1 + t * t * p2;",
+    "  vec2 right = t * t * p2 + 2.0 * u * t * c2 + u * u * q2;",
+    "  vec2 pos = (aUnit.y < 0.5 ? left : right) * uScale;",
+    "  vec2 size = uCanvas * uScale;",
+    "  gl_Position = vec4(pos.x / size.x * 2.0 - 1.0, 1.0 - pos.y / size.y * 2.0, 0.0, 1.0);",
+    "  float strength = uAlphaFar + (uAlphaNear - uAlphaFar) * depth;",
+    "  float footerFade = 1.0 - 0.65 * exp(-pow((y / uCanvas.y - 0.90) / 0.07, 2.0));",
+    "  vAlpha = strength * opacity * footerFade * min(1.0, depth * 8.0) * 0.95;",
+    "}"
+  ].join("\n");
+
+  var grassFragment = [
+    "#version 300 es",
+    "precision highp float;",
+    "in float vAlpha;",
+    "uniform vec3 uInk;",
+    "out vec4 outColor;",
+    "void main() {",
+    "  outColor = vec4(uInk, vAlpha);",
+    "}"
+  ].join("\n");
+
+  var fullscreenVertex = [
+    "#version 300 es",
+    "void main() {",
+    "  float x = float((gl_VertexID & 1) * 4 - 1);",
+    "  float y = float((gl_VertexID >> 1) * 4 - 1);",
+    "  gl_Position = vec4(x, y, 0.0, 1.0);",
+    "}"
+  ].join("\n");
+
+  var downsampleFragment = [
+    "#version 300 es",
+    "precision highp float;",
+    "uniform sampler2D uTex;",
+    "uniform vec2 uSize;",
+    "out vec4 outColor;",
+    "void main() {",
+    "  outColor = texture(uTex, gl_FragCoord.xy / uSize);",
+    "}"
+  ].join("\n");
+
+  function compile(gl, type, source) {
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      throw new Error(gl.getShaderInfoLog(shader));
+    }
+    return shader;
+  }
+
+  function program(gl, vertexSource, fragmentSource) {
+    var prog = gl.createProgram();
+    gl.attachShader(prog, compile(gl, gl.VERTEX_SHADER, vertexSource));
+    gl.attachShader(prog, compile(gl, gl.FRAGMENT_SHADER, fragmentSource));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      throw new Error(gl.getProgramInfoLog(prog));
+    }
+    return prog;
+  }
+
+  var segments = 32;
+  var unitVertices = new Float32Array((segments + 1) * 4);
+  for (var s = 0; s <= segments; s += 1) {
+    var t = s / segments;
+    unitVertices[s * 4] = t;
+    unitVertices[s * 4 + 1] = 0;
+    unitVertices[s * 4 + 2] = t;
+    unitVertices[s * 4 + 3] = 1;
+  }
+
+  var instanceData = new Float32Array(blades.length * 8);
+  for (var b = 0; b < blades.length; b += 1) {
+    var blade = blades[b];
+    instanceData[b * 8] = blade.x;
+    instanceData[b * 8 + 1] = blade.y;
+    instanceData[b * 8 + 2] = blade.depth;
+    instanceData[b * 8 + 3] = blade.length;
+    instanceData[b * 8 + 4] = blade.lean;
+    instanceData[b * 8 + 5] = blade.breadth;
+    instanceData[b * 8 + 6] = blade.opacity;
+    instanceData[b * 8 + 7] = 0;
+  }
+
+  function createRenderer(canvas, antialias) {
+    var gl = canvas.getContext("webgl2", {
+      alpha: false,
+      antialias: antialias,
+      depth: false,
+      stencil: false,
+      premultipliedAlpha: false,
+      preserveDrawingBuffer: false
+    });
+    if (!gl) {
+      throw new Error("WebGL2 不可用");
+    }
+    var prog = program(gl, grassVertex, grassFragment);
+    var down = program(gl, fullscreenVertex, downsampleFragment);
+    var vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+
+    var unitBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, unitBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, unitVertices, gl.STATIC_DRAW);
+    var unitLoc = gl.getAttribLocation(prog, "aUnit");
+    gl.enableVertexAttribArray(unitLoc);
+    gl.vertexAttribPointer(unitLoc, 2, gl.FLOAT, false, 8, 0);
+
+    var instanceBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, instanceBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, instanceData, gl.STATIC_DRAW);
+    var loc0 = gl.getAttribLocation(prog, "aBlade0");
+    var loc1 = gl.getAttribLocation(prog, "aBlade1");
+    gl.enableVertexAttribArray(loc0);
+    gl.vertexAttribPointer(loc0, 4, gl.FLOAT, false, 32, 0);
+    gl.vertexAttribDivisor(loc0, 1);
+    gl.enableVertexAttribArray(loc1);
+    gl.vertexAttribPointer(loc1, 4, gl.FLOAT, false, 32, 16);
+    gl.vertexAttribDivisor(loc1, 1);
+
+    return { gl: gl, program: prog, downsample: down, vao: vao, unitBuffer: unitBuffer, instanceBuffer: instanceBuffer };
+  }
+
+  function uniform(gl, prog, name) {
+    return gl.getUniformLocation(prog, name);
+  }
+
+  function drawGrass(renderer, scale, target) {
+    var gl = renderer.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.fbo : null);
+    gl.viewport(0, 0, W * scale, H * scale);
+    gl.clearColor(tokens.paper[0] / 255, tokens.paper[1] / 255, tokens.paper[2] / 255, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.useProgram(renderer.program);
+    gl.bindVertexArray(renderer.vao);
+    gl.uniform2f(uniform(gl, renderer.program, "uCanvas"), W, H);
+    gl.uniform1f(uniform(gl, renderer.program, "uScale"), scale);
+    gl.uniform1f(uniform(gl, renderer.program, "uSway"), tokens.sway);
+    gl.uniform1f(uniform(gl, renderer.program, "uWindStrength"), tokens.windStrength);
+    gl.uniform1f(uniform(gl, renderer.program, "uWindDirection"), tokens.windDirection);
+    gl.uniform1f(uniform(gl, renderer.program, "uPhase"), 0);
+    gl.uniform1f(uniform(gl, renderer.program, "uAlphaFar"), tokens.alphaFar);
+    gl.uniform1f(uniform(gl, renderer.program, "uAlphaNear"), tokens.alphaNear);
+    gl.uniform3f(uniform(gl, renderer.program, "uInk"), tokens.ink[0] / 255, tokens.ink[1] / 255, tokens.ink[2] / 255);
+    gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, (segments + 1) * 2, blades.length);
+    gl.disable(gl.BLEND);
+  }
+
+  function makeTarget(gl, width, height, filter) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    var fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+      throw new Error("FBO 不完整");
+    }
+    return { texture: tex, fbo: fbo, width: width, height: height };
+  }
+
+  function readPixels(gl, target) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.fbo : null);
+    var width = target ? target.width : W;
+    var height = target ? target.height : H;
+    var raw = new Uint8Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, raw);
+    var flipped = new Uint8ClampedArray(raw.length);
+    var rowBytes = width * 4;
+    for (var y = 0; y < height; y += 1) {
+      flipped.set(raw.subarray((height - 1 - y) * rowBytes, (height - y) * rowBytes), y * rowBytes);
+    }
+    return flipped;
+  }
+
+  function downsample(renderer, source) {
+    var gl = renderer.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, W, H);
+    gl.clearColor(tokens.paper[0] / 255, tokens.paper[1] / 255, tokens.paper[2] / 255, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.disable(gl.BLEND);
+    gl.useProgram(renderer.downsample);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, source.texture);
+    gl.uniform1i(uniform(gl, renderer.downsample, "uTex"), 0);
+    gl.uniform2f(uniform(gl, renderer.downsample, "uSize"), W, H);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  function lumAt(pixels, index) {
+    return 0.299 * pixels[index] + 0.587 * pixels[index + 1] + 0.114 * pixels[index + 2];
+  }
+
+  function histogramPercentile(histogram, count, p) {
+    var target = Math.floor(count * p);
+    var seen = 0;
+    for (var v = 0; v < histogram.length; v += 1) {
+      seen += histogram[v];
+      if (seen > target) { return v; }
+    }
+    return 255;
+  }
+
+  function compare(a, b, mask) {
+    var histogram = new Uint32Array(256);
+    var count = 0;
+    var sum = 0;
+    var max = 0;
+    var over2 = 0;
+    var identical = 0;
+    for (var i = 0; i < a.length; i += 4) {
+      if (mask && !mask[i >> 2]) { continue; }
+      var diff = Math.abs(a[i] - b[i]);
+      var g = Math.abs(a[i + 1] - b[i + 1]);
+      var blue = Math.abs(a[i + 2] - b[i + 2]);
+      if (g > diff) { diff = g; }
+      if (blue > diff) { diff = blue; }
+      histogram[diff] += 1;
+      sum += diff;
+      if (diff > max) { max = diff; }
+      if (diff > 2) { over2 += 1; }
+      if (diff === 0) { identical += 1; }
+      count += 1;
+    }
+    return {
+      pixels: count,
+      mean: count ? sum / count : 0,
+      p99: histogramPercentile(histogram, count, 0.99),
+      max: max,
+      over2Ratio: count ? over2 / count : 0,
+      identicalRatio: count ? identical / count : 0
+    };
+  }
+
+  function buildEdgeMask(lum) {
+    var ink = new Float32Array(W * H);
+    for (var i = 0; i < ink.length; i += 1) {
+      ink[i] = tokens.paperLum - lum[i];
+    }
+    var mask = new Uint8Array(W * H);
+    for (var y = 0; y < H; y += 1) {
+      for (var x = 0; x < W; x += 1) {
+        var index = y * W + x;
+        if (ink[index] <= 2) { continue; }
+        var edgePixel = false;
+        if (x > 0 && ink[index - 1] <= 2) { edgePixel = true; }
+        if (!edgePixel && x < W - 1 && ink[index + 1] <= 2) { edgePixel = true; }
+        if (!edgePixel && y > 0 && ink[index - W] <= 2) { edgePixel = true; }
+        if (!edgePixel && y < H - 1 && ink[index + W] <= 2) { edgePixel = true; }
+        if (edgePixel) { mask[index] = 1; }
+      }
+    }
+    return { ink: ink, mask: mask };
+  }
+
+  function meanInk(ink) {
+    var sum = 0;
+    for (var i = 0; i < ink.length; i += 1) { sum += ink[i]; }
+    return sum / ink.length;
+  }
+
+  function meanLum(pixels) {
+    var sum = 0;
+    var count = pixels.length / 4;
+    for (var i = 0; i < pixels.length; i += 4) {
+      sum += lumAt(pixels, i);
+    }
+    return sum / count;
+  }
+
+  var metricRows = [];
+  var results = {};
+
+  try {
+    var rendererB = createRenderer(canvasB, true);
+    var rendererC = createRenderer(canvasC, false);
+
+    drawGrass(rendererB, 1, null);
+    var samples = rendererB.gl.getParameter(rendererB.gl.SAMPLES);
+    var pixelsB = readPixels(rendererB.gl, null);
+
+    var target2x = makeTarget(rendererC.gl, W * 2, H * 2, rendererC.gl.LINEAR);
+    drawGrass(rendererC, 2, target2x);
+    downsample(rendererC, target2x);
+    var pixelsC = readPixels(rendererC.gl, null);
+
+    var lumA = new Float32Array(W * H);
+    for (var p = 0; p < W * H; p += 1) {
+      lumA[p] = lumAt(imageA.data, p * 4);
+    }
+    var edgeData = buildEdgeMask(lumA);
+
+    var lumB = new Float32Array(W * H);
+    var lumC = new Float32Array(W * H);
+    for (var q = 0; q < W * H; q += 1) {
+      lumB[q] = lumAt(pixelsB, q * 4);
+      lumC[q] = lumAt(pixelsC, q * 4);
+    }
+
+    results.AB = {
+      all: compare(imageA.data, pixelsB, null),
+      edge: compare(imageA.data, pixelsB, edgeData.mask)
+    };
+    results.AC = {
+      all: compare(imageA.data, pixelsC, null),
+      edge: compare(imageA.data, pixelsC, edgeData.mask)
+    };
+    results.BC = {
+      all: compare(pixelsB, pixelsC, null)
+    };
+    results.ink = {
+      A: meanInk(edgeData.ink),
+      B: tokens.paperLum - meanLum(pixelsB),
+      C: tokens.paperLum - meanLum(pixelsC)
+    };
+    results.ink.AB = results.ink.A - results.ink.B;
+    results.ink.AC = results.ink.A - results.ink.C;
+
+    // 4× 局部：在 A 中找 ink 密度最高的 64×64 窗口。
+    var best = { x: 0, y: 0, score: -1 };
+    for (var oy = 0; oy <= H - cropSize; oy += 16) {
+      for (var ox = 0; ox <= W - cropSize; ox += 16) {
+        var score = 0;
+        for (var yy = oy; yy < oy + cropSize; yy += 4) {
+          for (var xx = ox; xx < ox + cropSize; xx += 4) {
+            score += edgeData.ink[yy * W + xx];
+          }
+        }
+        if (score > best.score) { best = { x: ox, y: oy, score: score }; }
+      }
+    }
+    results.crop = { x: best.x, y: best.y, size: cropSize, scale: 4 };
+
+    var sourceA = document.createElement("canvas");
+    sourceA.width = W;
+    sourceA.height = H;
+    sourceA.getContext("2d").putImageData(imageA, 0, 0);
+    var sourceB = document.createElement("canvas");
+    sourceB.width = W;
+    sourceB.height = H;
+    sourceB.getContext("2d").putImageData(new ImageData(pixelsB, W, H), 0, 0);
+    var sourceC = document.createElement("canvas");
+    sourceC.width = W;
+    sourceC.height = H;
+    sourceC.getContext("2d").putImageData(new ImageData(pixelsC, W, H), 0, 0);
+
+    var crops = [
+      { canvas: document.getElementById("crop-a"), source: sourceA },
+      { canvas: document.getElementById("crop-b"), source: sourceB },
+      { canvas: document.getElementById("crop-c"), source: sourceC }
+    ];
+    for (var c = 0; c < crops.length; c += 1) {
+      var cropCtx = crops[c].canvas.getContext("2d");
+      cropCtx.imageSmoothingEnabled = false;
+      cropCtx.clearRect(0, 0, 256, 256);
+      cropCtx.drawImage(crops[c].source, best.x, best.y, cropSize, cropSize, 0, 0, 256, 256);
+    }
+
+    function row(compareName, area, values) {
+      var tr = document.createElement("tr");
+      var cells = [compareName, area, values.mean.toFixed(3), values.p99, values.max,
+        (values.over2Ratio * 100).toFixed(3) + "%", (values.identicalRatio * 100).toFixed(2) + "%"];
+      for (var i = 0; i < cells.length; i += 1) {
+        var td = document.createElement("td");
+        td.textContent = cells[i];
+        tr.appendChild(td);
+      }
+      return tr;
+    }
+    metricsBody.innerHTML = "";
+    metricRows.push(row("A↔B", "all", results.AB.all));
+    metricRows.push(row("A↔B", "edge", results.AB.edge));
+    metricRows.push(row("A↔C", "all", results.AC.all));
+    metricRows.push(row("A↔C", "edge", results.AC.edge));
+    for (var r = 0; r < metricRows.length; r += 1) {
+      metricsBody.appendChild(metricRows[r]);
+    }
+
+    var paramsEls = document.querySelectorAll("[data-param]");
+    var paramText = {
+      blades: String(blades.length),
+      canvas: W + "×" + H,
+      inkA: results.ink.A.toFixed(3),
+      inkB: results.ink.B.toFixed(3),
+      inkC: results.ink.C.toFixed(3),
+      inkAB: results.ink.AB.toFixed(3),
+      inkAC: results.ink.AC.toFixed(3),
+      samples: String(samples)
+    };
+    for (var e = 0; e < paramsEls.length; e += 1) {
+      paramsEls[e].textContent = paramText[paramsEls[e].getAttribute("data-param")];
+    }
+
+    var rendererInfo = rendererB.gl.getExtension("WEBGL_debug_renderer_info");
+    var rendererName = rendererInfo ? rendererB.gl.getParameter(rendererInfo.UNMASKED_RENDERER_WEBGL) : rendererB.gl.getParameter(rendererB.gl.RENDERER);
+    // 判定口径：草带平均墨量差 <= 0.005（约 1.3% 的 A 墨量）且边缘均值 <= 3.0、p99 <= 12；
+    // 不满足时记录升级需求，不用单项指标掩盖另一项。
+    var thresholds = { ink: 0.005, edgeMean: 3.0, edgeP99: 12, edgeMax: 24 };
+    var acceptable = function (metrics, inkDelta) {
+      return Math.abs(inkDelta) <= thresholds.ink &&
+        metrics.edge.mean <= thresholds.edgeMean &&
+        metrics.edge.p99 <= thresholds.edgeP99 &&
+        metrics.edge.max <= thresholds.edgeMax;
+    };
+    var preferred = acceptable(results.AB, results.ink.AB) ? "B" : (acceptable(results.AC, results.ink.AC) ? "C" : "need-upgrade");
+
+    window.spikeGrassResult = {
+      page: "grass-aa",
+      date: new Date().toISOString(),
+      viewport: [window.innerWidth, window.innerHeight],
+      canvas: { width: W, height: H },
+      blades: blades.length,
+      phase: 0,
+      crop: results.crop,
+      params: {
+        sway: tokens.sway,
+        grassHeight: tokens.grassHeight,
+        windStrength: tokens.windStrength,
+        windDirection: tokens.windDirection,
+        alphaFar: tokens.alphaFar,
+        alphaNear: tokens.alphaNear
+      },
+      metrics: {
+        AB: results.AB,
+        AC: results.AC,
+        BC: results.BC,
+        ink: results.ink
+      },
+      msaaSamples: samples,
+      preferred: preferred,
+      thresholds: thresholds,
+      environment: {
+        userAgent: navigator.userAgent,
+        webglRenderer: rendererName,
+        glVersion: rendererB.gl.getParameter(rendererB.gl.VERSION),
+        antialias: rendererB.gl.getContextAttributes().antialias,
+        devicePixelRatio: window.devicePixelRatio
+      }
+    };
+    window.spikeGrassReady = true;
+    statusEl.textContent = "完成：A↔B edge mean=" + results.AB.edge.mean.toFixed(3) +
+      "，A↔C edge mean=" + results.AC.edge.mean.toFixed(3) +
+      "；MSAA samples=" + samples + "；按阈值选中 " + preferred + "。window.spikeGrassResult 已就绪。";
+  } catch (error) {
+    fail(error.message);
+  }
+})();
+</script>
+</body>
+</html>

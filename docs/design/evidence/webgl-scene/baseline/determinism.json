@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-21T15:06:18.7560641+08:00",
+  "method": "test/scene-capture.mjs 连续两次；reduce 偏好；1440x900 与 390x844 × day/night",
+  "pairs": [
+    {
+      "file": "1440-day.png",
+      "sha256": "bb85f6dd306b3e4c08de894b5a0d91bed283187dd23441c23790a814cf4a2f70",
+      "secondRunSha256": "bb85f6dd306b3e4c08de894b5a0d91bed283187dd23441c23790a814cf4a2f70",
+      "identical": true
+    },
+    {
+      "file": "1440-night.png",
+      "sha256": "29db2b9c29f7769beb104d8446ac6903bc73d6425f5ad29e2e60ff1e1c242377",
+      "secondRunSha256": "29db2b9c29f7769beb104d8446ac6903bc73d6425f5ad29e2e60ff1e1c242377",
+      "identical": true
+    },
+    {
+      "file": "390-day.png",
+      "sha256": "e507e7605ab92893b6372056c3deb25abc7dbc877dc32ed3f6969a51f50bab28",
+      "secondRunSha256": "e507e7605ab92893b6372056c3deb25abc7dbc877dc32ed3f6969a51f50bab28",
+      "identical": true
+    },
+    {
+      "file": "390-night.png",
+      "sha256": "e229cb5e471002c319084e539cf753e87a3800baf8a90261066e5c7a9007c4e5",
+      "secondRunSha256": "e229cb5e471002c319084e539cf753e87a3800baf8a90261066e5c7a9007c4e5",
+      "identical": true
+    },
+    {
+      "file": "base-1440-day.png",
+      "sha256": "6a66900675bb32464dfd4b7536645150a92924dd681c299506446499e497fa77",
+      "secondRunSha256": "6a66900675bb32464dfd4b7536645150a92924dd681c299506446499e497fa77",
+      "identical": true
+    },
+    {
+      "file": "base-1440-night.png",
+      "sha256": "6b89019b921989b5f029487db3ed35dd0ec3e5be3b00ff91fc9c7d6d41e595f8",
+      "secondRunSha256": "6b89019b921989b5f029487db3ed35dd0ec3e5be3b00ff91fc9c7d6d41e595f8",
+      "identical": true
+    },
+    {
+      "file": "base-390-day.png",
+      "sha256": "cbcf8688ee3b6e7e5a83b07c46958fb4295f24e37879c36bd4934e85acb74fcf",
+      "secondRunSha256": "cbcf8688ee3b6e7e5a83b07c46958fb4295f24e37879c36bd4934e85acb74fcf",
+      "identical": true
+    },
+    {
+      "file": "base-390-night.png",
+      "sha256": "d8bac06a0b4dbb8a79069ebb43ebd14f38f4bb128f005953d7b5e5709bcaec25",
+      "secondRunSha256": "d8bac06a0b4dbb8a79069ebb43ebd14f38f4bb128f005953d7b5e5709bcaec25",
+      "identical": true
+    }
+  ]
+}

@@ -1,0 +1,560 @@
+{
+  "date": "2026-10-21T08:16:25.864Z",
+  "method": "node test/scene-diff.mjs；每像素取 RGB 最大绝对差；reduce 静态首帧与静态底色纹理",
+  "pairs": [
+    {
+      "kind": "final",
+      "width": 1440,
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-day.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        },
+        "pixels": 1296000,
+        "mean": 0.28663194444444445,
+        "p95": 2,
+        "p99": 5,
+        "p999": 10,
+        "max": 35,
+        "lumaA": 241.69797900315118,
+        "lumaB": 241.75446776302508,
+        "lumaDelta": 0.05648875987391781,
+        "overThreshold": 53157,
+        "overThresholdRatio": 0.0410162037037037,
+        "overEight": 2896,
+        "overEightRatio": 0.002234567901234568,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "static-layer",
+      "width": 1440,
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\base-1440-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\base-1440-day.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        },
+        "pixels": 1296000,
+        "mean": 0.004106481481481482,
+        "p95": 0,
+        "p99": 0,
+        "p999": 2,
+        "max": 12,
+        "lumaA": 243.0949479658524,
+        "lumaB": 243.09437060860057,
+        "lumaDelta": -0.000577357251840977,
+        "overThreshold": 573,
+        "overThresholdRatio": 0.0004421296296296296,
+        "overEight": 2,
+        "overEightRatio": 0.0000015432098765432098,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "final",
+      "width": 1440,
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-night.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        },
+        "pixels": 1296000,
+        "mean": 0.23316743827160494,
+        "p95": 2,
+        "p99": 5,
+        "p999": 9,
+        "max": 26,
+        "lumaA": 46.461513419312205,
+        "lumaB": 46.5586242896829,
+        "lumaDelta": 0.09711087037069883,
+        "overThreshold": 41385,
+        "overThresholdRatio": 0.03193287037037037,
+        "overEight": 1372,
+        "overEightRatio": 0.001058641975308642,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "static-layer",
+      "width": 1440,
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\base-1440-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\base-1440-night.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 900
+        },
+        "pixels": 1296000,
+        "mean": 0.007094907407407407,
+        "p95": 0,
+        "p99": 0,
+        "p999": 3,
+        "max": 34,
+        "lumaA": 50.07505718146123,
+        "lumaB": 50.07987912945507,
+        "lumaDelta": 0.004821947993842862,
+        "overThreshold": 1307,
+        "overThresholdRatio": 0.0010084876543209876,
+        "overEight": 152,
+        "overEightRatio": 0.00011728395061728395,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "final",
+      "width": 390,
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\390-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\390-day.png",
+        "size": [
+          390,
+          844
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        },
+        "pixels": 329160,
+        "mean": 0.3701512942034269,
+        "p95": 3,
+        "p99": 6,
+        "p999": 11,
+        "max": 31,
+        "lumaA": 240.66758896394327,
+        "lumaB": 240.74582418814833,
+        "lumaDelta": 0.07823522420506573,
+        "overThreshold": 17918,
+        "overThresholdRatio": 0.054435532871551826,
+        "overEight": 977,
+        "overEightRatio": 0.0029681613804836554,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "static-layer",
+      "width": 390,
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\base-390-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\base-390-day.png",
+        "size": [
+          390,
+          844
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        },
+        "pixels": 329160,
+        "mean": 0.004690727913476729,
+        "p95": 0,
+        "p99": 0,
+        "p999": 2,
+        "max": 8,
+        "lumaA": 243.08882548798303,
+        "lumaB": 243.0879492271981,
+        "lumaDelta": -0.0008762607849597467,
+        "overThreshold": 188,
+        "overThresholdRatio": 0.0005711508081176328,
+        "overEight": 0,
+        "overEightRatio": 0,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "final",
+      "width": 390,
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\390-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\390-night.png",
+        "size": [
+          390,
+          844
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        },
+        "pixels": 329160,
+        "mean": 0.3076892696560943,
+        "p95": 2,
+        "p99": 5,
+        "p999": 9,
+        "max": 27,
+        "lumaA": 47.547067805783115,
+        "lumaB": 47.68313331738844,
+        "lumaDelta": 0.1360655116053249,
+        "overThreshold": 14369,
+        "overThresholdRatio": 0.04365354235022482,
+        "overEight": 458,
+        "overEightRatio": 0.001391420585733382,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "kind": "static-layer",
+      "width": 390,
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\base-390-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\base-390-night.png",
+        "size": [
+          390,
+          844
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 390,
+          "h": 844
+        },
+        "pixels": 329160,
+        "mean": 0.007440150686596184,
+        "p95": 0,
+        "p99": 0,
+        "p999": 3,
+        "max": 20,
+        "lumaA": 50.05936570458777,
+        "lumaB": 50.06472569243566,
+        "lumaDelta": 0.005359987847884781,
+        "overThreshold": 363,
+        "overThresholdRatio": 0.0011028071454611738,
+        "overEight": 36,
+        "overEightRatio": 0.0001093693036820999,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    }
+  ],
+  "regions": [
+    {
+      "name": "grass",
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-day.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 60,
+          "y": 660,
+          "w": 500,
+          "h": 100
+        },
+        "pixels": 50000,
+        "mean": 0.84166,
+        "p95": 4,
+        "p99": 7,
+        "p999": 12,
+        "max": 16,
+        "lumaA": 232.70864344387627,
+        "lumaB": 232.8768163638757,
+        "lumaDelta": 0.1681729199993983,
+        "overThreshold": 6828,
+        "overThresholdRatio": 0.13656,
+        "overEight": 276,
+        "overEightRatio": 0.00552,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "grass",
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-night.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 60,
+          "y": 660,
+          "w": 500,
+          "h": 100
+        },
+        "pixels": 50000,
+        "mean": 0.66608,
+        "p95": 4,
+        "p99": 6,
+        "p999": 10,
+        "max": 15,
+        "lumaA": 53.2224241640241,
+        "lumaB": 53.503298024023145,
+        "lumaDelta": 0.28087385999904946,
+        "overThreshold": 5166,
+        "overThresholdRatio": 0.10332,
+        "overEight": 123,
+        "overEightRatio": 0.00246,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "water",
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-day.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 993,
+          "y": 630,
+          "w": 303,
+          "h": 126
+        },
+        "pixels": 38178,
+        "mean": 0.7042537587092043,
+        "p95": 3,
+        "p99": 7,
+        "p999": 11,
+        "max": 17,
+        "lumaA": 227.10123524546907,
+        "lumaB": 227.22069761122768,
+        "lumaDelta": 0.11946236575859062,
+        "overThreshold": 2825,
+        "overThresholdRatio": 0.073995494787574,
+        "overEight": 188,
+        "overEightRatio": 0.004924301954004924,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "water",
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-night.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 993,
+          "y": 630,
+          "w": 303,
+          "h": 126
+        },
+        "pixels": 38178,
+        "mean": 0.6615328199486615,
+        "p95": 3,
+        "p99": 6,
+        "p999": 10,
+        "max": 13,
+        "lumaA": 55.27751544346161,
+        "lumaB": 55.446019173357634,
+        "lumaDelta": 0.16850372989601933,
+        "overThreshold": 2148,
+        "overThresholdRatio": 0.05626276913405626,
+        "overEight": 72,
+        "overEightRatio": 0.001885902876001886,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "sky",
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-day.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 480
+        },
+        "pixels": 691200,
+        "mean": 0.011472800925925926,
+        "p95": 0,
+        "p99": 0,
+        "p999": 4,
+        "max": 35,
+        "lumaA": 248.60241078904136,
+        "lumaB": 248.61332102225808,
+        "lumaDelta": 0.010910233216731015,
+        "overThreshold": 842,
+        "overThresholdRatio": 0.0012181712962962962,
+        "overEight": 321,
+        "overEightRatio": 0.00046440972222222223,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "sky",
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-night.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1440,
+          "h": 480
+        },
+        "pixels": 691200,
+        "mean": 0.007939814814814814,
+        "p95": 0,
+        "p99": 0,
+        "p999": 3,
+        "max": 26,
+        "lumaA": 41.53051811259369,
+        "lumaB": 41.5372908738784,
+        "lumaDelta": 0.006772761284702466,
+        "overThreshold": 763,
+        "overThresholdRatio": 0.001103877314814815,
+        "overEight": 162,
+        "overEightRatio": 0.000234375,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "center",
+      "theme": "day",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-day.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-day.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 430,
+          "y": 420,
+          "w": 620,
+          "h": 90
+        },
+        "pixels": 55800,
+        "mean": 0.0025448028673835128,
+        "p95": 0,
+        "p99": 0,
+        "p999": 1,
+        "max": 2,
+        "lumaA": 241.82363917550418,
+        "lumaB": 241.8241603690527,
+        "lumaDelta": 0.000521193548509564,
+        "overThreshold": 0,
+        "overThresholdRatio": 0,
+        "overEight": 0,
+        "overEightRatio": 0,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "center",
+      "theme": "night",
+      "metrics": {
+        "a": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\baseline\\1440-night.png",
+        "b": "E:\\File\\self\\github\\waitforit-theme\\docs\\design\\evidence\\webgl-scene\\after\\static\\1440-night.png",
+        "size": [
+          1440,
+          900
+        ],
+        "region": {
+          "x": 430,
+          "y": 420,
+          "w": 620,
+          "h": 90
+        },
+        "pixels": 55800,
+        "mean": 0.0030465949820788533,
+        "p95": 0,
+        "p99": 0,
+        "p999": 1,
+        "max": 1,
+        "lumaA": 48.860518179219525,
+        "lumaB": 48.8620261147034,
+        "lumaDelta": 0.001507935483871515,
+        "overThreshold": 0,
+        "overThresholdRatio": 0,
+        "overEight": 0,
+        "overEightRatio": 0,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    }
+  ]
+}

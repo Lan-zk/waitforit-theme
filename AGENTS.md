@@ -6,7 +6,7 @@
 
 真实站点内容不在本仓库。本仓库只允许 `exampleSite/` 下的虚构 fixture；真实个人数据、文章、图片、品牌素材不进入。
 
-当前阶段：P3 签名能力已实现并通过本地验收，`signature-capabilities` 已同步主规范并于 2026-10-21 归档；P2 `theme-skeleton` 已同步规范并归档。品牌轮廓、草地窄溪场景、代码复制、OG 与原生页面转场的契约见 `docs/signature-capabilities.md`，Resting Lamb 场景已实现并同步主规范（活动变更 `resting-lamb-scene`），当前证据见 `docs/design/evidence/resting-lamb-scene/`，最新交接见 `docs/handoff/2026-10-21-resting-lamb-scene.md`；P3 海面证据保留为历史。下一步 P4 跨引擎/真实设备/辅助技术、CI 浏览器门禁与发布文档；`README.md` 安装段仍未写，主题不声称可安装。
+当前阶段：P3 签名能力已实现并通过本地验收，`signature-capabilities` 已同步主规范并于 2026-10-21 归档；P2 `theme-skeleton` 已同步规范并归档。Resting Lamb 场景的渲染器已迁移到 WebGL2 并同步主规范，变更 `webgl-scene` 已归档于 `openspec/changes/archive/2026-10-21-webgl-scene/`，证据见 `docs/design/evidence/webgl-scene/`，最新交接见 `docs/handoff/2026-10-21-webgl-scene.md`；旧活动变更 `resting-lamb-scene` 已实现但尚未归档。品牌轮廓、草地窄溪场景、代码复制、OG 与原生页面转场的契约见 `docs/signature-capabilities.md`，P3 海面与 Canvas 2D 场景证据保留为历史。下一步 P4 跨引擎/真实设备/辅助技术、CI 浏览器门禁与发布文档；`README.md` 安装段仍未写，主题不声称可安装。
 
 ## 硬边界
 
@@ -63,7 +63,7 @@ layouts/_partials/
 i18n/{en,zh}.toml
 archetypes/posts.md
 exampleSite/{hugo.toml,content/}
-test/{probe,signature,fidelity,scene-visibility,shoot}.mjs # 零依赖 CDP 验收与截图（Node ≥ 22）
+test/{probe,signature,fidelity,scene-visibility,scene-performance,scene-tuner,scene-capture,scene-diff,shoot}.mjs # 零依赖 CDP 验收与截图（Node ≥ 22）
 .github/workflows/ci.yml     # Hugo 0.146.0 / 0.168.0 矩阵 + 资产门禁 + 弃用审计
 docs/{decisions.md,handoff/,design/}
 docs/design/{transfer-matrix.md,fidelity-matrix.md,spikes/,reference/,evidence/}
