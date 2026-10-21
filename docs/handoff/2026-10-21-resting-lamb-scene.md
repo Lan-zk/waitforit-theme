@@ -1,6 +1,6 @@
 # Resting Lamb 场景交接
 
-用户要求按 `docs/design/resting-lamb-scene-brief.md` 实际实现并看效果。本轮完成原创Canvas 2D单色低伏草地与偏右窄溪，取代海面。当前活动变更 `resting-lamb-scene` 已实现并同步主规范；未归档、提交或推送。
+用户要求按 `docs/design/resting-lamb-scene-brief.md` 实际实现并看效果。本轮完成原创Canvas 2D单色低伏草地与偏右窄溪，取代海面。该变更已归档于 `openspec/changes/archive/2026-10-21-resting-lamb-scene/`，本轮提交并推送。
 
 > 历史交接：场景渲染器随后由 D32 / 已归档变更 `2026-10-21-webgl-scene` 迁移为 WebGL2；最新交接见 `docs/handoff/2026-10-21-webgl-scene.md`。本文描述的 Canvas 2D 实现仅作历史记录。
 
