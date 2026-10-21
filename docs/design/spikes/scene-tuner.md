@@ -22,8 +22,8 @@ node scripts/preview-scene.mjs --root /tmp/wf-scene-preview --port 8821
 | stream-bend | 正弦弯曲幅度 / 视口宽度百分比 | 9.5% |
 | stream-curve | 从远到近的正弦相位跨度 / 弧度，越大弯曲越多 | 5.3 |
 | shore-softness | 前景浅岸过渡标称宽度 / CSS px，远处按深度收窄 | 25px |
-| stream-amplitude | 细波虚拟高度 / vh | 0.4 |
-| grass-density / grass-height | 草簇数 / 草高的倍率 | 1.45 / 1.3 |
+| stream-amplitude | 波面起伏强度 / vh（0.4vh为材质基准） | 0.4 |
+| grass-density / grass-height | 草叶数 / 草高的倍率 | 1.45 / 1.3 |
 | grass-sway | 草梢摆动的标称幅度 / CSS px | 12px |
 | wind-strength / wind-direction | 草水共用的风力倍率 / 方向（1向右，-1向左） | 1 / 1 |
 | motion-wind-cycle | 基础风相位周期 / 秒，越长越慢 | 12s |

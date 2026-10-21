@@ -4,7 +4,7 @@
 
 ## 最新覆盖
 
-用户随后回传16项参数并要求更明显的交叉水波，已按JSON采纳为默认值。当前构图为26.5vw溪宽、55vh地平线、25px浅岸、12px草摆；水面改为平衡受光的三向叠波。**本页以下数值和截图为上一轮历史**；最新参数、相同参数的前后对照、昼夜录像与报告见 [crossing-waves](crossing-waves/README.md)。
+当前为实站对照后的材质优化：多尺度反射水纹、清晰尖叶与固定星点，保留用户的16项默认参数。**本页以下为早期历史**；最新截图、录像、检查与性能见 [natural-landscape](natural-landscape/README.md)。上一轮参数和交叉波对照保存在 [crossing-waves](crossing-waves/README.md)。
 
 ## 效果
 

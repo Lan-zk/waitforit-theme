@@ -38,3 +38,9 @@ A fictional instrument records: north 021 / south 034 / east 055 / west 089 / ti
 ## Back to the letter
 
 [Read the first letter]({{< relref "posts/first-letter" >}}) or [return to this heading](#a-small-program).
+
+## A quiet sky
+
+This fictional meadow keeps its roots still under the wind. Thin blades bend beside a stream; crossing ripples catch broken reflections, and small stars remain fixed above the horizon.
+
+<!-- Scene acceptance: at 1440/390, day/night, blades have pointed silhouettes and fixed roots; water has intersecting ridges and moving highlights; sky points are visible outside the reading area. Reduced motion freezes the scene; no-JS leaves this text readable. -->

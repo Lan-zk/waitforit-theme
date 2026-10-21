@@ -22,7 +22,7 @@ try {
   await navigateAndWait(cdp, url);
   await sleep(500);
   const initial = await ev(`({sliders:document.querySelectorAll('input[type=range]').length,canvas:document.querySelector('iframe').contentDocument.querySelector('canvas').width,viewport:document.querySelector('iframe').contentWindow.innerWidth})`);
-  check('actual-theme-preview', initial.sliders === 15 && initial.canvas === 640 && initial.viewport === 1440, initial);
+  check('actual-theme-preview', initial.sliders === 15 && initial.canvas === 1440 && initial.viewport === 1440, initial);
   check('defaults-match-theme-tokens', await ev(`Object.entries(JSON.parse(document.getElementById('json').value).css).every(([key,value])=>getComputedStyle(document.documentElement).getPropertyValue(key).trim()===value)`));
   await ev(`document.getElementById('still').click();true`); await sleep(200);
   const before = await ev(`document.querySelector('iframe').contentDocument.querySelector('canvas').toDataURL()`);

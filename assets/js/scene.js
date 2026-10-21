@@ -1,4 +1,4 @@
-/* 安歇草地与溪流：静态地形缓存、共用风场、草簇与浅水柔岸，24fps 上限；reduce/saveData/后台/离页暂停。 */
+/* 安歇草地与溪流：静态地形缓存、共用风场、尖叶、星点与浅水柔岸，24fps 上限；reduce/saveData/后台/离页暂停。 */
 (function () {
   "use strict";
 
@@ -60,6 +60,10 @@
   var buffers = [];
   var grass = [];
   var rippleField = null;
+  var rippleStep = 1;
+  var rippleWidth = 0;
+  var rippleHeight = 0;
+  var stars = [];
   var streamBounds = null;
   var streamPath = null;
   var width = 0;
@@ -106,9 +110,13 @@
       return seed / 4294967296;
     }
 
+    stars = [];
+    for (var star = 0; star < Math.round(cssWidth * cssHeight / 4200); star += 1) {
+      stars.push({ x: random() * width, y: random() * horizonY * 0.9, radius: (0.45 + Math.pow(random(), 3) * 1.05) * scale, opacity: 0.25 + random() * 0.65 });
+    }
     grass = [];
     // 同一份固定几何用于昼夜；只有草梢偏移，不在每帧重新抽样。
-    var count = Math.round((small ? 1200 : 3800) * palettes.day.density);
+    var count = Math.round((small ? 2100 : 6500) * palettes.day.density);
     for (var i = 0; i < count; i += 1) {
       var x = random() * width;
       var depth = Math.pow(random(), 0.8);
@@ -124,9 +132,10 @@
       }
       grass.push({
         x: x, y: y, depth: depth,
-        length: palettes.day.grassHeight * (2 + Math.pow(depth, 1.1) * 16) * scale * (0.65 + random() * 0.7),
-        lean: (random() - 0.7) * 4 * scale,
-        opacity: 0.45 + random() * 0.55,
+        length: palettes.day.grassHeight * (2 + Math.pow(depth, 1.35) * 29) * scale * (0.4 + random() * 1.15),
+        lean: (random() - 0.5) * 17 * scale * depth,
+        breadth: (0.3 + random() * 0.65) * scale * (0.25 + depth),
+        opacity: 0.28 + random() * 0.72,
         active: depth > 0.16
       });
     }
@@ -142,12 +151,14 @@
       var rootX = bank.x + side * (bank.half + (random() - 0.15) * shoreWidth(d));
       grass.push({
         x: rootX, y: bank.y, depth: d,
-        length: palettes.day.grassHeight * (4 + d * 14) * scale * (0.7 + random() * 0.6),
-        lean: -side * (3 + d * 3) * scale,
+        length: palettes.day.grassHeight * (4 + d * 26) * scale * (0.7 + random() * 0.6),
+        lean: -side * (3 + d * 7) * scale,
+        breadth: (0.4 + random() * 0.7) * scale * (0.3 + d),
         opacity: 0.3 + random() * 0.45,
         active: true
       });
     }
+    grass.sort(function (a, b) { return a.y - b.y; });
     var left = width;
     var right = 0;
     streamPath = new Path2D();
@@ -169,7 +180,11 @@
     left = Math.max(0, Math.min(width - 1, left));
     right = Math.max(left + 1, Math.min(width, right));
     streamBounds = { x: Math.floor(left), y: Math.floor(horizonY), width: Math.ceil(right) - Math.floor(left), height: height - Math.floor(horizonY) };
-    rippleField = new Float32Array(streamBounds.width * streamBounds.height);
+    // 水面单独采样；草叶和星点保留屏幕像素，不随水面缓冲放大。
+    rippleStep = Math.max(1, width / 900);
+    rippleWidth = Math.ceil(streamBounds.width / rippleStep);
+    rippleHeight = Math.ceil(streamBounds.height / rippleStep);
+    rippleField = new Float32Array(rippleWidth * rippleHeight);
   }
 
   function drawGrass(context, blade, colors, moving) {
@@ -178,18 +193,18 @@
     var footerFade = 1 - 0.65 * Math.exp(-Math.pow((blade.y / height - 0.90) / 0.07, 2));
     var wind = moving ? windAt(blade.x / width, depth) : 0;
     var sway = wind * palettes.day.windDirection * palettes.day.sway * scale * (0.35 + depth * 0.65);
-    context.globalAlpha = strength * blade.opacity * footerFade * Math.min(1, depth * 8) * (moving ? 1.15 : 1);
-    context.strokeStyle = colors.ink;
-    context.lineWidth = Math.max(0.4, scale * (0.45 + depth * 0.35));
+    context.globalAlpha = strength * blade.opacity * footerFade * Math.min(1, depth * 8) * (moving ? 0.95 : 1);
+    context.fillStyle = colors.ink;
+    var tip = blade.x + blade.lean + sway;
+    var top = blade.y - blade.length * (1 - wind * 0.1);
+    var bend = blade.x + blade.lean * 0.18 + sway * 0.3;
+    // 两条弧收拢为尖叶，根部有宽度；近景叶片更长，逐渐显出独立轮廓。
     context.beginPath();
-    for (var i = -1; i <= 1; i += 1) {
-      var spread = i * blade.length * 0.24;
-      var tip = blade.x + blade.lean + spread + sway;
-      var top = blade.y - blade.length * (i === 0 ? 1 : 0.72) * (1 - wind * 0.14);
-      context.moveTo(blade.x + i * scale, blade.y);
-      context.quadraticCurveTo(blade.x + blade.lean * 0.25 + spread * 0.2 + sway * 0.35, top + blade.length * 0.38, tip, top);
-    }
-    context.stroke();
+    context.moveTo(blade.x, blade.y);
+    context.quadraticCurveTo(bend, top + blade.length * 0.3, tip, top);
+    context.quadraticCurveTo(bend + blade.breadth, top + blade.length * 0.48, blade.x + blade.breadth, blade.y);
+    context.closePath();
+    context.fill();
     context.globalAlpha = 1;
   }
 
@@ -225,6 +240,15 @@
       }
     }
     context.putImageData(pixels, 0, 0);
+    context.fillStyle = colors.ink;
+    for (var star = 0; star < stars.length; star += 1) {
+      var point = stars[star];
+      context.globalAlpha = point.opacity * (colors.night ? 0.8 : 0.22);
+      context.beginPath();
+      context.arc(point.x, point.y, point.radius, 0, Math.PI * 2);
+      context.fill();
+    }
+    context.globalAlpha = 1;
     for (var i = 0; i < grass.length; i += 1) {
       if (!grass[i].active) {
         drawGrass(context, grass[i], colors, false);
@@ -241,7 +265,7 @@
     if (nextCssWidth !== cssWidth || nextCssHeight !== cssHeight) {
       cssWidth = nextCssWidth;
       cssHeight = nextCssHeight;
-      width = Math.min(640, Math.max(240, Math.round(cssWidth * 0.65)));
+      width = Math.min(1440, Math.round(cssWidth));
       height = Math.max(1, Math.round(width * cssHeight / cssWidth));
       scale = width / cssWidth;
       horizonY = height * palettes.day.horizon;
@@ -261,8 +285,8 @@
         }
         var colors = palettes[canvas.getAttribute("data-wf-canvas")];
         var ripples = document.createElement("canvas");
-        ripples.width = streamBounds.width;
-        ripples.height = streamBounds.height;
+        ripples.width = rippleWidth;
+        ripples.height = rippleHeight;
         var rippleContext = ripples.getContext("2d");
         if (!rippleContext) {
           continue;
@@ -276,36 +300,43 @@
   }
 
   function paintRipples() {
-    var amplitude = palettes.day.waterAmplitude * height / (height - horizonY) * 2;
-    var aspect = width / height;
-    // 延续原海面的三向叠波，降低纹理频率；让斜光同时显出三组坡度，避免平行条带。
-    for (var y = 0; y < streamBounds.height; y += 1) {
-      var depth = Math.max(0, (y + streamBounds.y - horizonY) / (height - horizonY));
+    var amplitude = palettes.day.waterAmplitude / 0.004;
+    // 竖屏保持横向细节尺度，避免窄水道只截到平行波纹的一小段。
+    var aspect = Math.max(1, width / height);
+    var time = phase * palettes.day.windStrength;
+    for (var y = 0; y < rippleHeight; y += 1) {
+      var depth = Math.max(0, (y * rippleStep + streamBounds.y - horizonY) / (height - horizonY));
       var creek = stream(depth);
-      var distance = 2 / (depth + 0.08);
-      var detail = 1 / (1 + distance * 0.025);
-      var strength = palettes.day.alphaFar + (palettes.day.alphaNear - palettes.day.alphaFar) * Math.sqrt(depth);
-      var start = Math.max(0, Math.floor(creek.x - creek.half - shoreWidth(depth) * 0.8 - streamBounds.x));
-      var end = Math.min(streamBounds.width, Math.ceil(creek.x + creek.half + shoreWidth(depth) * 0.8 - streamBounds.x));
+      var distance = 1.6 / (depth + 0.12);
+      var wind = windAt(creek.x / width, depth);
+      var force = amplitude * (0.65 + wind * 0.35);
+      var flow = time * 0.16;
+      // 透视距离向远处增大；加上时间偏移使等相位波脊向近岸移动。
+      var z = distance + flow;
+      var detail = Math.min(1, depth * 7);
+      var start = Math.max(0, Math.floor((creek.x - creek.half - shoreWidth(depth) * 0.8 - streamBounds.x) / rippleStep));
+      var end = Math.min(rippleWidth, Math.ceil((creek.x + creek.half + shoreWidth(depth) * 0.8 - streamBounds.x) / rippleStep));
       for (var x = start; x < end; x += 1) {
-        var wind = windAt((x + streamBounds.x) / width, depth);
-        var force = 0.45 + wind * 0.55;
-        var drift = (phase * palettes.day.windStrength + wind * 0.7) * palettes.day.windDirection;
-        var rayX = ((x + streamBounds.x) / width - 0.5) * aspect * 1.15 - wind * palettes.day.windDirection * 0.018;
-        var worldX = rayX * distance;
-        var a = worldX * 5.58 + distance * 7.56 - drift;
-        var b = worldX * -8.1 + distance * 12.96 + drift * 0.72 + 0.9;
-        var c = worldX * 13.86 + distance * 5.04 - drift * 1.4 + 2.3;
-        var waveHeight = amplitude * force * (Math.sin(a) * 0.42 + Math.sin(b) * 0.34 + Math.sin(c) * 0.24);
-        var z = distance * (1 - waveHeight / 1.5);
-        worldX = rayX * z;
-        var ca = Math.cos(worldX * 5.58 + z * 7.56 - drift);
-        var cb = Math.cos(worldX * -8.1 + z * 12.96 + drift * 0.72 + 0.9);
-        var cc = Math.cos(worldX * 13.86 + z * 5.04 - drift * 1.4 + 2.3);
-        var slopeX = amplitude * force * (2.3436 * ca - 2.754 * cb + 3.3264 * cc);
-        var slopeZ = amplitude * force * (3.1752 * ca + 4.4064 * cb + 1.2096 * cc);
-        var shadow = Math.max(0, Math.min(1, 0.48 + (slopeX * 0.55 + slopeZ * 1.8) * detail * 2.2));
-        rippleField[y * streamBounds.width + x] = strength * (0.18 + shadow * 0.9);
+        // 随河道中心弯曲的透视坐标：水向近景流动，风在同一时钟上横向推动细波。
+        var worldX = (x * rippleStep + streamBounds.x - creek.x) / width * aspect * distance;
+        var drift = time * palettes.day.windDirection;
+        var a = worldX * 9 + z * 18 - drift * 0.3;
+        var b = worldX * -13 + z * 29 + drift * 0.23 + 1.7;
+        var c = worldX * 21 + z * 47 - drift * 0.51 + 2.8;
+        var warp = force * (Math.sin(a) * 0.42 + Math.sin(b) * 0.24);
+        var ca = Math.cos(a + warp * distance * 0.35);
+        var cb = Math.cos(b + warp * distance * 0.5);
+        var cc = Math.cos(c + warp * distance * 0.7);
+        var cd = Math.cos(worldX * -43 + z * 83 + warp * 2 - drift * 0.8);
+        var ce = Math.cos(worldX * 71 + z * 143 + warp * 3 + drift * 0.65);
+        var nx = force * (ca * 0.17 - cb * 0.18 + cc * 0.12 - cd * 0.055 * detail + ce * 0.025 * detail);
+        var nz = force * (ca * 0.32 + cb * 0.23 + cc * 0.13 + cd * 0.075 * detail + ce * 0.035 * detail);
+        // 以坡面朝向产生宽反射与窄波脊；高光只落在局部坡面，避免把每道波都描成等宽亮线。
+        var facing = (nz * 0.92 + nx * 0.38) / Math.sqrt(1 + nx * nx + nz * nz);
+        var reflection = Math.exp(-((nx - 0.08) * (nx - 0.08) * 30 + (nz - 0.22) * (nz - 0.22) * 38));
+        var glint = Math.pow(reflection, 5) * (0.35 + 0.65 * Math.pow(Math.max(0, Math.sin(b * 0.53 + c * 0.21)), 2));
+        var shade = 0.46 + facing * 0.7 - reflection * reflection * 0.24 - glint * 0.3;
+        rippleField[y * rippleWidth + x] = Math.max(0.015, Math.min(0.95, shade));
       }
     }
 
@@ -315,20 +346,22 @@
       var pixels = target.pixels.data;
       var paper = colors.paperRGB;
       var ink = colors.inkRGB;
-      for (var py = 0; py < streamBounds.height; py += 1) {
-        var d = Math.max(0, (py + streamBounds.y - horizonY) / (height - horizonY));
+      for (var py = 0; py < rippleHeight; py += 1) {
+        var d = Math.max(0, (py * rippleStep + streamBounds.y - horizonY) / (height - horizonY));
         var p = stream(d);
-        var from = Math.max(0, Math.floor(p.x - p.half - shoreWidth(d) * 0.8 - streamBounds.x));
-        var to = Math.min(streamBounds.width, Math.ceil(p.x + p.half + shoreWidth(d) * 0.8 - streamBounds.x));
+        var strength = colors.alphaFar + (colors.alphaNear - colors.alphaFar) * Math.sqrt(d);
+        var from = Math.max(0, Math.floor((p.x - p.half - shoreWidth(d) * 0.8 - streamBounds.x) / rippleStep));
+        var to = Math.min(rippleWidth, Math.ceil((p.x + p.half + shoreWidth(d) * 0.8 - streamBounds.x) / rippleStep));
         for (var px = from; px < to; px += 1) {
-          var index = py * streamBounds.width + px;
-          var shade = rippleField[index] * ink[3] / 255;
+          var index = py * rippleWidth + px;
+          var field = rippleField[index];
+          var shade = strength * (colors.night ? 0.03 + (1 - field) * 0.55 + Math.max(0, 0.3 - field) * 2.6 : field * 1.3) * ink[3] / 255;
           var offset = index * 4;
-          var bankFade = waterCoverage(px + streamBounds.x, d, p);
+          var bankFade = waterCoverage(px * rippleStep + streamBounds.x, d, p);
           pixels[offset] = paper[0] + (ink[0] - paper[0]) * shade;
           pixels[offset + 1] = paper[1] + (ink[1] - paper[1]) * shade;
           pixels[offset + 2] = paper[2] + (ink[2] - paper[2]) * shade;
-          pixels[offset + 3] = 255 * bankFade * (1 - Math.exp(-d * 10)) * 0.72;
+          pixels[offset + 3] = 255 * bankFade * (1 - Math.exp(-d * 10));
         }
       }
       target.rippleContext.putImageData(target.pixels, 0, 0);
@@ -347,7 +380,7 @@
       context.drawImage(target.base, 0, 0);
       context.save();
       context.clip(streamPath);
-      context.drawImage(target.ripples, streamBounds.x, streamBounds.y);
+      context.drawImage(target.ripples, streamBounds.x, streamBounds.y, rippleWidth * rippleStep, rippleHeight * rippleStep);
       context.restore();
       for (var k = 0; k < grass.length; k += 1) {
         if (grass[k].active) {

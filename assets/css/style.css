@@ -1041,7 +1041,7 @@ html:not(.js) .wf-hero {
   padding-bottom: var(--wf-space-sm);
 }
 
-/* 首页让近景草地与窄溪露出；阅读页仍保留完整纸光保护。 */
+/* 首页顶部露出固定星点，文字周围保留纸光，再向草地与溪流淡出。 */
 .wf-is-home .wf-veil {
-  mask-image: linear-gradient(to bottom, var(--wf-pure-white) var(--wf-home-veil-start), transparent var(--wf-home-veil-end));
+  mask-image: linear-gradient(to bottom, transparent, var(--wf-pure-white) var(--wf-home-veil-start), transparent var(--wf-home-veil-end));
 }

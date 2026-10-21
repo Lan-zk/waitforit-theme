@@ -19,7 +19,7 @@ try {
     const curve=CanvasRenderingContext2D.prototype.quadraticCurveTo;
     window.wfGrassFrame=[];
     CanvasRenderingContext2D.prototype.moveTo=function(x,y){if(this.canvas.matches('[data-wf-canvas="day"]')){this.wfRoot=[x,y];}return move.call(this,x,y);};
-    CanvasRenderingContext2D.prototype.quadraticCurveTo=function(cx,cy,x,y){if(this.canvas.matches('[data-wf-canvas="day"]')&&this.wfRoot){wfGrassFrame.push([this.wfRoot[0],this.wfRoot[1],x,y]);}return curve.call(this,cx,cy,x,y);};
+    CanvasRenderingContext2D.prototype.quadraticCurveTo=function(cx,cy,x,y){if(this.canvas.matches('[data-wf-canvas="day"]')&&this.wfRoot){wfGrassFrame.push([this.wfRoot[0],this.wfRoot[1],x,y]);this.wfRoot=null;}return curve.call(this,cx,cy,x,y);};
     const clip=CanvasRenderingContext2D.prototype.clip;
     CanvasRenderingContext2D.prototype.clip=function(path,...args){if(this.canvas.matches('[data-wf-canvas="day"]')){window.wfWaterPath=path;}return clip.call(this,path,...args);};
     window.wfSceneDraws=0;
@@ -38,7 +38,7 @@ try {
       await reloadAndWait(cdp);
       await evaluateInPage(cdp,'document.fonts.ready.then(()=>true)');await sleep(1000);
       const cached=await evaluateInPage(cdp,'wfSceneBase.toDataURL()');
-      const tipsBefore=await evaluateInPage(cdp,'wfGrassFrame.filter((_,i)=>i%3===0)');
+      const tipsBefore=await evaluateInPage(cdp,'wfGrassFrame');
       const shots=[];
       for(let frame=0;frame<2;frame++) {
         if(frame){await sleep(6000);}
@@ -46,7 +46,7 @@ try {
         shots.push(shot.data);fs.writeFileSync(path.join(out,`${width}-${theme}-${frame}.png`),Buffer.from(shot.data,'base64'));
       }
       const staticGround=cached===await evaluateInPage(cdp,'wfSceneBase.toDataURL()');
-      const tipsAfter=await evaluateInPage(cdp,'wfGrassFrame.filter((_,i)=>i%3===0)');
+      const tipsAfter=await evaluateInPage(cdp,'wfGrassFrame');
       const scale=await evaluateInPage(cdp,`document.querySelector('[data-wf-canvas="day"]').width/innerWidth`);
       let rootsFixed=tipsBefore.length===tipsAfter.length,pairs=0,sameDirection=0;
       const motion=[];
