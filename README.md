@@ -2,7 +2,7 @@
 
 Hugo 个人站点主题，提供博客、随笔、作品、小说、摄影和个人介绍六个入口。首页只显示诗篇 23:2，经菜单进入内容；背景为原创 WebGL2 草地与溪流。
 
-当前为开发预览，尚未发布首个版本。以下安装示例锁定已推送的 `eac4e4e`，不依赖不存在的 tag。测试范围为桌面 Chrome，以及 Chrome 中的窄屏模拟；不声明其他浏览器、手机真机或读屏软件已经通过验收。
+首个版本 `v0.1.0` 已发布，以下安装示例锁定该 tag。测试范围为桌面 Chrome，以及 Chrome 中的窄屏模拟；不声明其他浏览器、手机真机或读屏软件已经通过验收。
 
 ## 要求
 
@@ -36,7 +36,7 @@ hugo mod init example.invalid/my-site
 锁定主题版本：
 
 ```bash
-hugo mod get github.com/Lan-zk/waitforit-theme@eac4e4e
+hugo mod get github.com/Lan-zk/waitforit-theme@v0.1.0
 ```
 
 提交站点的 `go.mod` 和 `go.sum`。以后升级时显式选择新的提交或已发布版本。
@@ -46,7 +46,7 @@ hugo mod get github.com/Lan-zk/waitforit-theme@eac4e4e
 ```bash
 git init
 git submodule add https://github.com/Lan-zk/waitforit-theme.git themes/waitforit-theme
-git -C themes/waitforit-theme checkout eac4e4e
+git -C themes/waitforit-theme checkout v0.1.0
 ```
 
 在站点 `hugo.toml` 中添加：
@@ -173,7 +173,7 @@ node scripts/check-assets.mjs
 WF_SOFTWARE_WEBGL=1 node test/ci.mjs --out /tmp/waitforit-browser-evidence
 ```
 
-`HUGO_BIN` 可指定 Hugo 路径，`CHROME_PATH` 可指定 Chrome。CI 与本地共用入口，失败返回非零并保留结果；软件 WebGL 用于功能检查，性能采样应另外使用 `WF_NATIVE_GPU=1 node test/scene-performance.mjs --url <preview-url>` 并核对实际 renderer。
+`HUGO_BIN` 可指定 Hugo 路径，`CHROME_PATH` 可指定 Chrome。前两条是 CI 每次推送执行的门禁；`test/ci.mjs` 是发版前的浏览器验收，CI 不执行（D40），由维护者本地运行。失败返回非零并保留结果；软件 WebGL 用于功能检查，性能采样应另外使用 `WF_NATIVE_GPU=1 node test/scene-performance.mjs --url <preview-url>` 并核对实际 renderer。
 
 ## 许可
 

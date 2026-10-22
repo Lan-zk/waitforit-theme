@@ -1,6 +1,8 @@
 # waitforit-theme CI
 # 版本策略（D33）：固定当前稳定版 0.168.0 执行验收，另设每周对 latest 的构建与弃用审计；
 # 只支持最新稳定版，不再维护 0.146.0 旧版矩阵。
+# 浏览器验收不在 CI 执行（D40）：Chrome 套件由维护者在发版前本地运行 `node test/ci.mjs`，
+# CI 只保留 Hugo 构建、资产与设计契约门禁。
 # 依据：REL-01（不需要 extended）、REL-05/REL-08（INFO 级弃用需单独审计）、REL-09（离线构建）。
 name: CI
 
@@ -19,48 +21,6 @@ env:
   HUGO_VERSION: "0.168.0"
 
 jobs:
-  browser:
-    name: browser and consumer variants
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: ${{ env.HUGO_VERSION }}
-          extended: false
-
-      # 中文fixture依赖系统CJK字体；缺字体时Chromium只画空白字形，页面高度和截图都与本地不一致。
-      - name: Install CJK fonts
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk
-
-      - name: Show browser version
-        run: google-chrome --version
-
-      - name: Browser gates (software WebGL)
-        env:
-          WF_SOFTWARE_WEBGL: "1"
-        run: node test/ci.mjs --out "${RUNNER_TEMP}/wf-browser-evidence"
-
-      - name: Upload browser evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: browser-evidence
-          path: ${{ runner.temp }}/wf-browser-evidence
-          if-no-files-found: warn
-
   build:
     name: build (Hugo 0.168.0)
     runs-on: ubuntu-latest

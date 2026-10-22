@@ -492,3 +492,21 @@ signature-capabilities 的13项任务已完成。先同步 asset-licensing 的�
 按用户指定顺序推进：审核并同步归档content-types → 补Chrome自动验收和消费者配置覆盖 → 当前电脑Chrome检查 → 安装文档与发布交付。小说/摄影通用fixture、个人介绍普通页按D34处理，不能用早期占位页描述否定当前样本。content-types同步时修正规范中的两处旧文字：只有一页时隐藏分页控件；文案覆盖示例使用现存的waitforit.nav.blog键。实现行为不变。
 
 本轮验证范围仅Chrome，窄屏属于模拟；不要求Safari、Firefox、手机真机或读屏软件，也不把Chrome可访问树检查称为读屏实测。浏览器CI复用现有Node/CDP工具，生产构建不增加依赖；完整fixture执行unused-template覆盖审计，最小消费者无需使用所有可选模板但其余WARN仍失败（TPL-14/15、REL-07）。本地通过与GitHub执行成功分别记录。当前不凭软件WebGL成本把内容页场景改成只在首页动画，用户可按现有features.scene关闭场景。
+
+## D39 · 首个版本 v0.1.0（2026-10-22）
+
+状态：用户要求远端CI通过后发布首个tag；远端run通过后执行。版本号取0.x，因为验收范围只有Chrome与窄屏模拟、未投递主题目录，对外仍按预览声明。
+
+- annotated tag `v0.1.0` 指向发布提交；CHANGELOG由Unreleased改为 `v0.1.0 - 2026-10-22`。
+- README安装示例由提交 `eac4e4e` 改为 `v0.1.0`；以后只钉已推送的tag或提交，不引用不存在的tag。
+- 发布门槛：远端CI的build与browser作业均success；本地通过与远端执行分别记录。其他浏览器、手机真机与读屏软件仍为未覆盖项，不随本版本声明（沿用D38）。
+- 首轮远端运行暴露的两处CI问题按实现缺陷修正：滚动中点改用 `(scrollHeight - clientHeight) / 2`；browser作业安装 `fonts-noto-cjk`，避免中文fixture渲染为空白字形。
+
+## D40 · 浏览器验收退出 CI（2026-10-22）
+
+状态：用户决定CI不再执行浏览器作业，只保留Hugo构建，理由是复杂度高、容易失败。本条取代D39发布门槛中“browser作业均success”一项，D39其余内容不变；D38的Chrome验收范围不变；`openspec/changes/browser-ci` 的“CI SHALL执行”要求在归档前按本条修订。
+
+- 远端证据：browser作业两次已完成运行均失败。第一次是`immersive-reading`滚动中点算错（真实缺陷，已修）；第二次14项检查中13项通过，唯一失败是`stream-flow`在390夜间矩阵6个采样仅4个过相关系数0.80阈值（要求5/6），最近的一个为0.7817。后者是软件WebGL下像素相关阈值的误判，说明测量类断言不适合作每次推送的阻断门禁。
+- 保留：`build`作业（`check-assets.mjs`、`--panicOnWarning`构建、弃用审计）与每周latest校验继续在CI执行，远端门禁只剩Hugo构建。
+- 浏览器验收降级为发版前本地步骤：`WF_SOFTWARE_WEBGL=1 node test/ci.mjs`。脚本、五组消费者fixture与证据产物保留，不删除，也不随推送执行。
+- 发布门槛改为远端`build`成功加发版前本地浏览器套件通过；两项分别记录，不把本地通过称为远端全绿。README的验证范围与未覆盖项沿用D38。
