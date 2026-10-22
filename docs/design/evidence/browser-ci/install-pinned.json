@@ -1,0 +1,9 @@
+{
+  "module": "module example.invalid/fictional-pinned-consumer\n\ngo 1.22\n\nrequire github.com/Lan-zk/waitforit-theme v0.0.0-20261021151923-eac4e4eef70b // indirect\n",
+  "buildExit": 0,
+  "home": true,
+  "404": true,
+  "styles": true,
+  "webFonts": true,
+  "docsNotPublished": true
+}

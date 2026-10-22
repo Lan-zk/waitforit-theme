@@ -1,0 +1,679 @@
+[
+  {
+    "name": "default-navigation",
+    "ok": true,
+    "detail": {
+      "language": "en",
+      "links": [
+        {
+          "name": "Blog",
+          "path": "/blog/"
+        },
+        {
+          "name": "Essays",
+          "path": "/essays/"
+        },
+        {
+          "name": "Projects",
+          "path": "/projects/"
+        },
+        {
+          "name": "Fiction",
+          "path": "/fiction/"
+        },
+        {
+          "name": "Photography",
+          "path": "/photography/"
+        },
+        {
+          "name": "About",
+          "path": "/about/"
+        }
+      ],
+      "languages": 1,
+      "hero": "He makes me lie down in green pastures\nhe leads me beside quiet waters",
+      "mainHeight": 813,
+      "viewport": 813,
+      "canvases": 2,
+      "sceneScript": true,
+      "transition": "none",
+      "css": "#2e2d2b"
+    }
+  },
+  {
+    "name": "default-/blog/",
+    "ok": true,
+    "detail": {
+      "name": "Blog",
+      "path": "/blog/"
+    }
+  },
+  {
+    "name": "default-/essays/",
+    "ok": true,
+    "detail": {
+      "name": "Essays",
+      "path": "/essays/"
+    }
+  },
+  {
+    "name": "default-/projects/",
+    "ok": true,
+    "detail": {
+      "name": "Projects",
+      "path": "/projects/"
+    }
+  },
+  {
+    "name": "default-/fiction/",
+    "ok": true,
+    "detail": {
+      "name": "Fiction",
+      "path": "/fiction/"
+    }
+  },
+  {
+    "name": "default-/photography/",
+    "ok": true,
+    "detail": {
+      "name": "Photography",
+      "path": "/photography/"
+    }
+  },
+  {
+    "name": "default-/about/",
+    "ok": true,
+    "detail": {
+      "name": "About",
+      "path": "/about/"
+    }
+  },
+  {
+    "name": "default-asset-/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2"
+  },
+  {
+    "name": "default-asset-/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2"
+  },
+  {
+    "name": "default-asset-/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css"
+  },
+  {
+    "name": "default-asset-/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css"
+  },
+  {
+    "name": "default-asset-/css/transitions.min.655fd867c30b4214a948e22469f359ea9ca151a5a0fe9afb911356583c1f9746.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/css/transitions.min.655fd867c30b4214a948e22469f359ea9ca151a5a0fe9afb911356583c1f9746.css"
+  },
+  {
+    "name": "default-asset-/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js"
+  },
+  {
+    "name": "default-asset-/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js"
+  },
+  {
+    "name": "default-asset-/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59100/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js"
+  },
+  {
+    "name": "default-accessibility-structure",
+    "ok": true,
+    "detail": {
+      "roles": [
+        "RootWebArea",
+        "generic",
+        "link",
+        "banner",
+        "main",
+        "contentinfo",
+        "StaticText",
+        "link",
+        "navigation",
+        "region",
+        "navigation",
+        "button",
+        "InlineTextBox",
+        "button",
+        "heading",
+        "paragraph",
+        "link",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox"
+      ],
+      "unnamedButtons": 0
+    }
+  },
+  {
+    "name": "single-navigation",
+    "ok": true,
+    "detail": {
+      "language": "en",
+      "links": [
+        {
+          "name": "Blog",
+          "path": "/blog/"
+        },
+        {
+          "name": "Essays",
+          "path": "/essays/"
+        },
+        {
+          "name": "Projects",
+          "path": "/projects/"
+        },
+        {
+          "name": "Fiction",
+          "path": "/fiction/"
+        },
+        {
+          "name": "Photography",
+          "path": "/photography/"
+        },
+        {
+          "name": "About",
+          "path": "/about/"
+        }
+      ],
+      "languages": 0,
+      "hero": "He makes me lie down in green pastures\nhe leads me beside quiet waters",
+      "mainHeight": 813,
+      "viewport": 813,
+      "canvases": 2,
+      "sceneScript": true,
+      "transition": "none",
+      "css": "#2e2d2b"
+    }
+  },
+  {
+    "name": "single-/blog/",
+    "ok": true,
+    "detail": {
+      "name": "Blog",
+      "path": "/blog/"
+    }
+  },
+  {
+    "name": "single-/essays/",
+    "ok": true,
+    "detail": {
+      "name": "Essays",
+      "path": "/essays/"
+    }
+  },
+  {
+    "name": "single-/projects/",
+    "ok": true,
+    "detail": {
+      "name": "Projects",
+      "path": "/projects/"
+    }
+  },
+  {
+    "name": "single-/fiction/",
+    "ok": true,
+    "detail": {
+      "name": "Fiction",
+      "path": "/fiction/"
+    }
+  },
+  {
+    "name": "single-/photography/",
+    "ok": true,
+    "detail": {
+      "name": "Photography",
+      "path": "/photography/"
+    }
+  },
+  {
+    "name": "single-/about/",
+    "ok": true,
+    "detail": {
+      "name": "About",
+      "path": "/about/"
+    }
+  },
+  {
+    "name": "single-language",
+    "ok": true,
+    "detail": {
+      "language": "en",
+      "links": [
+        {
+          "name": "Blog",
+          "path": "/blog/"
+        },
+        {
+          "name": "Essays",
+          "path": "/essays/"
+        },
+        {
+          "name": "Projects",
+          "path": "/projects/"
+        },
+        {
+          "name": "Fiction",
+          "path": "/fiction/"
+        },
+        {
+          "name": "Photography",
+          "path": "/photography/"
+        },
+        {
+          "name": "About",
+          "path": "/about/"
+        }
+      ],
+      "languages": 0,
+      "hero": "He makes me lie down in green pastures\nhe leads me beside quiet waters",
+      "mainHeight": 813,
+      "viewport": 813,
+      "canvases": 2,
+      "sceneScript": true,
+      "transition": "none",
+      "css": "#2e2d2b"
+    }
+  },
+  {
+    "name": "single-asset-/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2"
+  },
+  {
+    "name": "single-asset-/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2"
+  },
+  {
+    "name": "single-asset-/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css"
+  },
+  {
+    "name": "single-asset-/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css"
+  },
+  {
+    "name": "single-asset-/css/transitions.min.655fd867c30b4214a948e22469f359ea9ca151a5a0fe9afb911356583c1f9746.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/css/transitions.min.655fd867c30b4214a948e22469f359ea9ca151a5a0fe9afb911356583c1f9746.css"
+  },
+  {
+    "name": "single-asset-/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js"
+  },
+  {
+    "name": "single-asset-/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js"
+  },
+  {
+    "name": "single-asset-/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59101/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js"
+  },
+  {
+    "name": "single-accessibility-structure",
+    "ok": true,
+    "detail": {
+      "roles": [
+        "RootWebArea",
+        "generic",
+        "link",
+        "banner",
+        "main",
+        "contentinfo",
+        "StaticText",
+        "link",
+        "navigation",
+        "region",
+        "button",
+        "InlineTextBox",
+        "button",
+        "heading",
+        "paragraph",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox"
+      ],
+      "unnamedButtons": 0
+    }
+  },
+  {
+    "name": "custom-menu-replaces-default",
+    "ok": true,
+    "detail": {
+      "language": "en",
+      "links": [
+        {
+          "name": "Fixture about",
+          "path": "/about/"
+        },
+        {
+          "name": "Fixture writing",
+          "path": "/blog/"
+        }
+      ],
+      "languages": 1,
+      "hero": "He makes me lie down in green pastures\nhe leads me beside quiet waters",
+      "mainHeight": 813,
+      "viewport": 813,
+      "canvases": 2,
+      "sceneScript": true,
+      "transition": "none",
+      "css": "#2e2d2b"
+    }
+  },
+  {
+    "name": "custom-asset-/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2"
+  },
+  {
+    "name": "custom-asset-/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2"
+  },
+  {
+    "name": "custom-asset-/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css"
+  },
+  {
+    "name": "custom-asset-/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css"
+  },
+  {
+    "name": "custom-asset-/css/transitions.min.655fd867c30b4214a948e22469f359ea9ca151a5a0fe9afb911356583c1f9746.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/css/transitions.min.655fd867c30b4214a948e22469f359ea9ca151a5a0fe9afb911356583c1f9746.css"
+  },
+  {
+    "name": "custom-asset-/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js"
+  },
+  {
+    "name": "custom-asset-/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js"
+  },
+  {
+    "name": "custom-asset-/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59102/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js"
+  },
+  {
+    "name": "custom-accessibility-structure",
+    "ok": true,
+    "detail": {
+      "roles": [
+        "RootWebArea",
+        "generic",
+        "link",
+        "banner",
+        "main",
+        "contentinfo",
+        "StaticText",
+        "link",
+        "navigation",
+        "region",
+        "navigation",
+        "button",
+        "InlineTextBox",
+        "button",
+        "heading",
+        "paragraph",
+        "link",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox"
+      ],
+      "unnamedButtons": 0
+    }
+  },
+  {
+    "name": "minimal-defaults",
+    "ok": true,
+    "detail": {
+      "language": "en",
+      "links": [
+        {
+          "name": "Home",
+          "path": "/"
+        }
+      ],
+      "languages": 0,
+      "hero": "He makes me lie down in green pastures\nhe leads me beside quiet waters",
+      "mainHeight": 813,
+      "viewport": 813,
+      "canvases": 2,
+      "sceneScript": true,
+      "transition": "none",
+      "css": "#2e2d2b"
+    }
+  },
+  {
+    "name": "minimal-no-js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/"
+  },
+  {
+    "name": "minimal-asset-/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2"
+  },
+  {
+    "name": "minimal-asset-/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2"
+  },
+  {
+    "name": "minimal-asset-/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css"
+  },
+  {
+    "name": "minimal-asset-/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css"
+  },
+  {
+    "name": "minimal-asset-/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js"
+  },
+  {
+    "name": "minimal-asset-/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js"
+  },
+  {
+    "name": "minimal-asset-/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59103/js/scene.min.840c798b3da6d20cfe0888c11350b80489ed7a85f9d8bb24a17da7723b6dc72f.js"
+  },
+  {
+    "name": "minimal-accessibility-structure",
+    "ok": true,
+    "detail": {
+      "roles": [
+        "RootWebArea",
+        "link",
+        "banner",
+        "main",
+        "contentinfo",
+        "StaticText",
+        "link",
+        "navigation",
+        "region",
+        "InlineTextBox",
+        "generic",
+        "heading",
+        "paragraph",
+        "list",
+        "StaticText",
+        "StaticText",
+        "listitem",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "link",
+        "StaticText",
+        "InlineTextBox"
+      ],
+      "unnamedButtons": 0
+    }
+  },
+  {
+    "name": "features-disabled",
+    "ok": true,
+    "detail": {
+      "language": "en",
+      "links": [
+        {
+          "name": "Blog",
+          "path": "/blog/"
+        },
+        {
+          "name": "Essays",
+          "path": "/essays/"
+        },
+        {
+          "name": "Projects",
+          "path": "/projects/"
+        },
+        {
+          "name": "Fiction",
+          "path": "/fiction/"
+        },
+        {
+          "name": "Photography",
+          "path": "/photography/"
+        },
+        {
+          "name": "About",
+          "path": "/about/"
+        }
+      ],
+      "languages": 1,
+      "hero": "He makes me lie down in green pastures\nhe leads me beside quiet waters",
+      "mainHeight": 813,
+      "viewport": 813,
+      "canvases": 0,
+      "sceneScript": false,
+      "transition": "none",
+      "css": "#2e2d2b"
+    }
+  },
+  {
+    "name": "disabled-asset-/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59104/fonts/newsreader-latin-var.5a254819f3f3ce601359016c82c690419198a03446372f228e6be66961dd7763.woff2"
+  },
+  {
+    "name": "disabled-asset-/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2",
+    "ok": true,
+    "detail": "http://127.0.0.1:59104/fonts/commit-mono-400-latin.4baaa6da8b79878519eab74c02f89b16f126f8699b212be4f3c4c0aa2b0b1984.woff2"
+  },
+  {
+    "name": "disabled-asset-/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59104/css/fonts.ed9a255db0158a2da1fb3bec7ffa11d333f60a68385b5ac1192c4eec94715e97.css"
+  },
+  {
+    "name": "disabled-asset-/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css",
+    "ok": true,
+    "detail": "http://127.0.0.1:59104/css/main.min.05034063bbca1e65e3dcbe74bea08ac39d5c1aebc92e8709cb58444d7adf044a.css"
+  },
+  {
+    "name": "disabled-asset-/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59104/js/theme.min.cbcb4bd260de9d15aa8379184f31f84cbf2b9be0312e55e41db0240e2546366c.js"
+  },
+  {
+    "name": "disabled-asset-/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js",
+    "ok": true,
+    "detail": "http://127.0.0.1:59104/js/ui.min.78ab3546b3079d404c097e896e0c1cc21ac5dcff145b94f446585d1393e00edb.js"
+  },
+  {
+    "name": "disabled-accessibility-structure",
+    "ok": true,
+    "detail": {
+      "roles": [
+        "RootWebArea",
+        "generic",
+        "link",
+        "banner",
+        "main",
+        "contentinfo",
+        "StaticText",
+        "link",
+        "navigation",
+        "region",
+        "navigation",
+        "button",
+        "InlineTextBox",
+        "button",
+        "heading",
+        "paragraph",
+        "link",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "StaticText",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox",
+        "InlineTextBox"
+      ],
+      "unnamedButtons": 0
+    }
+  }
+]

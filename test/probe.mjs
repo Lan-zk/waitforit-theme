@@ -506,7 +506,7 @@ export async function launchBrowser({ browserPath, width, height, hideScrollbars
     `--user-data-dir=${profileDir}`,
     '--no-first-run',
     '--no-default-browser-check',
-    '--disable-gpu',
+    ...(process.env.WF_NATIVE_GPU === '1' ? [] : ['--disable-gpu']),
     // Linux/CI 无 GPU 时允许软件 WebGL；Windows 保持系统软件后端（WARP），与迁移前证据口径一致。
     ...(process.platform === 'linux' || process.env.WF_SOFTWARE_WEBGL === '1' ? ['--enable-unsafe-swiftshader'] : []),
     '--disable-dev-shm-usage',

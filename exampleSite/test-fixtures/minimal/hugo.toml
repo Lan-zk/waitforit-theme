@@ -1,0 +1,6 @@
+baseURL = "https://example.com/"
+title = "A fictional minimal site"
+defaultContentLanguage = "en"
+[[menus.main]]
+  name = "Home"
+  url = "/"

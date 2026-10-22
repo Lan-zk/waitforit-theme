@@ -26,10 +26,12 @@ try {
     WebGL2RenderingContext.prototype.clear=function(...args){if(this.canvas&&this.canvas.matches&&this.canvas.matches('[data-wf-canvas="day"]')&&this.getParameter(this.FRAMEBUFFER_BINDING)===null){window.wfDraws++;}return clear.apply(this,args);};
     window.wfTransition=null;
     addEventListener('pagereveal',event=>{
-      window.wfTransition={active:!!event.viewTransition};
+      window.wfTransition={active:!!event.viewTransition, ready:false, revealedAt:performance.now()};
       if(event.viewTransition){event.viewTransition.ready.then(()=>{
+        window.wfTransition.ready=true;
+        window.wfTransition.readyAt=performance.now();
         window.wfTransition.animations=document.getAnimations().map(a=>({name:a.animationName,pseudo:a.effect?.pseudoElement,duration:a.effect?.getTiming().duration}));
-      }).catch(()=>{});}
+      }).catch(error=>{window.wfTransition.error={name:error.name,message:error.message};});}
     });
   ` });
   await cdp.send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
@@ -106,10 +108,23 @@ try {
       }
     }
   }
+  // Wait for the destination's transition result, not a fixed delay in the old document.
+  const destination = await ev(`document.querySelector('.wf-logo').href`);
   await ev(`document.querySelector('.wf-logo').click();true`);
-  await sleep(1000);
-  const nav = await ev(`({active:wfTransition?.active,animations:wfTransition?.animations,name:getComputedStyle(document.querySelector('main')).viewTransitionName})`);
-  check('cross-document-transition', nav.active && nav.name === 'wf-reading' && nav.animations.some(a => a.name === 'wf-page-in' && a.duration === 520) && nav.animations.some(a => a.name === 'wf-page-out' && a.duration === 220), nav);
+  let nav;
+  const transitionDeadline = Date.now() + 10000;
+  while (Date.now() < transitionDeadline) {
+    try {
+      nav = await ev(`({url:location.href,...wfTransition,name:getComputedStyle(document.querySelector('main')).viewTransitionName})`);
+      if (nav.url === destination && (nav.ready || nav.error)) {
+        break;
+      }
+    } catch {
+      // Navigation can replace the execution context between two CDP requests.
+    }
+    await sleep(50);
+  }
+  check('cross-document-transition', nav?.url === destination && nav.active && nav.ready && nav.name === 'wf-reading' && nav.animations?.some(a => a.name === 'wf-page-in' && a.duration === 520) && nav.animations?.some(a => a.name === 'wf-page-out' && a.duration === 220), nav);
   await go('signature-check/');
   await ev(`document.querySelector('main').scrollTop=200;true`); await sleep(100);
   await go('essays/');

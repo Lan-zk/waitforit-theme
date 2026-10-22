@@ -1,0 +1,11 @@
+name = "waitforit"
+license = "MIT"
+licenselink = "https://github.com/Lan-zk/waitforit-theme/blob/main/LICENSE"
+description = "A personal Hugo theme with writing, projects, and a meadow beside quiet water."
+homepage = "https://github.com/Lan-zk/waitforit-theme"
+tags = ["blog", "personal", "portfolio", "minimal", "multilingual"]
+features = ["dark-mode", "multilingual", "webgl"]
+
+[author]
+  name = "Lan-zk"
+  homepage = "https://github.com/Lan-zk"

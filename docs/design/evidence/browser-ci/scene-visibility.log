@@ -1,0 +1,5 @@
+PASS 1440 day: grass 0.24285479824623105, water 0.47048903878583476, center 0, neighbors 0.998, roots true, static true, reduce true
+PASS 1440 night: grass 0.2231131743687135, water 0.32107925801011805, center 0, neighbors 0.998, roots true, static true, reduce true
+PASS 390 day: grass 0.2984162267296471, water 0.23104693140794225, center 0, neighbors 0.984, roots true, static true, reduce true
+PASS 390 night: grass 0.2790126887098268, water 0.3637184115523466, center 0, neighbors 0.984, roots true, static true, reduce true
+PASS context-loss: {"before":6,"during":9,"stableWhileLost":true,"restored":21,"resumed":true,"errors":[]}

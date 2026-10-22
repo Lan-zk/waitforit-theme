@@ -19,6 +19,42 @@ env:
   HUGO_VERSION: "0.168.0"
 
 jobs:
+  browser:
+    name: browser and consumer variants
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: false
+
+      - name: Show browser version
+        run: google-chrome --version
+
+      - name: Browser gates (software WebGL)
+        env:
+          WF_SOFTWARE_WEBGL: "1"
+        run: node test/ci.mjs --out "${RUNNER_TEMP}/wf-browser-evidence"
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-evidence
+          path: ${{ runner.temp }}/wf-browser-evidence
+          if-no-files-found: warn
+
   build:
     name: build (Hugo 0.168.0)
     runs-on: ubuntu-latest

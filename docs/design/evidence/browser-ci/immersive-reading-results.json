@@ -1,0 +1,520 @@
+{
+  "passed": 28,
+  "total": 28,
+  "results": [
+    {
+      "name": "home-1440-day",
+      "ok": true,
+      "detail": {
+        "copy": "他使我躺卧在青草地上\n领我在可安歇的水边",
+        "tracking": 2.848,
+        "fontSize": 35.6,
+        "footerHidden": true,
+        "languages": 1,
+        "logo": "rgb(53, 52, 49)",
+        "ink": "rgb(53, 52, 49)",
+        "cursor": "url(\"http://127.0.0.1:57545/cursors/cursor-dark.svg\") 23 3, auto"
+      }
+    },
+    {
+      "name": "compact-tags-1440-day",
+      "ok": true,
+      "detail": {
+        "height": 24,
+        "intro": false
+      }
+    },
+    {
+      "name": "first-1440-day",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 0,
+        "top": 0,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": 151,
+        "lastTop": 1765.984375,
+        "lastBottom": 1893.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "middle-1440-day",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 1035,
+        "top": 1,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": -884,
+        "lastTop": 730.984375,
+        "lastBottom": 858.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "rendered-blur-pixels",
+      "ok": true,
+      "detail": {
+        "a": "/tmp/wf-p4-ci-final/immersive-reading/edge-without-blur.png",
+        "b": "/tmp/wf-p4-ci-final/immersive-reading/edge-with-blur.png",
+        "size": [
+          760,
+          90
+        ],
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 760,
+          "h": 90
+        },
+        "pixels": 68400,
+        "mean": 20.66842105263158,
+        "p95": 145,
+        "p99": 184,
+        "p999": 189,
+        "max": 194,
+        "lumaA": 230.3852662453531,
+        "lumaB": 243.59612129802366,
+        "lumaDelta": 13.210855052670551,
+        "overThreshold": 39176,
+        "overThresholdRatio": 0.5727485380116959,
+        "overEight": 21857,
+        "overEightRatio": 0.31954678362573097,
+        "identical": false,
+        "threshold": 2,
+        "expectIdentical": false
+      }
+    },
+    {
+      "name": "last-1440-day",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 1169,
+        "top": 1,
+        "bottom": 0,
+        "edgeHeight": 90,
+        "titleTop": -1018,
+        "lastTop": 596.984375,
+        "lastBottom": 724.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "focus-clear-1440-day",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "top": 253,
+        "bottom": 277,
+        "edge": 90,
+        "height": 900
+      }
+    },
+    {
+      "name": "home-1440-night",
+      "ok": true,
+      "detail": {
+        "copy": "他使我躺卧在青草地上\n领我在可安歇的水边",
+        "tracking": 2.848,
+        "fontSize": 35.6,
+        "footerHidden": true,
+        "languages": 1,
+        "logo": "rgba(240, 240, 240, 0.8)",
+        "ink": "rgba(240, 240, 240, 0.8)",
+        "cursor": "url(\"http://127.0.0.1:57545/cursors/cursor-light.svg\") 23 3, auto"
+      }
+    },
+    {
+      "name": "compact-tags-1440-night",
+      "ok": true,
+      "detail": {
+        "height": 24,
+        "intro": false
+      }
+    },
+    {
+      "name": "first-1440-night",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 0,
+        "top": 0,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": 151,
+        "lastTop": 1765.984375,
+        "lastBottom": 1893.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "middle-1440-night",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 1035,
+        "top": 1,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": -884,
+        "lastTop": 730.984375,
+        "lastBottom": 858.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "last-1440-night",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 1169,
+        "top": 1,
+        "bottom": 0,
+        "edgeHeight": 90,
+        "titleTop": -1018,
+        "lastTop": 596.984375,
+        "lastBottom": 724.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "focus-clear-1440-night",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "top": 253,
+        "bottom": 277,
+        "edge": 90,
+        "height": 900
+      }
+    },
+    {
+      "name": "home-390-day",
+      "ok": true,
+      "detail": {
+        "copy": "他使我躺卧在青草地上\n领我在可安歇的水边",
+        "tracking": 1.896,
+        "fontSize": 23.7,
+        "footerHidden": true,
+        "languages": 1,
+        "logo": "rgb(53, 52, 49)",
+        "ink": "rgb(53, 52, 49)",
+        "cursor": "url(\"http://127.0.0.1:57545/cursors/cursor-dark.svg\") 23 3, auto"
+      }
+    },
+    {
+      "name": "compact-tags-390-day",
+      "ok": true,
+      "detail": {
+        "height": 24,
+        "intro": false
+      }
+    },
+    {
+      "name": "first-390-day",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 0,
+        "top": 0,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": 104,
+        "lastTop": 2848.015625,
+        "lastBottom": 3110.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "middle-390-day",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 1620,
+        "top": 1,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": -1516,
+        "lastTop": 1228.015625,
+        "lastBottom": 1490.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "last-390-day",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 2339,
+        "top": 1,
+        "bottom": 0,
+        "edgeHeight": 90,
+        "titleTop": -2235,
+        "lastTop": 509.015625,
+        "lastBottom": 771.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "focus-clear-390-day",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "top": 229,
+        "bottom": 253,
+        "edge": 90,
+        "height": 900
+      }
+    },
+    {
+      "name": "home-390-night",
+      "ok": true,
+      "detail": {
+        "copy": "他使我躺卧在青草地上\n领我在可安歇的水边",
+        "tracking": 1.896,
+        "fontSize": 23.7,
+        "footerHidden": true,
+        "languages": 1,
+        "logo": "rgba(240, 240, 240, 0.8)",
+        "ink": "rgba(240, 240, 240, 0.8)",
+        "cursor": "url(\"http://127.0.0.1:57545/cursors/cursor-light.svg\") 23 3, auto"
+      }
+    },
+    {
+      "name": "compact-tags-390-night",
+      "ok": true,
+      "detail": {
+        "height": 24,
+        "intro": false
+      }
+    },
+    {
+      "name": "first-390-night",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 0,
+        "top": 0,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": 104,
+        "lastTop": 2848.015625,
+        "lastBottom": 3110.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "middle-390-night",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 1620,
+        "top": 1,
+        "bottom": 1,
+        "edgeHeight": 90,
+        "titleTop": -1516,
+        "lastTop": 1228.015625,
+        "lastBottom": 1490.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "last-390-night",
+      "ok": true,
+      "detail": {
+        "full": true,
+        "overflow": false,
+        "position": 2339,
+        "top": 1,
+        "bottom": 0,
+        "edgeHeight": 90,
+        "titleTop": -2235,
+        "lastTop": 509.015625,
+        "lastBottom": 771.984375,
+        "viewport": 900,
+        "layerFilters": [
+          "blur(1px)",
+          "blur(2px)",
+          "blur(4px)",
+          "blur(8px)"
+        ],
+        "pointer": "none"
+      }
+    },
+    {
+      "name": "focus-clear-390-night",
+      "ok": true,
+      "detail": {
+        "focused": true,
+        "top": 229,
+        "bottom": 253,
+        "edge": 90,
+        "height": 900
+      }
+    },
+    {
+      "name": "coarse-targets",
+      "ok": true,
+      "detail": {
+        "coarse": true,
+        "sizes": [
+          {
+            "width": 46.8125,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 46.8125,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 334,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 72.8125,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          },
+          {
+            "width": 44,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "name": "no-js-readable",
+      "ok": true,
+      "detail": {
+        "edgeDisplay": "none",
+        "mainPosition": "relative",
+        "footerPosition": "relative",
+        "text": 1855
+      }
+    },
+    {
+      "name": "console-errors",
+      "ok": true,
+      "detail": []
+    }
+  ]
+}

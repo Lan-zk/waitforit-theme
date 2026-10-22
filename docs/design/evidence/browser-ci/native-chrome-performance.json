@@ -1,0 +1,20 @@
+{
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "viewport": [
+    1440,
+    813
+  ],
+  "devicePixelRatio": 1,
+  "durationMs": 10000,
+  "hidden": false,
+  "reduced": false,
+  "cycle": "12s",
+  "errors": [],
+  "logicalFrames": 199,
+  "medianMs": 0.20000004768371582,
+  "p95Ms": 0.2999999523162842,
+  "samples": 199,
+  "longTasks": 0,
+  "longTaskTotalMs": 0,
+  "webglRenderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)"
+}

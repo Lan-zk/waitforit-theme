@@ -1,0 +1,73 @@
+[
+  {
+    "name": "build-default",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "build-single",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "build-custom",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "build-minimal",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "build-disabled",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "consumer-variants",
+    "ok": true,
+    "passed": 61,
+    "total": 61
+  },
+  {
+    "name": "probe-1440",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "probe-390",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "home-controls",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "content-boundaries",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "immersive-reading",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "signature",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "scene-visibility",
+    "ok": true,
+    "code": 0
+  },
+  {
+    "name": "stream-flow",
+    "ok": true,
+    "code": 0
+  }
+]

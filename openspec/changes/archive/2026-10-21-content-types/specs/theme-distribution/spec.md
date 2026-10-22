@@ -41,8 +41,8 @@
 
 #### Scenario: 覆盖文案
 
-- **WHEN** 站点在 `i18n/zh.toml` 覆盖 `waitforit.footer.note`
-- **THEN** 中文页脚显示站点文案
+- **WHEN** 站点在 `i18n/zh.toml` 覆盖 `waitforit.nav.blog`
+- **THEN** 中文菜单中的博客入口显示站点文案
 
 #### Scenario: 缺失键回退
 

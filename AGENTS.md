@@ -6,9 +6,9 @@
 
 真实站点内容不在本仓库。本仓库只允许 `exampleSite/` 下的虚构 fixture；真实个人数据、文章、图片、品牌素材不进入。
 
-当前阶段（2026-10-21 起）：产品定位已改为**六类内容的个人站点主题**，类型与目录名固定为 `blog`（博客）、`essays`（随笔）、`projects`（作品，以 GitHub 开源项目为主）、`fiction`（小说）、`photography`（摄影）、`about`（个人介绍，取代原先的"简历"）。首版只实现 blog、essays、projects；fiction、photography、about 只记录、不设计、不实现，但默认导航六项全部显示，后三类指向占位页（`exampleSite` 提供占位页 fixture）。契约与实施顺序在活动变更 `openspec/changes/content-types/`；实现已落地并通过本地验收，交接与复跑命令见 `docs/handoff/2026-10-21-content-types.md`，证据见 `docs/design/evidence/content-types/`，变更保留活动状态等待用户审核后归档。信件内容模型与旧 Hugo 版本兼容已在该变更中移除。
+当前阶段（2026-10-21 起）：**六类内容的个人站点主题**，目录固定为 `blog`、`essays`、`projects`、`fiction`、`photography`、`about`。前三类有专属模板；小说、摄影用通用模板提供虚构边界样本，个人介绍是普通页，后三类专属设计仍未开展。默认六项导航全部显示，站点可整体替换。`content-types` 已同步主规范并归档至 `openspec/changes/archive/2026-10-21-content-types/`；后续标签、全高阅读、单屏首页与溪流调整见三个独立活动变更。信件模型与旧 Hugo 兼容已移除。
 
-历史阶段：P3 签名能力已实现并通过本地验收，`signature-capabilities` 已同步主规范并于 2026-10-21 归档；P2 `theme-skeleton` 已同步规范并归档。Resting Lamb 场景的渲染器已迁移到 WebGL2 并同步主规范，变更 `webgl-scene` 已归档于 `openspec/changes/archive/2026-10-21-webgl-scene/`，证据见 `docs/design/evidence/webgl-scene/`，最新交接见 `docs/handoff/2026-10-21-webgl-scene.md`；`resting-lamb-scene` 已归档于 `openspec/changes/archive/2026-10-21-resting-lamb-scene/`。品牌轮廓、草地窄溪场景、代码复制、OG 与原生页面转场的契约见 `docs/signature-capabilities.md`，P3 海面与 Canvas 2D 场景证据保留为历史。下一步 P4 跨引擎/真实设备/辅助技术、CI 浏览器门禁与发布文档；`README.md` 安装段仍未写，主题不声称可安装。
+历史阶段：P3签名能力、P2骨架和WebGL2迁移均已归档，既有证据保留。当前P4仅测试Chrome（用户明确缩小范围，D38），包括窄屏模拟、键盘与可访问树；不开展其他浏览器或真机验收，不把可访问树检查称为读屏实测。CI入口为 `test/ci.mjs`；README已提供安装与契约，但尚未发布首个tag，远端CI结果与本地结果分开报告。
 
 ## 回应方式
 
@@ -78,10 +78,10 @@ docs/design/{transfer-matrix.md,fidelity-matrix.md,spikes/,reference/,evidence/}
 docs/design/reference/{upstream-pin.md,baseline/}
 .agents/skills/hugo-theme-dev/{SKILL.md,references/,evidence/}
 scripts/check-assets.mjs     # 5 项设计门禁，必须退出 0
-README.md                    # 待写（P4：安装段是主题可安装的唯一标志）
-theme.toml                   # 未创建（P4，主题显示名确定后）
+README.md                    # 安装、参数、内容契约与Chrome验证边界
+theme.toml                   # 显示名waitforit；运行时默认值仍在hugo.toml
 ```
 
 ## 待定
 
-仓库已确定为 `https://github.com/Lan-zk/waitforit-theme.git`，本地 `origin` 已配置，Hugo Module 路径为 `github.com/Lan-zk/waitforit-theme`（见 `docs/decisions.md` D17），`LICENSE` 版权方为 `Lan-zk`（D20）。主题显示名、是否投递 themes.gohugo.io 尚未确定；确定后写入 `docs/decisions.md` 的「待定项」，并同步更新本文件的布局与命令。
+仓库为 `https://github.com/Lan-zk/waitforit-theme.git`，Module路径为 `github.com/Lan-zk/waitforit-theme`（D17），版权方为 `Lan-zk`（D20）。用户已确定显示名 `waitforit`，首轮仓库发布、暂不投递 themes.gohugo.io（D38）。

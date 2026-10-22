@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "url": "http://127.0.0.1:57545/",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "browser": {
+    "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "source": "常见安装路径",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36"
+  },
+  "checks": [
+    {
+      "name": "no-horizontal-overflow",
+      "ok": true,
+      "detail": "scrollWidth=390 <= clientWidth=390 (main=390/390, innerWidth=390, body.scrollWidth=390)"
+    },
+    {
+      "name": "design-tokens",
+      "ok": true,
+      "detail": "--wf-ink=rgba(240, 240, 240, 0.8); --wf-paper=#2e2d2b; --wf-veil-rgb=46 45 43; --wf-frame-block=28px; --wf-motion-theme=900ms"
+    },
+    {
+      "name": "reader-frame",
+      "ok": true,
+      "detail": "main=0..844, chrome=72/772; 阅读模式=single-slogan, 合约符合=true; 首个焦点为 skip=true, skip 激活后焦点在 main=true"
+    },
+    {
+      "name": "menu-toggle",
+      "ok": true,
+      "detail": "真实鼠标点击 -> aria-expanded=true; 面板内焦点=true, mobile=true, modal=true, inert=true, 双向 Tab=true, 解除 inert=true; Escape -> aria-expanded=false, focus=trigger"
+    },
+    {
+      "name": "hit-targets",
+      "ok": true,
+      "detail": "11 个控件满足 chrome/触屏44px、桌面文字标签24px（最小边 44px）"
+    },
+    {
+      "name": "theme-persistence",
+      "ok": true,
+      "detail": "night 刷新后 data-theme=night (--wf-paper=#2e2d2b, localStorage=night); zzz 刷新后 data-theme=<absent> (脚本错误 0 条)"
+    },
+    {
+      "name": "reduced-motion",
+      "ok": true,
+      "detail": "--wf-motion-theme=0ms; prefers-reduced-motion=true; settle 后 1200ms 内 rAF=0 次; canvas=2 张（快照一致）"
+    },
+    {
+      "name": "ui-load-fallback",
+      "ok": true,
+      "detail": "UI 下载已阻断=true; html.js=false; 失效按钮隐藏=true; 普通导航可操作=true"
+    },
+    {
+      "name": "no-js",
+      "ok": true,
+      "detail": "html.js=false（应为 false）; 正文 148 字符 (\"SKIP TO CONTENT BLOG ESSAYS PROJECTS FICTION PHOTOGRAPHY ABO…\"); 导航链接 8 个，可见 8 个; 菜单面板可见=true; 导航/正文/页脚无重叠=true"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "total": 9
+  },
+  "durationMs": 8741
+}

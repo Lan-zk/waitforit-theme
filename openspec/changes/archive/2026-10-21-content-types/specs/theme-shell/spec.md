@@ -121,14 +121,14 @@ blog 与 essays 文章 SHALL 只依赖 Hugo 保留字段（`title`、`descriptio
 
 ### Requirement: 列表分页
 
-blog 与 essays 列表 SHALL 分页，页大小取站点 `pagination.pagerSize`（Hugo 默认 10），页码路径为 `page/N`；第一页 MUST NOT 显示分页控件；分页链接 MUST 是键盘可达的原生链接并保留当前语言前缀。
+blog 与 essays 列表 SHALL 分页，页大小取站点 `pagination.pagerSize`（Hugo 默认 10），页码路径为 `page/N`；只有一页时 MUST NOT 显示分页控件；分页链接 MUST 是键盘可达的原生链接并保留当前语言前缀。
 
 #### Scenario: 翻到第二页
 
 - **WHEN** blog 文章数超过页大小
 - **THEN** 列表页出现指向第二页的原生链接，第二页列出剩余文章
 
-#### Scenario: 第一页无分页控件
+#### Scenario: 单页列表无分页控件
 
 - **WHEN** 文章数不超过页大小
 - **THEN** 列表页不渲染分页控件，也不产生空的页码区域
