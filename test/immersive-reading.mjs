@@ -61,13 +61,14 @@ try {
         const top = document.querySelector('.wf-reading-edge--top'), bottom = document.querySelector('.wf-reading-edge--bottom');
         const title = document.querySelector('main h1').getBoundingClientRect();
         const last = document.querySelector('.wf-prose').lastElementChild.getBoundingClientRect();
-        return { full: Math.abs(box.top) < 1 && Math.abs(box.bottom - innerHeight) < 1, overflow: main.scrollWidth > main.clientWidth, position: main.scrollTop, top: Number(top.style.getPropertyValue('--wf-edge-strength')), bottom: Number(bottom.style.getPropertyValue('--wf-edge-strength')), edgeHeight: top.getBoundingClientRect().height, titleTop: title.top, lastTop: last.top, lastBottom: last.bottom, viewport: innerHeight, layerFilters: [...top.children].map(layer => getComputedStyle(layer).backdropFilter), pointer: getComputedStyle(document.querySelector('.wf-reading-edges')).pointerEvents };
+        return { full: Math.abs(box.top) < 1 && Math.abs(box.bottom - innerHeight) < 1, overflow: main.scrollWidth > main.clientWidth, position: main.scrollTop, scrollHeight: main.scrollHeight, clientHeight: main.clientHeight, top: Number(top.style.getPropertyValue('--wf-edge-strength')), bottom: Number(bottom.style.getPropertyValue('--wf-edge-strength')), edgeHeight: top.getBoundingClientRect().height, titleTop: title.top, lastTop: last.top, lastBottom: last.bottom, viewport: innerHeight, layerFilters: [...top.children].map(layer => getComputedStyle(layer).backdropFilter), pointer: getComputedStyle(document.querySelector('.wf-reading-edges')).pointerEvents };
       })()`);
       const first = await read();
       check(`first-${width}-${theme}`, first.full && !first.overflow && first.top === 0 && first.titleTop > first.edgeHeight && first.pointer === 'none', first);
       await shot(`reading-first-${width}-${theme}`);
 
-      await ev(`document.querySelector('main').scrollTop = document.querySelector('main').scrollHeight / 2;true`);
+      // 滚动区中点是 (scrollHeight - clientHeight) / 2；直接除以 scrollHeight 会在短页面上被 clamp 到末端，底部边缘被判为到底。
+      await ev(`(() => { const main = document.querySelector('main'); main.scrollTop = (main.scrollHeight - main.clientHeight) / 2; return true; })()`);
       await sleep(150);
       const middle = await read();
       check(`middle-${width}-${theme}`, middle.top === 1 && middle.bottom === 1 && new Set(middle.layerFilters).size === 4, middle);
