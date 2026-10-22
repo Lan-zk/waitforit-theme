@@ -76,7 +76,9 @@ try {
             const a = frames[i], b = frames[i + 1], w = a.width, h = a.height;
             const patches = [];
             // Fully covered foreground patches exclude the stationary shoreline and transparent horizon.
-            for (const fraction of [0.68, 0.78, 0.88]) {
+            // Rows below ~0.80 carry specular glints that appear and disappear between frames, so their
+            // best match measures appearance change, not flow; sample the stable mid band instead.
+            for (const fraction of [0.70, 0.74, 0.78]) {
               const cy = Math.floor(h * fraction);
               const interior = [];
               for (let x = 32; x < w - 32; x += 1) {
