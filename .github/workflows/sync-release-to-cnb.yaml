@@ -80,9 +80,12 @@ jobs:
         run: |
           set -euo pipefail
           api="https://api.cnb.cool/${CNB_REPO}/-/releases"
+          # CNB API 要求 Accept 为其厂商媒体类型（官方 Go SDK go-cnb 同款），
+          # 默认 */* 会被内容协商拒绝，返回 406
+          accept="application/vnd.cnb.api+json"
           code=$(curl -sS -o cnb-release.json -w '%{http_code}' \
             -H "Authorization: Bearer ${CNB_TOKEN}" \
-            -H "Accept: application/json" \
+            -H "Accept: ${accept}" \
             "${api}/tags/${TAG}")
 
           if [ "${code}" = "200" ]; then
@@ -94,6 +97,7 @@ jobs:
               '{name: $name, body: $body, prerelease: $prerelease}')
             curl -sS -f -X PATCH "${api}/${id}" \
               -H "Authorization: Bearer ${CNB_TOKEN}" \
+              -H "Accept: ${accept}" \
               -H "Content-Type: application/json" \
               -d "${payload}" > /dev/null
             echo "已更新 CNB Release ${TAG}"
@@ -107,6 +111,7 @@ jobs:
               '{tag_name: $tag, name: $name, body: $body, prerelease: $prerelease, make_latest: "true"}')
             curl -sS -f -X POST "${api}" \
               -H "Authorization: Bearer ${CNB_TOKEN}" \
+              -H "Accept: ${accept}" \
               -H "Content-Type: application/json" \
               -d "${payload}" > /dev/null
             echo "已创建 CNB Release ${TAG}"

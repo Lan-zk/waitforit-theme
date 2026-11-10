@@ -517,5 +517,6 @@ signature-capabilities 的13项任务已完成。先同步 asset-licensing 的�
 
 - 代码镜像 `.github/workflows/sync-to-cnb.yaml`：push main / 任意 tag / delete 触发，`git push --all --tags --force` 到 CNB；与参考实现一致，另在 delete 事件显式删除 CNB 侧同名 ref。同步单向 GitHub → CNB，CNB 端直接提交会被 force 覆盖。
 - Release 同步 `.github/workflows/sync-release-to-cnb.yaml`：Release published（或手动传 tag 回填）触发。不引入参考实现下载的第三方二进制 mpgrm：本仓 Release 无附件（D39），直接用 CNB OpenAPI（`api.cnb.cool`，Bearer 访问令牌）先按 tag 查询、存在则 PATCH、不存在则 POST，CI 保持零额外依赖。创建版本前先推 tag 到 CNB，不依赖镜像工作流时序。
-- 授权：CNB「个人设置 → 访问令牌」生成令牌，GitHub 侧只存 secret `CNB_TOKEN`（令牌需覆盖仓库写与 repo-release:rw）。CNB 的 git HTTP 认证用户名固定为 `cnb`，不设 CNB_USERNAME secret。CNB 无 Claude Code 可用的官方 MCP，CNB CLI（@cnbcool/cnb-cli）也非必需——git + curl 已覆盖建仓、推送与建版本全部操作。
+- 授权：CNB「个人设置 → 访问令牌」生成令牌，GitHub 侧只存 secret `CNB_TOKEN`（令牌需覆盖仓库写与 repo-release:rw；实测推送代码要求 `repo-code:rw`）。CNB 的 git HTTP 认证用户名固定为 `cnb`，不设 CNB_USERNAME secret。CNB 无 Claude Code 可用的官方 MCP，CNB CLI（@cnbcool/cnb-cli）也非必需——git + curl 已覆盖建仓、推送与建版本全部操作。
+- CNB OpenAPI 的内容协商只接受厂商媒体类型 `Accept: application/vnd.cnb.api+json`（官方 Go SDK go-cnb 同款设置），省略或用 `*/*` 会返回 406；同步工作流的所有 curl 调用都带该头。
 - 两个同步工作流不是验收门禁，失败不阻断发布；CI 门禁沿用 D40。
