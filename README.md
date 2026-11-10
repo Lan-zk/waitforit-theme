@@ -175,6 +175,8 @@ WF_SOFTWARE_WEBGL=1 node test/ci.mjs --out /tmp/waitforit-browser-evidence
 
 `HUGO_BIN` 可指定 Hugo 路径，`CHROME_PATH` 可指定 Chrome。前两条是 CI 每次推送执行的门禁；`test/ci.mjs` 是发版前的浏览器验收，CI 不执行（D40），由维护者本地运行。失败返回非零并保留结果；软件 WebGL 用于功能检查，性能采样应另外使用 `WF_NATIVE_GPU=1 node test/scene-performance.mjs --url <preview-url>` 并核对实际 renderer。
 
+仓库单向镜像到 [CNB](https://cnb.cool/waitforit-lan/waitforit-theme)：push/tag 触发 `sync-to-cnb.yaml` 同步代码，Release 发布触发 `sync-release-to-cnb.yaml` 同步版本说明（D41）。镜像以 force 覆盖，CNB 端不接受直接提交。
+
 ## 许可
 
 主题代码为 [MIT](LICENSE)，字体为各自的 OFL。灵感、品牌轮廓与第三方来源见 [CREDITS.md](CREDITS.md)。主题首轮不投递 themes.gohugo.io。

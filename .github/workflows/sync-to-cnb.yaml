@@ -1,0 +1,44 @@
+# 镜像仓库到 CNB（cnb.cool/waitforit-lan/waitforit-theme），参照 eryajf/kite-desktop 的
+# sync-to-cnb 工作流（D41）。单向 GitHub → CNB：CNB 端的直接提交会被 --force 覆盖。
+# 凭据：GitHub secret CNB_TOKEN（CNB 个人设置 → 访问令牌，需仓库写权限）。
+# CNB 的 git HTTP 认证用户名固定为 cnb（CNB 文档 guide/access-token），故只需一个 secret。
+name: Mirror to CNB
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'       # 所有标签的推送都会触发
+  delete:           # 分支或标签删除时同步删除 CNB 侧同名 ref
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    name: Mirror to CNB
+    if: github.actor == 'Lan-zk'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 完整历史，含所有分支与标签
+
+      - name: Push to CNB mirror
+        env:
+          CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git remote add cnb "https://cnb:${CNB_TOKEN}@cnb.cool/waitforit-lan/waitforit-theme.git"
+
+          if [ "${GITHUB_EVENT_NAME}" = "delete" ]; then
+            # 删除事件时 GITHUB_REF 即被删除的 refs/tags/* 或 refs/heads/*
+            git push cnb --delete "${GITHUB_REF}" \
+              || echo "CNB 侧不存在 ${GITHUB_REF}，跳过删除"
+          else
+            git push cnb --all --force
+            git push cnb --tags --force
+          fi

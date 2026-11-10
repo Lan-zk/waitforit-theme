@@ -1,0 +1,117 @@
+# 同步 GitHub Release 说明到 CNB（cnb.cool/waitforit-lan/waitforit-theme）（D41）。
+# 本仓 Release 为纯说明、无附件（D39），故不引入参考实现（eryajf/kite-desktop）使用的
+# 第三方二进制 mpgrm，直接调 CNB OpenAPI（https://api.cnb.cool，Bearer 访问令牌）。
+# 触发：Release published；或手动传 tag 回填历史版本。
+# 前置：CNB 仓库已存在；GitHub secret CNB_TOKEN 已配置（需 repo-release:rw）。
+name: Sync Release to CNB
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 要同步的 tag（回填历史 Release 用）
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  CNB_REPO: waitforit-lan/waitforit-theme
+
+jobs:
+  sync-release:
+    name: Sync release notes to CNB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag_name }}
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "release" ]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="${INPUT_TAG}"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      # 先把 tag 本身推到 CNB，保证创建版本时 tag 已存在，
+      # 不依赖 Mirror 工作流（sync-to-cnb.yaml）的完成时序。
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.tag.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Push tag to CNB
+        env:
+          CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          git remote add cnb "https://cnb:${CNB_TOKEN}@cnb.cool/${CNB_REPO}.git"
+          git push cnb "refs/tags/${TAG}"
+
+      - name: Fetch GitHub release
+        id: gh_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${TAG}" > release.json
+          # 只同步已发布的 Release，草稿不覆盖 CNB
+          jq -e '.published_at != null' release.json > /dev/null
+          {
+            echo "name=$(jq -r '.name // .tag_name' release.json)"
+            echo "prerelease=$(jq -r '.prerelease' release.json)"
+          } >> "$GITHUB_OUTPUT"
+          jq -r '.body // ""' release.json > release-body.md
+
+      - name: Create or update CNB release
+        env:
+          CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          RELEASE_NAME: ${{ steps.gh_release.outputs.name }}
+          PRERELEASE: ${{ steps.gh_release.outputs.prerelease }}
+        run: |
+          set -euo pipefail
+          api="https://api.cnb.cool/${CNB_REPO}/-/releases"
+          code=$(curl -sS -o cnb-release.json -w '%{http_code}' \
+            -H "Authorization: Bearer ${CNB_TOKEN}" \
+            -H "Accept: application/json" \
+            "${api}/tags/${TAG}")
+
+          if [ "${code}" = "200" ]; then
+            id=$(jq -r '.id' cnb-release.json)
+            payload=$(jq -n \
+              --arg name "${RELEASE_NAME}" \
+              --rawfile body release-body.md \
+              --argjson prerelease "${PRERELEASE}" \
+              '{name: $name, body: $body, prerelease: $prerelease}')
+            curl -sS -f -X PATCH "${api}/${id}" \
+              -H "Authorization: Bearer ${CNB_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "${payload}" > /dev/null
+            echo "已更新 CNB Release ${TAG}"
+          elif [ "${code}" = "404" ]; then
+            # 常规发布总是最新的，创建时标记 make_latest；回填旧版本请改用 legacy
+            payload=$(jq -n \
+              --arg tag "${TAG}" \
+              --arg name "${RELEASE_NAME}" \
+              --rawfile body release-body.md \
+              --argjson prerelease "${PRERELEASE}" \
+              '{tag_name: $tag, name: $name, body: $body, prerelease: $prerelease, make_latest: "true"}')
+            curl -sS -f -X POST "${api}" \
+              -H "Authorization: Bearer ${CNB_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "${payload}" > /dev/null
+            echo "已创建 CNB Release ${TAG}"
+          else
+            echo "查询 CNB Release 失败，HTTP ${code}" >&2
+            cat cnb-release.json >&2
+            exit 1
+          fi

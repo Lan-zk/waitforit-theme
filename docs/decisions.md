@@ -510,3 +510,12 @@ signature-capabilities 的13项任务已完成。先同步 asset-licensing 的�
 - 保留：`build`作业（`check-assets.mjs`、`--panicOnWarning`构建、弃用审计）与每周latest校验继续在CI执行，远端门禁只剩Hugo构建。
 - 浏览器验收降级为发版前本地步骤：`WF_SOFTWARE_WEBGL=1 node test/ci.mjs`。脚本、五组消费者fixture与证据产物保留，不删除，也不随推送执行。
 - 发布门槛改为远端`build`成功加发版前本地浏览器套件通过；两项分别记录，不把本地通过称为远端全绿。README的验证范围与未覆盖项沿用D38。
+
+## D41 · 仓库镜像与 Release 同步到 CNB（2026-11-10）
+
+状态：用户要求参照 eryajf/kite-desktop 的两个同步工作流，把 GitHub 仓库同步到 `cnb.cool/waitforit-lan/waitforit-theme`。CNB 侧仓库需先创建（当前账号下仅有注册时的 hello-cnb 教程仓库）。
+
+- 代码镜像 `.github/workflows/sync-to-cnb.yaml`：push main / 任意 tag / delete 触发，`git push --all --tags --force` 到 CNB；与参考实现一致，另在 delete 事件显式删除 CNB 侧同名 ref。同步单向 GitHub → CNB，CNB 端直接提交会被 force 覆盖。
+- Release 同步 `.github/workflows/sync-release-to-cnb.yaml`：Release published（或手动传 tag 回填）触发。不引入参考实现下载的第三方二进制 mpgrm：本仓 Release 无附件（D39），直接用 CNB OpenAPI（`api.cnb.cool`，Bearer 访问令牌）先按 tag 查询、存在则 PATCH、不存在则 POST，CI 保持零额外依赖。创建版本前先推 tag 到 CNB，不依赖镜像工作流时序。
+- 授权：CNB「个人设置 → 访问令牌」生成令牌，GitHub 侧只存 secret `CNB_TOKEN`（令牌需覆盖仓库写与 repo-release:rw）。CNB 的 git HTTP 认证用户名固定为 `cnb`，不设 CNB_USERNAME secret。CNB 无 Claude Code 可用的官方 MCP，CNB CLI（@cnbcool/cnb-cli）也非必需——git + curl 已覆盖建仓、推送与建版本全部操作。
+- 两个同步工作流不是验收门禁，失败不阻断发布；CI 门禁沿用 D40。
